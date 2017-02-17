@@ -73,6 +73,14 @@ public class MainMCUComtroller {
 //		changeCombo();
 	}
 
+	private String keyToText(String key) {
+		if (key.matches("cb\\d+")) {
+			int portGroup = Integer.parseInt(key.substring(2, 3));
+			int portNumber = Integer.parseInt(key.substring(3));
+			return String.format("P%s%d", Device.EPortNames.values()[portGroup], portNumber);
+		}
+		return key;
+	}
 	private void initItem(Region node, int k) {
 		node.setVisible(Boolean.TRUE);
 		node.setMinWidth(100.0);
@@ -161,13 +169,13 @@ public class MainMCUComtroller {
 	}
 
 	private Label makeLabel(String key) {
-		return new Label(key);
+		return new Label(keyToText(key));
 	}
 
 	private ComboBox<String> makeCombo(String pText) {
 		ComboBox<String> newCombo = new ComboBox<>();
 		newCombo.setBackground(backgroundDefault);
-		newCombo.setPromptText(pText);
+		newCombo.setPromptText(keyToText(pText));
 		initItem(newCombo, 1);
 		return newCombo;
 	}
@@ -332,7 +340,7 @@ public class MainMCUComtroller {
 		switchLinkedComboboxes(prev, value);
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);
-		label.setText(comboKey);
+		label.setText(keyToText(comboKey));
 		label.setVisible(true);
 		switch(model.getSelectedIndex()) {
 			case 0:
