@@ -415,98 +415,10 @@
                 <liguibase.context>local</liguibase.context>
             </properties>
         </profile>
-        <profile>
-            <id>production</id>
-            <activation>
-                <property>
-                    <name>production</name>
-                </property>
-            </activation>
-            <properties>
-                <server.scope>provided</server.scope>
-                <deploy.server>spotty-dev</deploy.server>
-                <deploy.path>/api</deploy.path>
-<!--                 <deploy.url>http://172.30.1.76:8030/manager/text</deploy.url> -->
-                <!--<deploy.url>http://193.232.167.242:8030/manager/text</deploy.url>-->
-                <!--<deploy.url>http://52.34.217.126:8030/manager/text</deploy.url>-->
-                <!--<hibernate.database>52.34.217.126:5435</hibernate.database>-->
-                <deploy.url>http://52.89.163.195:8030/manager/text</deploy.url>
-                <hibernate.database>52.89.163.195:5435</hibernate.database>
-                <liguibase.context>production</liguibase.context>
-            </properties>
-        </profile>
-        <profile>
-            <id>production-2</id>
-            <activation>
-                <property>
-                    <name>production-2</name>
-                </property>
-            </activation>
-            <properties>
-                <server.scope>provided</server.scope>
-                <deploy.server>spotty-dev</deploy.server>
-                <deploy.path>/api2</deploy.path>
-                <!--<deploy.url>http://52.34.217.126:8030/manager/text</deploy.url>-->
-                <!--<hibernate.database>52.34.217.126:5435</hibernate.database>-->
-                <deploy.url>http://52.89.163.195:8030/manager/text</deploy.url>
-                <hibernate.database>52.89.163.195:5435</hibernate.database>
-                <liguibase.context>development</liguibase.context>
-            </properties>
-        </profile>
-        <profile>
-            <id>dev-main</id>
-            <activation>
-                <property>
-                    <name>development</name>
-                </property>
-            </activation>
-            <properties>
-                <server.scope>provided</server.scope>
-                <deploy.server>spotty-dev</deploy.server>
-                <deploy.path>/api</deploy.path>
-                <deploy.url>http://172.30.1.42:8030/manager/text</deploy.url>
-                <hibernate.database>172.30.1.42:5435</hibernate.database>
-                <liguibase.context>development</liguibase.context>
-            </properties>
-        </profile>
-        <profile>
-            <id>dev-second</id>
-            <activation>
-                <property>
-                    <name>development-2</name>
-                </property>
-            </activation>
-            <properties>
-                <server.scope>provided</server.scope>
-                <deploy.server>spotty-dev</deploy.server>
-                <deploy.path>/api</deploy.path> <!--remove -debug-->
-                <deploy.url>http://172.30.1.42:8050/manager/text</deploy.url>
-                <hibernate.database>172.30.1.42:5435</hibernate.database>
-                <liguibase.context>development</liguibase.context>
-            </properties>
-        </profile>
-        <profile>
-            <id>dev-remote</id>
-            <activation>
-                <property>
-                    <name>dev-remote</name>
-                </property>
-            </activation>
-            <properties>
-                <server.scope>provided</server.scope>
-                <deploy.server>spotty-dev</deploy.server>
-                <deploy.path>/api</deploy.path> <!--remove -debug-->
-                <deploy.url>http://193.232.167.34:8030/manager/text</deploy.url>
-                <hibernate.database>193.232.167.34:5435</hibernate.database>
-                <!--<deploy.url>http://193.232.167.242:8030/manager/text</deploy.url>-->
-                <!--<hibernate.database>193.232.167.242:5435</hibernate.database>-->
-                <liguibase.context>development</liguibase.context>
-            </properties>
-        </profile>
     </profiles>
 
     <build>
-        <finalName>spotty-api</finalName>
+        <finalName>milandr</finalName>
         <plugins>
             <plugin>
                 <groupId>com.zenjava</groupId>
