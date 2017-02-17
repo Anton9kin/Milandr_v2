@@ -383,6 +383,7 @@ public class MainMCUComtroller {
 		System.out.println(logText);
 	}
 
+	@FXML
 	public void clearAll(ActionEvent event) {
 		Platform.runLater(() -> {
 		for(String cmbKey: comboMap.keySet()) {

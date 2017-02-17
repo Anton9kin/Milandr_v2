@@ -2,6 +2,10 @@ package milandr_ex.model;
 
 import java.io.IOException;
 
+import com.sun.xml.internal.ws.api.model.MEP;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import milandr_ex.MilandrEx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +15,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class RootLayoutController {
-	
+	public enum MenuKind {
+		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR
+	}
 	public static void NewProject() throws IOException{
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(MilandrEx.class.getResource("model/selectDevice.fxml"));
@@ -42,22 +48,42 @@ public class RootLayoutController {
 			MilandrEx.primaryStage.centerOnScreen();
 		}
 	}
-	
+
+	private MenuKind parseMenuKind(MenuItem item) {
+		Menu mn = item.getParentMenu();
+		String menuCaption = mn.getText();
+		return MenuKind.valueOf(menuCaption.toUpperCase());
+	}
+
 	@FXML
-	private void handleNew() throws IOException{
-		NewProject();
+	private void handleNew(ActionEvent event) throws IOException{
+		MenuItem mi = (MenuItem) event.getSource();
+		switch (parseMenuKind(mi)) {
+			case PROJECT:
+			case PROCESSOR:
+				NewProject();
+				break;
+		}
 	}
 	
     @FXML
-    private void handleOpen() {
+    private void handleOpen(ActionEvent event) {
+		MenuItem mi = (MenuItem) event.getSource();
+		switch (parseMenuKind(mi)) {
+			case PROJECT:
+			case PROCESSOR:
+				break;
+		}
     }
 	
 	@FXML
-	private void handleSave(){
-	}
-	
-	@FXML
-    private void handleSaveAs() {
+	private void handleSave(ActionEvent event){
+		MenuItem mi = (MenuItem) event.getSource();
+		switch (parseMenuKind(mi)) {
+			case PROJECT:
+			case PROCESSOR:
+				break;
+		}
 	}
 	
 	@FXML
