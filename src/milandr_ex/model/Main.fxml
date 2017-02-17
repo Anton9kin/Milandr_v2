@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.MainController">
+   <children>
+      <VBox layoutX="14.0" layoutY="38.0" prefHeight="341.0" prefWidth="139.0" spacing="10.0">
+         <children>
+            <ImageView fx:id="newIm" fitHeight="82.0" fitWidth="139.0" layoutX="14.0" layoutY="31.0" onMouseClicked="#handleNewImage" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="openIm" fitHeight="82.0" fitWidth="139.0" layoutX="14.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="helpIm" fitHeight="82.0" fitWidth="139.0" layoutX="26.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
+      <ImageView fx:id="idIm" fitHeight="199.0" fitWidth="248.0" layoutX="338.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>
