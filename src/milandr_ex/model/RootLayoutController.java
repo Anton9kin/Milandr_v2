@@ -25,7 +25,7 @@ public class RootLayoutController {
 		
 		//Create dialog winStage
 		Stage chooseStage = new Stage();
-		chooseStage.setTitle("Выберите контроллер");
+		chooseStage.setTitle("Р’С‹Р±РµСЂРёС‚Рµ РєРѕРЅС‚СЂРѕР»Р»РµСЂ");
 		chooseStage.initModality(Modality.WINDOW_MODAL);
 		chooseStage.initOwner(MilandrEx.primaryStage);
 		Scene scene = new Scene(page);
@@ -44,7 +44,7 @@ public class RootLayoutController {
 			MilandrEx.rootLayout.setCenter(MilandrEx.mainLayout);
 			MilandrEx.primaryStage.setWidth(1200);
 			MilandrEx.primaryStage.setHeight(800);
-			MilandrEx.primaryStage.setTitle("Генератор кода - " + MilandrEx.mcuMain.getProp("type"));
+			MilandrEx.primaryStage.setTitle("Р“РµРЅРµСЂР°С‚РѕСЂ РєРѕРґР° - " + MilandrEx.mcuMain.getProp("type"));
 			MilandrEx.primaryStage.centerOnScreen();
 		}
 	}

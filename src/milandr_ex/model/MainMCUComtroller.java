@@ -55,7 +55,7 @@ public class MainMCUComtroller {
 	public void mainMCUStart(String pack) {
 		// TODO Auto-generated constructor stub
 
-		MilandrEx.primaryStage.setTitle("Генератор кода - " + MilandrEx.mcuMain.getProp("type"));
+		MilandrEx.primaryStage.setTitle("Р“РµРЅРµСЂР°С‚РѕСЂ РєРѕРґР° - " + MilandrEx.mcuMain.getProp("type"));
 
 		showItems(0, 0, 0, 0, 0, 0);
 

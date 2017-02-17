@@ -22,7 +22,7 @@ public class MilandrEx extends Application {
 	@Override
 	public void start(Stage primStage) {
 		primaryStage = primStage;
-		primaryStage.setTitle("Генератор кода");
+		primaryStage.setTitle("Р“РµРЅРµСЂР°С‚РѕСЂ РєРѕРґР°");
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
 		AquaFx.style();
 
