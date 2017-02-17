@@ -172,10 +172,29 @@ public class Constants {
             if (idx >= 0) {
 //                String sId = str;//"" + idx;
                     int div = idx % 16;
-                    String sId = str + " cb" + (idx / 16) + (div > 9 ? "" : "0") + div;
+                    String cbKey = (idx / 16) + (div > 9 ? "" : "0") + div;
+                    String sId = str + " " + keyToText("cb" + cbKey);
                 if (!pairs.contains(sId)) pairs.add(sId);
                 numbers.add(idx);
             }
         }
+    }
+
+    public static String keyToText(String key) {
+        if (key.matches("cb\\d+")) {
+            int portGroup = Integer.parseInt(key.substring(2, 3));
+            int portNumber = Integer.parseInt(key.substring(3));
+            return String.format("P%s%d", Device.EPortNames.values()[portGroup], portNumber);
+        }
+        return key;
+    }
+
+    public static String textToKey(String text) {
+        if (text.matches("P[A-F]\\d+")) {
+            int portGroup = Device.EPortNames.valueOf(text.substring(1, 2)).ordinal();
+            int portNumber = Integer.parseInt(text.substring(2));
+            return String.format("cb%s%s%d", portGroup, portNumber > 9 ? "" : "0", portNumber);
+        }
+        return text;
     }
 }

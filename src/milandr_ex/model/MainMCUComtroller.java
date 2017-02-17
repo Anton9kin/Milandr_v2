@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
+import static milandr_ex.data.Constants.keyToText;
+import static milandr_ex.data.Constants.textToKey;
+
 public class MainMCUComtroller {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUComtroller.class);
 
@@ -73,14 +76,6 @@ public class MainMCUComtroller {
 //		changeCombo();
 	}
 
-	private String keyToText(String key) {
-		if (key.matches("cb\\d+")) {
-			int portGroup = Integer.parseInt(key.substring(2, 3));
-			int portNumber = Integer.parseInt(key.substring(3));
-			return String.format("P%s%d", Device.EPortNames.values()[portGroup], portNumber);
-		}
-		return key;
-	}
 	private void initItem(Region node, int k) {
 		node.setVisible(Boolean.TRUE);
 		node.setMinWidth(100.0);
@@ -363,7 +358,7 @@ public class MainMCUComtroller {
 				return;
 			}
 			String[] values = value.split("\\s");
-			ComboBox<String> target = comboMap.get(values[values.length - 1]);
+			ComboBox<String> target = comboMap.get(textToKey(values[values.length - 1]));
 			if (target != null && target.getSelectionModel() != null) {
 				SelectionModel selMod = target.getSelectionModel();
 				resetPrevLinkedCombobox(prev);
@@ -374,7 +369,7 @@ public class MainMCUComtroller {
 
 	private void resetPrevLinkedCombobox(String prev) {
 		if (prev.contains(" ")) {
-			ComboBox<String> pTarget = comboMap.get(prev.split("\\s")[1]);
+			ComboBox<String> pTarget = comboMap.get(textToKey(prev.split("\\s")[1]));
 			if (pTarget != null) pTarget.getSelectionModel().selectFirst();
 		}
 	}
