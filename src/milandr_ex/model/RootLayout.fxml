@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Milandr_ex.model.RootLayoutController">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.RootLayoutController">
    <top>
       <MenuBar prefHeight="20.0" BorderPane.alignment="CENTER">
         <menus>

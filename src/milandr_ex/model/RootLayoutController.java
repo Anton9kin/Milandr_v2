@@ -1,8 +1,8 @@
-package Milandr_ex.model;
+package milandr_ex.model;
 
 import java.io.IOException;
 
-import Milandr_ex.Milandr_ex;
+import milandr_ex.MilandrEx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,37 +12,40 @@ import javafx.stage.Stage;
 
 public class RootLayoutController {
 	
-	@FXML
-	private void handleNew() throws IOException {
-		
+	public static void NewProject() throws IOException{
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Milandr_ex.class.getResource("model/selectDevice.fxml"));
+		loader.setLocation(MilandrEx.class.getResource("model/selectDevice.fxml"));
 		AnchorPane page = (AnchorPane) loader.load();
 		
 		//Create dialog winStage
 		Stage chooseStage = new Stage();
 		chooseStage.setTitle("Выберите контроллер");
 		chooseStage.initModality(Modality.WINDOW_MODAL);
-		chooseStage.initOwner(Milandr_ex.primaryStage);
+		chooseStage.initOwner(MilandrEx.primaryStage);
 		Scene scene = new Scene(page);
 		chooseStage.setScene(scene);
 		
-		chooseController chContr = loader.getController();
+		ChooseController chContr = loader.getController();
 		chContr.setDialogStage(chooseStage);
 		
 		chooseStage.showAndWait();
 		
-		if (Milandr_ex.mcuMain != null){
+		if (MilandrEx.mcuMain != null){
 			loader = new FXMLLoader();
 			
-			loader.setLocation(Milandr_ex.class.getResource("model/mainMCU.fxml"));
-			Milandr_ex.mainLayout = (AnchorPane)loader.load();
-			Milandr_ex.rootLayout.setCenter(Milandr_ex.mainLayout);
-			Milandr_ex.primaryStage.setWidth(1200);
-			Milandr_ex.primaryStage.setHeight(800);
-			Milandr_ex.primaryStage.setTitle("Генератор кода - " + Milandr_ex.mcuMain.getType());
-			Milandr_ex.primaryStage.centerOnScreen();
+			loader.setLocation(MilandrEx.class.getResource("model/mainMCU.fxml"));
+			MilandrEx.mainLayout = (AnchorPane)loader.load();
+			MilandrEx.rootLayout.setCenter(MilandrEx.mainLayout);
+			MilandrEx.primaryStage.setWidth(1200);
+			MilandrEx.primaryStage.setHeight(800);
+			MilandrEx.primaryStage.setTitle("Генератор кода - " + MilandrEx.mcuMain.getProp("type"));
+			MilandrEx.primaryStage.centerOnScreen();
 		}
+	}
+	
+	@FXML
+	private void handleNew() throws IOException{
+		NewProject();
 	}
 	
     @FXML
