@@ -2,6 +2,7 @@ package milandr_ex.model;
 
 import javafx.scene.layout.GridPane;
 import milandr_ex.MilandrEx;
+import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
 import milandr_ex.McuType;
 import javafx.collections.FXCollections;
@@ -15,10 +16,12 @@ import javafx.stage.Stage;
 import milandr_ex.data.DeviceFactory;
 import milandr_ex.data.PropsFactory;
 
+import java.util.ResourceBundle;
+
 public class ChooseController {
 
 	private Stage dialogStage;
-	
+
 	private ObservableList<McuType> mcuData = FXCollections.observableArrayList();
 	
 	@FXML
@@ -45,10 +48,11 @@ public class ChooseController {
 	public ChooseController(){
 		
 	}
-	
+
+	private ResourceBundle messages;
 	@FXML
-	private void initialize(){
-		
+	private void initialize() {
+		messages = Constants.loadBundle("messages", "ru");
 		typeColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("type"));
 		packColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("pack"));
 		flashColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("flash"));

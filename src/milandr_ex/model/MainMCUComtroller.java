@@ -20,8 +20,10 @@ import milandr_ex.data.DeviceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import static milandr_ex.data.Constants.keyToText;
 import static milandr_ex.data.Constants.textToKey;
@@ -40,6 +42,7 @@ public class MainMCUComtroller {
 	@FXML
 	private VBox lcCont;
 
+	private ResourceBundle messages;
 	private Map<String, Label> labMap = Maps.newHashMap();
 	private Map<String, ComboBox<String>> comboMap = Maps.newHashMap();
 	private Map<String, ObservableList<String>> pxList = Maps.newHashMap();
@@ -47,7 +50,7 @@ public class MainMCUComtroller {
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	@FXML
 	private TabPane mainTabPane;
-	
+
 	public MainMCUComtroller() {
 	
 	}
@@ -55,7 +58,7 @@ public class MainMCUComtroller {
 	public void mainMCUStart(String pack) {
 		// TODO Auto-generated constructor stub
 
-		MilandrEx.primaryStage.setTitle("Генератор кода - " + MilandrEx.mcuMain.getProp("type"));
+		MilandrEx.primaryStage.setTitle(messages.getString("main.title") + " - " + MilandrEx.mcuMain.getProp("type"));
 
 		showItems(0, 0, 0, 0, 0, 0);
 
@@ -65,7 +68,8 @@ public class MainMCUComtroller {
 	}
 	
 	@FXML
-	private void initialize(){
+	private void initialize() {
+		messages = Constants.loadBundle("messages", "ru");
 		String pack = MilandrEx.mcuMain.getProp("pack");
 		setItems(pack);
 		mainMCUStart(pack);

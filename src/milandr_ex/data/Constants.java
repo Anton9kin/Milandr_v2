@@ -2,11 +2,15 @@ package milandr_ex.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import milandr_ex.MilandrEx;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 /**
  * Created by lizard on 14.02.17 at 10:31.
@@ -197,4 +201,33 @@ public class Constants {
         }
         return text;
     }
+
+    public static ResourceBundle loadBundle(String name, String locale) {
+        String resourceName = "resourse/" + name + "_" + locale + ".properties";
+        ResourceBundle bundle = null;
+        InputStream stream = null;
+        URL url = MilandrEx.class.getClassLoader().getResource(resourceName);
+        if (url != null) {
+            try {
+                URLConnection connection = url.openConnection();
+                if (connection != null) {
+                    connection.setUseCaches(false);
+                    stream = connection.getInputStream();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (stream != null) {
+            try {
+                // Only this line is changed to make it to read properties files as UTF-8.
+                bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bundle;
+    }
+
 }

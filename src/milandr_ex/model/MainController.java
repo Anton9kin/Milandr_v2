@@ -2,10 +2,12 @@ package milandr_ex.model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import milandr_ex.data.Constants;
 
 public class MainController {
 
@@ -22,9 +24,11 @@ public class MainController {
 	public MainController() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	private ResourceBundle messages;
 	@FXML
-	private void initialize(){
+	private void initialize() {
+		messages = Constants.loadBundle("messages", "ru");
 		loadImage(openIm, "open.png");
 		loadImage(newIm, "new.png");
 		loadImage(helpIm, "helpicon.png");
@@ -42,7 +46,7 @@ public class MainController {
 	@FXML
 	private void handleNewImage(){
 		try {
-			RootLayoutController.NewProject();
+			RootLayoutController.NewProject(messages);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
