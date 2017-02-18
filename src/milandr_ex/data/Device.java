@@ -65,11 +65,17 @@ public class Device {
             this.size = size;
         }
 
+        public boolean ext() {
+            for(EPairNames pair: extPairs)
+                if (pair.equals(this)) return true;
+            return false;
+        }
         public int getSize() {
             return size;
         }
         public abstract void set(Device device, int val);
     }
+    private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.I2C, EPairNames.SPI, EPairNames.CAN };
     public enum EPortNames {
         A, B, C, D, E, F
     }

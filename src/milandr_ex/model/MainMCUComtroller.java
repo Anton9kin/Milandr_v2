@@ -40,7 +40,9 @@ public class MainMCUComtroller {
 	@FXML
 	private Button clrBtn;
 	@FXML
-	private VBox lcCont;
+	private VBox lcContIn;
+	@FXML
+	private VBox lcContEx;
 
 	private ResourceBundle messages;
 	private Map<String, Label> labMap = Maps.newHashMap();
@@ -122,7 +124,7 @@ public class MainMCUComtroller {
 			}
 //			if (k >= 4) { k = 0; l++; }
 			makeListener(pairName, tPane);
-			lcCont.getChildren().add(tPane);
+			(ePair.ext() ? lcContEx  : lcContIn).getChildren().add(tPane);
 		}
 	}
 
