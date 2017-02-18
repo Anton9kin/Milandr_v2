@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import com.aquafx_project.AquaFx;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -18,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import milandr_ex.data.Constants;
 import milandr_ex.data.PinoutsModel;
+import milandr_ex.model.ModelObserver;
 
 
 public class MilandrEx extends Application {
@@ -29,8 +30,21 @@ public class MilandrEx extends Application {
 	private static Locale locale = new Locale("ru", "RU");
 	public static McuType mcuMain = null;
 	private static ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
+	private static Map<String, List<ModelObserver>> observers = Maps.newHashMap();
+    public static void addObserver(String key, ModelObserver observer) {
+    	if (!observers.containsKey(key)) {
+    		observers.put(key, Lists.newArrayList());
+		}
+    	observers.get(key).add(observer);
+	}
 
-
+	public static void observe(String key) {
+    	for(ModelObserver observer: observers.get(key)) {
+    		if (observer instanceof PinoutsModel.Observer) {
+				((PinoutsModel.Observer) observer).observe(pinoutsModel);
+			}
+		}
+	}
 	public MilandrEx() {
 		bundle = Constants.loadBundle("messages", "ru");
 	}

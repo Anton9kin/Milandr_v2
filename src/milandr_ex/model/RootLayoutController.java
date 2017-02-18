@@ -90,6 +90,7 @@ public class RootLayoutController {
 			case PROCESSOR:
 				File selectedFile = chooser.showOpenDialog(null);
 				MilandrEx.pinoutsModel = PinoutsModel.load(selectedFile);
+				MilandrEx.observe("pinouts");
 				ChooseController.setDefaultMCU();
 				MilandrEx.mcuMain = DeviceFactory.getDevice(MilandrEx.pinoutsModel.getSelectedBody()).getMcu();
 				break;

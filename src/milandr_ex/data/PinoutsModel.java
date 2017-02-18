@@ -2,6 +2,7 @@ package milandr_ex.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import milandr_ex.model.ModelObserver;
 
 import java.io.File;
 import java.util.List;
@@ -13,6 +14,9 @@ import java.util.Map;
 public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
+	public interface Observer extends ModelObserver {
+		public void observe(PinoutsModel model);
+	}
 
 	public String getSelectedBody() {
 		return selectedBody;

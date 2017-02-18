@@ -31,7 +31,7 @@ import static milandr_ex.data.Constants.clItem;
 import static milandr_ex.data.Constants.keyToText;
 import static milandr_ex.data.Constants.textToKey;
 
-public class MainMCUComtroller {
+public class MainMCUComtroller implements PinoutsModel.Observer {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUComtroller.class);
 
 	private Background backgroundDefault = null;
@@ -60,7 +60,7 @@ public class MainMCUComtroller {
 	private TabPane mainTabPane;
 
 	public MainMCUComtroller() {
-	
+		MilandrEx.addObserver("pinouts", this);
 	}
 	
 	public void mainMCUStart(String pack) {
@@ -79,11 +79,22 @@ public class MainMCUComtroller {
 	private void initialize() {
 		messages = Constants.loadBundle("messages", "ru");
 		String pack = MilandrEx.mcuMain.getProp("pack");
-		pinoutsModel = MilandrEx.pinoutsModel;
 		setItems(pack);
 		mainMCUStart(pack);
 	}
-	
+
+	@Override
+	public void observe(PinoutsModel model) {
+		if (model == null) return;
+		pinoutsModel = model;
+		Map<String, String> pins = pinoutsModel.getSelectedPins();
+		for(String key: comboMap.keySet()) {
+			String pin = pins.get(key);
+			if (pin == null) continue;
+			comboMap.get(key).getSelectionModel().select(pin);
+		}
+	}
+
 	@FXML
 	private void changeData(){
 //		changeCombo();
