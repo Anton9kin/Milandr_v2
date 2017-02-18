@@ -2,6 +2,8 @@ package milandr_ex.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import milandr_ex.MilandrEx;
 
 import java.io.IOException;
@@ -16,6 +18,56 @@ import java.util.*;
  * Created by lizard on 14.02.17 at 10:31.
  */
 public class Constants {
+    public static String[][] combostrs = {
+            {"CPU-1", "SUB-1", "CPU-2"},
+            {"USB-1", "SUB-2", ""},
+            {"ADC-1", "ADC-2", ""},
+            {
+                    "HSI|8Mhz|HSI|/ 2|HSE Mhz|16 MHz|HSE|/ 2|\\Sim",
+                    "CPU-1|Sim|CPU-1|* 16|\\/ 256",
+                    "HSI|8 Mhz|SUB-1|Sim|LSE|32 Khz|LSI|40 Khz|\\Sim",
+                    "HSI|8Mhz|HSI|/ 2|HSE|Mhz|HSE|/ 2|\\Sim",
+                    "CPU-1|Sim|CPU-1|* 16|\\/ 2",
+                    "",
+                    "CPU-1|Sim|USB-1|Sim|CPU-2|Sim|USB-2|Sim|\\Sim",
+                    "ADC-1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
+                    "",
+            }};
+
+    public static ObservableList<String> clItem = FXCollections.
+            observableArrayList("IN-1", "IN-2", "IN-3", "IN-4");
+    public static ObservableList<String> dv256Item = FXCollections.
+            observableArrayList("/ 1", "/ 2", "/ 4", "/ 8", "/ 16", "/ 32", "/ 64", "/ 128", "/ 256");
+    public static ObservableList<String> ml256Item = FXCollections.
+            observableArrayList("* 1", "* 2", "* 4", "* 8", "* 16", "* 32", "* 64", "* 128", "* 256");
+    public static ObservableList<String> dv16Item = FXCollections.
+            observableArrayList("/ 1", "/ 2", "/ 4", "/ 8", "/ 16");
+    public static ObservableList<String> ml16Item = FXCollections.
+            observableArrayList("* 1", "* 2", "* 4", "* 8", "* 16");
+    public static ObservableList<String> dv4Item = FXCollections.
+            observableArrayList("/ 1", "/ 2", "/ 4");
+    public static ObservableList<String> ml4Item = FXCollections.
+            observableArrayList("* 1", "* 2", "* 4");
+    public static ObservableList<String> dv2Item = FXCollections.
+            observableArrayList("/ 1", "/ 2");
+    public static ObservableList<String> ml2Item = FXCollections.
+            observableArrayList("* 1", "* 2");
+
+    public static ObservableList[] dvItems = new ObservableList[]{dv2Item, dv4Item, dv16Item, dv256Item};
+    public static ObservableList[] mlItems = new ObservableList[]{ml2Item, ml4Item, ml16Item, ml256Item};
+
+    public static Map<String, ObservableList> dvmlMap = Maps.newHashMap();
+    public static ObservableList getDvMlItems(String code) {
+        if (dvmlMap.isEmpty()) {
+            for(ObservableList dvItem: dvItems) {
+                dvmlMap.put(String.valueOf(dvItem.get(dvItem.size() -1)), dvItem);
+            }
+            for(ObservableList dvItem: mlItems) {
+                dvmlMap.put(String.valueOf(dvItem.get(dvItem.size() -1)), dvItem);
+            }
+        }
+        return dvmlMap.get(code);
+    }
     /// Static Constants Block
     public static String[][] comboTexts = {
             {"-", "DATA0", "EXT_INT1", "-"},

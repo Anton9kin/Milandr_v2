@@ -1,6 +1,7 @@
 package milandr_ex.model;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import milandr_ex.MilandrEx;
 import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static milandr_ex.data.Constants.clItem;
 import static milandr_ex.data.Constants.keyToText;
 import static milandr_ex.data.Constants.textToKey;
 
@@ -43,6 +45,8 @@ public class MainMCUComtroller {
 	private VBox lcContIn;
 	@FXML
 	private VBox lcContEx;
+	@FXML
+	private GridPane clckCont;
 
 	private ResourceBundle messages;
 	private Map<String, Label> labMap = Maps.newHashMap();
@@ -126,6 +130,97 @@ public class MainMCUComtroller {
 			makeListener(pairName, tPane);
 			(ePair.ext() ? lcContEx  : lcContIn).getChildren().add(tPane);
 		}
+		fillClockGrid();
+	}
+
+	private void fillClockGrid() {
+		clckCont.setStyle("-fx-background-color: white; -fx-grid-lines-visible: true");
+		makePaddings(clckCont);
+		String[][] combostrs = Constants.combostrs;
+		for(int i = 0; i < combostrs.length - 1; i++) {
+			for(int j = 0; j < combostrs[i].length; j++) {
+				String namestr = combostrs[i][j];
+				if (namestr.isEmpty()) continue;
+				String combostr = combostrs[combostrs.length - 1][i * combostrs[i].length + j];
+				makeClockGridItem(namestr, combostr, j, i);
+			}
+		}
+	}
+
+	private void makeClockGridItem(String caption, String combostr, int col, int row) {
+		GridPane gridPane = new GridPane();
+		gridPane.setAlignment(Pos.CENTER);
+		makePaddings(gridPane);
+		addRowToGrid(gridPane, new Label(caption), 0, 0, 1);
+		addRowToGrid(gridPane, new ComboBox<String>(clItem), 1, 0, 1);
+		makeComboGrid(gridPane, combostr, 3);
+//		addRowToGrid(gridPane, new Label("output"), 0, 2, 1);
+		String exitStr = combostr.split("\\\\")[1];
+		addRowToGrid(gridPane, makeGridsCombo(exitStr), 1, 2, 1);
+		addRowToGrid(gridPane, new CheckBox("Allow"), 2, 2, 1);
+		addRowToGrid(clckCont, new VBox(gridPane), col, row, 1);
+	}
+
+	private void makePaddings(GridPane gridPane) {
+		gridPane.setAlignment(Pos.CENTER);
+		gridPane.setPadding(new Insets(10.0, 10.0, 10.0, 10.0));
+		GridPane.setMargin(gridPane, new Insets(10.0, 10.0, 10.0, 10.0));
+	}
+
+	private void addRowToGrid(GridPane gridPane, Node label, int row) {
+		addRowToGrid(gridPane, label, 0, row, 1);
+	}
+	private void addColToGrid(GridPane gridPane, Node label, int col) {
+		addRowToGrid(gridPane, label, col, 0, 1);
+	}
+	private void addRowToGrid(GridPane gridPane, Node label, int col, int row, int span) {
+		GridPane.setColumnIndex(label, col);
+		GridPane.setRowIndex(label, row);
+		GridPane.setColumnSpan(label, span);
+		gridPane.getChildren().add(label);
+	}
+
+	private GridPane makeComboGrid(GridPane gridPane, String combostr, int span) {
+		GridPane gridPane1 = new GridPane();
+		makePaddings(gridPane1);
+		String[] combos = combostr.split("\\|");
+		addComboToGrid(gridPane1, combos[0], 0,0);
+		addComboToGrid(gridPane1, combos[1], 1, 0);
+		if (combos.length > 3) {
+			addComboToGrid(gridPane1, combos[2], 0, 1);
+			addComboToGrid(gridPane1, combos[3], 1, 1);
+		}
+		if (combos.length > 5) {
+			addComboToGrid(gridPane1, combos[4], 2, 0);
+			addComboToGrid(gridPane1, combos[5], 3, 0);
+		}
+		if (combos.length > 7) {
+			addComboToGrid(gridPane1, combos[6], 2, 1);
+			addComboToGrid(gridPane1, combos[7], 3, 1);
+		}
+		addRowToGrid(gridPane, gridPane1, 0, 1, span);
+		return gridPane1;
+	}
+
+	private void addComboToGrid(GridPane gridPane1, String items, int col, int row) {
+		Region cb = col % 2 == 0 ? new Label(items) : makeGridsCombo(items);
+		GridPane.setColumnIndex(cb, col);
+		GridPane.setRowIndex(cb, row);
+		gridPane1.getChildren().add(cb);
+	}
+
+	private Region makeGridsCombo(String items) {
+		Region cb;
+		if (items.matches("\\d+\\s[MK]Hz")) {
+			int max = Integer.parseInt(items.substring(0, items.indexOf(' ')));
+			cb = new Spinner<Integer>(2, max, 2);
+		} else cb = !items.matches("[\\/\\*] \\d+") ? new TextField(items) :
+				new ComboBox<String>(Constants.getDvMlItems(items));
+		if (cb instanceof ComboBox) {
+			((ComboBox) cb).getSelectionModel().selectLast();
+		}
+		cb.setPrefWidth(60.0);
+		return cb;
 	}
 
 	private CheckBox getCheckBox(String pName) {
