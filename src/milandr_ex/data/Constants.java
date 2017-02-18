@@ -6,10 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import milandr_ex.MilandrEx;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -282,4 +279,34 @@ public class Constants {
         return bundle;
     }
 
+    public static void saveTxtList(File file, List<String> toSave) {
+        if (file == null || file.exists()) return;
+        if (toSave == null || toSave.isEmpty()) return;
+        PrintStream out = null;
+        try {
+            out = new PrintStream(new FileOutputStream(file));
+            for(String line: toSave) {
+                out.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public static List<String> loadTxtStrings(File file) {
+        List<String> result = Lists.newArrayList();
+        try {
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                if (line.startsWith(";")) continue;
+                result.add(line);
+            }
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

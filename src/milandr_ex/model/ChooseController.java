@@ -62,7 +62,7 @@ public class ChooseController {
 
 
 		initView();
-		setDefaultMCU();
+		setDefaultMCU(mcuTable);
 		
 		showMCUDetails(null);
 		
@@ -85,35 +85,38 @@ public class ChooseController {
 			GridPane.setColumnIndex(label, 1);
 		}
 	}
-	private void setDefaultMCU(){
-		mcuTable.getItems().clear();
+	public static void setDefaultMCU(){
+		setDefaultMCU(null);
+	}
+	private static void setDefaultMCU(TableView mcuTable){
+		if (mcuTable != null) mcuTable.getItems().clear();
 
 		Device d;
 		d = DeviceFactory.createDefDevice("1986ВЕ92У", "Н18.64-1В");
 		DeviceFactory.updateDevice(d, null, new int[]{8, 11, 3, 8, 8, 7}, new int[]{404, 405});
-		mcuTable.getItems().add(d.getMcu());
+		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
 		d = DeviceFactory.createDefDevice("К1986ВЕ92QI", "LQFP64");
 		DeviceFactory.updateDevice(d, null, new int[]{8, 11, 3, 8, 8, 6}, new int[]{404, 405});
-		mcuTable.getItems().add(d.getMcu());
+		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
 		d = DeviceFactory.createDefDevice("1986ВЕ91T", "4229.132-3", 96);
 		d.setDac(2).setComporator(3).setExtWire(32);
-		mcuTable.getItems().add(d.getMcu());
+		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
 		d = DeviceFactory.createDefDevice("1986ВЕ94T", "4229.132-3", 96);
 		d.setDac(2).setComporator(3).setExtWire(32);
-		mcuTable.getItems().add(d.getMcu());
+		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
 		d = DeviceFactory.createDefDevice("1986ВЕ93У", "Н16.48-1В", 30);
 		DeviceFactory.updateDevice(d, null, new int[]{8, 7, 1, 4, 7, 6}, new int[]{401, 404, 405});
 		d.setI2c(0).setExtWire(0);
-		mcuTable.getItems().add(d.getMcu());
+		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
-		fillGenericDevices();
+		fillGenericDevices(mcuTable);
 	}
 
-	private void fillGenericDevices() {
+	private static void fillGenericDevices(TableView mcuTable) {
 		String[] bodies = {
 			"H02.8-1B", "4116.8-3", "4105.14-16", "H02.16-1B", "H04.16-2B",
 			"5119.16-A", "4140.20-1", "H06.24-1B", "5101.24-1K", "H09.28-1B",
@@ -123,6 +126,7 @@ public class ChooseController {
 			"5153.64-2", "4229.132-3", "4245.240-5", "4244.256-3", "8303.576-1"};
 		for(String body: bodies) {
 			Device d = DeviceFactory.createDevice(body);
+			if (mcuTable == null) continue;
 			mcuTable.getItems().add(d.getMcu());
 		}
 	}

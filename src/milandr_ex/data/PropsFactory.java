@@ -18,8 +18,17 @@ public class PropsFactory {
         public void set(McuType mcuType, String value) {
             mcuType.setProp(name(), value);
         }
+        public void set(Device device, String value) {
+            device.setProp(new String[]{name(), value});
+        }
     }
 
+    public interface PropSetter<T> {
+        public void setProp(T value);
+    }
+    public interface Prop2Setter<T> {
+        public void setProp(T value, T value2);
+    }
     public static String[] mcuPropsNames = {"Процессор", "Корпус",  "Ядро", "ПЗУ", "ОЗУ",
             "Питание", "Частота", "Температура", "USER IO", "USB", "UART", "CAN", "SPI",
             "I2C", "ADC", "DAC", "Компаратор", "Внешняя шина"};

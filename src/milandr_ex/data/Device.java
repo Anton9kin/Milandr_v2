@@ -1,9 +1,14 @@
 package milandr_ex.data;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import io.swagger.models.auth.In;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.ComboBox;
 import milandr_ex.McuType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +93,10 @@ public class Device {
     private String core = "ARM Cortex-M3";
     private String usbType = "HSY";
 
+    private final Map<String, PropsFactory.PropSetter<String>> sprops = Maps.newHashMap();
+    private final Map<String, PropsFactory.PropSetter<Integer>> iprops = Maps.newHashMap();
+    private final Map<String, PropsFactory.Prop2Setter<Integer>> i2props = Maps.newHashMap();
+    private final Map<String, PropsFactory.Prop2Setter<Double>> d2props = Maps.newHashMap();
     private Map<EPairNames, Integer> pairSets = Maps.newHashMap();
     private Map<EPortNames, Integer> portCounts = Maps.newHashMap();
     private Map<String, Integer> viewsCounts = Maps.newHashMap();
@@ -98,10 +107,30 @@ public class Device {
 
     private McuType mcu;
 
+    private Device() { }
     public Device(String name, String body) {
+        initProps();
         this.name = name;
         this.body = body;
         this.mcu = new McuType(name, body);
+    }
+    private void initProps() {
+        sprops.put("name", this::setName);
+        sprops.put("body", this::setBody);
+        sprops.put("core", this::setCore);
+        sprops.put("usbt", this::setUsbType);
+        iprops.put("usb", this::setUsb);
+        iprops.put("flash", this::setFlash);
+        iprops.put("ram", this::setRam);
+        iprops.put("io", this::setIo);
+        iprops.put("ext", this::setExtWire);
+        iprops.put("freq", this::setFreq);
+        i2props.put("temp", this::setTemp);
+        d2props.put("vcc", this::setVcc);
+        Device that = this;
+        for(EPairNames pair: EPairNames.values()) {
+            iprops.put(pair.name().toLowerCase(), value -> pair.set(that, value));
+        }
     }
     public String getName() {
         return name;
@@ -113,6 +142,43 @@ public class Device {
 
     public String getCore() {
         return core;
+    }
+
+    public void setProp(String[] nameAndValues) {
+        String name = nameAndValues[0];
+        String value = nameAndValues[1];
+        String value2 = nameAndValues.length > 2 ? nameAndValues[2] : value;
+        if (value.matches("\\d+")) {
+            if (i2props.containsKey(name)) {
+                i2props.get(name).setProp(Integer.parseInt(value), Integer.parseInt(value2));
+            }
+            if (!iprops.containsKey(name)) return;
+            iprops.get(name).setProp(Integer.parseInt(value));
+        } else if (value.matches("\\d+\\.\\d+")) {
+            if (!d2props.containsKey(name)) return;
+            d2props.get(name).setProp(Double.parseDouble(value), Double.parseDouble(value2));
+        } else {
+            if (!sprops.containsKey(name)) return;
+            sprops.get(name).setProp(value);
+        }
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        checkNameAndBody();
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+        checkNameAndBody();
+    }
+
+    private void checkNameAndBody() {
+        if (getMcu() != null) return;
+        if (name == null || name.trim().isEmpty()) return;
+        if (body == null || body.trim().isEmpty()) return;
+        if (body == null || body.trim().isEmpty()) return;
+        setMcu(new McuType(name, body));
     }
 
     public McuType getMcu() {
@@ -286,5 +352,17 @@ public class Device {
     }
     public static String getPortText(EPortNames port, int index) {
         return port.name() + "-" + (index > 9 ? "" : "0") + index;
+    }
+
+    public static Device load(File file) {
+        if (file == null || !file.exists()) return null;
+        List<String> strings = Constants.loadTxtStrings(file);
+        if (strings == null || strings.isEmpty()) return null;
+        Device device = new Device();
+        for(String str: strings) {
+            if (!str.contains("=")) continue;
+            device.setProp(str.split("="));
+        }
+        return device;
     }
 }

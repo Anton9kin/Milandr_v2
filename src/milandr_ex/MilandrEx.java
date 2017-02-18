@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import milandr_ex.data.Constants;
+import milandr_ex.data.PinoutsModel;
 
 
 public class MilandrEx extends Application {
@@ -24,9 +25,11 @@ public class MilandrEx extends Application {
 	public static BorderPane rootLayout;
 	public static AnchorPane mainLayout;
 	public static String file = "";
+	public static PinoutsModel pinoutsModel;
 	private static Locale locale = new Locale("ru", "RU");
 	public static McuType mcuMain = null;
 	private static ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
+
 
 	public MilandrEx() {
 		bundle = Constants.loadBundle("messages", "ru");

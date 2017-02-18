@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.DeviceFactory;
+import milandr_ex.data.PinoutsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,7 @@ public class MainMCUComtroller {
 	private Map<String, ObservableList<String>> pxList = Maps.newHashMap();
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
+	private PinoutsModel pinoutsModel;
 	@FXML
 	private TabPane mainTabPane;
 
@@ -77,6 +79,7 @@ public class MainMCUComtroller {
 	private void initialize() {
 		messages = Constants.loadBundle("messages", "ru");
 		String pack = MilandrEx.mcuMain.getProp("pack");
+		pinoutsModel = MilandrEx.pinoutsModel;
 		setItems(pack);
 		mainMCUStart(pack);
 	}
@@ -218,8 +221,11 @@ public class MainMCUComtroller {
 				new ComboBox<String>(Constants.getDvMlItems(items));
 		if (cb instanceof ComboBox) {
 			((ComboBox) cb).getSelectionModel().selectLast();
+		} else if (cb instanceof TextField) {
+			((TextField) cb).setEditable(false);
+			cb.setDisable(true);
 		}
-		cb.setPrefWidth(60.0);
+		cb.setPrefWidth(80.0);
 		return cb;
 	}
 
@@ -433,6 +439,7 @@ public class MainMCUComtroller {
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		SelectionModel model = comboBox.getSelectionModel();
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
+		if (pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
 		switchLinkedComboboxes(prev, value);
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);
