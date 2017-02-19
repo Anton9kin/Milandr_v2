@@ -45,11 +45,11 @@ public class MainController {
 
 	@FXML
 	private void handleNewImage(){
-		try {
-			RootLayoutController.NewProject(messages);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		RootLayoutController.NewProject(messages);
+	}
+
+	@FXML
+	private void handleOpenImage(){
+		RootLayoutController.LoadProject(messages);
 	}
 }

@@ -65,6 +65,10 @@ public class Constants {
         }
         return dvmlMap.get(code);
     }
+    private static String[][] pinGroups = {
+            {"BLK", "CH1", "CH2", "CH3", "CH4", "ETR"},
+            {"IN1", "IN2", "INT", "FSS", "CLK", "REF", "RX", "TX", "RXD", "TXD", "OUT"},
+    };
     /// Static Constants Block
     public static String[][] comboTexts = {
             {"-", "DATA0", "EXT_INT1", "-"},
@@ -280,7 +284,10 @@ public class Constants {
     }
 
     public static void saveTxtList(File file, List<String> toSave) {
-        if (file == null || file.exists()) return;
+        saveTxtList(file, toSave, false);
+    }
+    public static void saveTxtList(File file, List<String> toSave, boolean override) {
+        if (file == null || !override && file.exists()) return;
         if (toSave == null || toSave.isEmpty()) return;
         PrintStream out = null;
         try {
@@ -294,6 +301,7 @@ public class Constants {
     }
     public static List<String> loadTxtStrings(File file) {
         List<String> result = Lists.newArrayList();
+        if (file == null || !file.exists()) return result;
         try {
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);

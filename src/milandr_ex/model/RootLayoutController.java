@@ -3,8 +3,10 @@ package milandr_ex.model;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import com.google.common.collect.Lists;
 import com.sun.xml.internal.ws.api.model.MEP;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Menu;
@@ -24,16 +26,53 @@ import milandr_ex.data.PinoutsModel;
 
 public class RootLayoutController {
 
+	private ResourceBundle messages;
 	public enum MenuKind {
 		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR
 	}
 
-	public static void NewProject(ResourceBundle messages) throws IOException{
+	public RootLayoutController() {
+
+	}
+
+	@FXML
+	private void initialize() {
+		messages = Constants.loadBundle("messages", "ru");
+		loadOptions();
+	}
+
+	public static void LoadProject(ResourceBundle messages) {
+		if (messages == null) messages = Constants.loadBundle("messages", "ru");
+		McuType mcu = MilandrEx.mcuMain;
+		if (mcu != null){
+			FXMLLoader loader = new FXMLLoader();
+			loader.setResources(messages);
+			loader.setLocation(MilandrEx.class.getResource("model/mainMCU.fxml"));
+			MilandrEx.pinoutsModel = new PinoutsModel().setSelectedBody(mcu.getProp("pack"));
+			MilandrEx.mainLayout = loaderLoad(loader);
+			MilandrEx.rootLayout.setCenter(MilandrEx.mainLayout);
+			MilandrEx.primaryStage.setWidth(1200);
+			MilandrEx.primaryStage.setHeight(800);
+			MilandrEx.primaryStage.setTitle(messages.getString("main.title") + " - " + MilandrEx.mcuMain.getProp("type"));
+			MilandrEx.primaryStage.centerOnScreen();
+		}
+	}
+
+	private static AnchorPane loaderLoad(FXMLLoader loader) {
+		try {
+			return  (AnchorPane)loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void NewProject(ResourceBundle messages) {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
 		FXMLLoader loader = new FXMLLoader();
 		loader.setResources(messages);
 		loader.setLocation(MilandrEx.class.getResource("model/selectDevice.fxml"));
-		AnchorPane page = (AnchorPane) loader.load();
+		AnchorPane page = loaderLoad(loader);
 		
 		//Create dialog winStage
 		Stage chooseStage = new Stage();
@@ -47,20 +86,7 @@ public class RootLayoutController {
 		chContr.setDialogStage(chooseStage);
 		
 		chooseStage.showAndWait();
-		McuType mcu = MilandrEx.mcuMain;
-		if (mcu != null){
-			loader = new FXMLLoader();
-			loader.setResources(messages);
-			loader.setLocation(MilandrEx.class.getResource("model/mainMCU.fxml"));
-			MilandrEx.pinoutsModel = new PinoutsModel().setSelectedBody(mcu.getProp("pack"));
-			MilandrEx.mainLayout = (AnchorPane)loader.load();
-			MilandrEx.rootLayout.setCenter(MilandrEx.mainLayout);
-			MilandrEx.primaryStage.setWidth(1200);
-			MilandrEx.primaryStage.setHeight(800);
-			MilandrEx.primaryStage.setTitle(messages.getString("main.title") + " - " + MilandrEx.mcuMain.getProp("type"));
-			MilandrEx.primaryStage.centerOnScreen();
-			MilandrEx.primaryStage.centerOnScreen();
-		}
+		LoadProject(messages);
 	}
 
 	private MenuKind parseMenuKind(MenuItem item) {
@@ -75,44 +101,64 @@ public class RootLayoutController {
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
-				NewProject(null);
+				NewProject(messages);
 				break;
 		}
 	}
 
 	FileChooser chooser = initFileChooser();
+	String lastSelectedPath = "";
 
     @FXML
     private void handleOpen(ActionEvent event) {
+    	loadOptions();
 		MenuItem mi = (MenuItem) event.getSource();
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
+				fillFileChooser();
 				File selectedFile = chooser.showOpenDialog(null);
 				if (selectedFile != null) {
+					lastSelectedPath = selectedFile.getAbsolutePath();
+					saveOptions();
 					MilandrEx.pinoutsModel = PinoutsModel.load(selectedFile);
-					MilandrEx.observe("pinouts");
 					ChooseController.setDefaultMCU();
 					MilandrEx.mcuMain = DeviceFactory.getDevice(MilandrEx.pinoutsModel.getSelectedBody()).getMcu();
+					LoadProject(messages);
 				}
 				break;
 		}
     }
 
+	private void fillFileChooser() {
+		if (!lastSelectedPath.isEmpty()) {
+			String pathname = lastSelectedPath.substring(0, lastSelectedPath.lastIndexOf("\\"));
+			chooser.setInitialDirectory(new File(pathname));
+			chooser.setInitialFileName(lastSelectedPath.substring(pathname.length() + 1));
+		}
+	}
+
 	private FileChooser initFileChooser() {
 		FileChooser chooser = new FileChooser();
 		FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Projects", "*.mpr");
+		chooser.setSelectedExtensionFilter(filter);
 		chooser.setSelectedExtensionFilter(filter);
 		return chooser;
 	}
 
 	@FXML
 	private void handleSave(ActionEvent event){
+		loadOptions();
 		MenuItem mi = (MenuItem) event.getSource();
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
+				fillFileChooser();
 				File selectedFile = chooser.showSaveDialog(null);
+				if (selectedFile != null) {
+					lastSelectedPath = selectedFile.getAbsolutePath();
+					saveOptions();
+				}
 				if (MilandrEx.pinoutsModel != null) {
 					MilandrEx.pinoutsModel.save(selectedFile);
 				}
@@ -127,6 +173,21 @@ public class RootLayoutController {
 	
 	@FXML
     private void handleExit() {
-        System.exit(0);
+		saveOptions();
+		System.exit(0);
     }
+
+	private void loadOptions() {
+		List<String> opts = Constants.loadTxtStrings(new File("opts.cfg"));
+		for(String opt: opts) {
+			String[] props = opt.split("=");
+			if (props[0].equals("lastPath")) lastSelectedPath = props[1];
+		}
+	}
+
+	private void saveOptions() {
+		List<String> options = Lists.newArrayList();
+		options.add("lastPath=" + lastSelectedPath);
+		Constants.saveTxtList(new File("opts.cfg"), options, true);
+	}
 }

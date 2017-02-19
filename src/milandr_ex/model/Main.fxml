@@ -9,7 +9,7 @@
 		<ImageView fx:id="newIm" fitHeight="82.0" fitWidth="139.0" layoutX="14.0" layoutY="31.0"
 				   onMouseClicked="#handleNewImage" pickOnBounds="true" preserveRatio="true"/>
 		<ImageView fx:id="openIm" fitHeight="82.0" fitWidth="139.0" layoutX="14.0" layoutY="113.0" pickOnBounds="true"
-				   preserveRatio="true"/>
+				   onMouseClicked="#handleOpenImage" preserveRatio="true"/>
 		<ImageView fx:id="helpIm" fitHeight="82.0" fitWidth="139.0" layoutX="26.0" layoutY="200.0" pickOnBounds="true"
 				   preserveRatio="true"/>
 	</VBox>
