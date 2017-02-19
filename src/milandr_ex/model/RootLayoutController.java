@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.google.common.collect.Lists;
 import com.sun.xml.internal.ws.api.model.MEP;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import milandr_ex.McuType;
 import milandr_ex.MilandrEx;
@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 import milandr_ex.data.Constants;
 import milandr_ex.data.DeviceFactory;
 import milandr_ex.data.PinoutsModel;
+
+import javax.swing.*;
 
 public class RootLayoutController {
 
@@ -161,19 +163,24 @@ public class RootLayoutController {
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
-				fillFileChooser();
-				File selectedFile = chooser.showSaveDialog(null);
-				if (selectedFile != null) {
-					lastSelectedPath = selectedFile.getAbsolutePath();
-					saveOptions();
-				}
-				if (MilandrEx.pinoutsModel != null) {
-					MilandrEx.pinoutsModel.save(selectedFile);
-				}
+				saveCurrentProject();
 				break;
 		}
 	}
-	
+
+	private File saveCurrentProject() {
+		fillFileChooser();
+		File selectedFile = chooser.showSaveDialog(null);
+		if (selectedFile != null) {
+			lastSelectedPath = selectedFile.getAbsolutePath();
+			saveOptions();
+		}
+		if (MilandrEx.pinoutsModel != null) {
+			MilandrEx.pinoutsModel.save(selectedFile);
+		}
+		return selectedFile;
+	}
+
 	@FXML
 	private void handleAbout(){
 		
@@ -182,9 +189,33 @@ public class RootLayoutController {
 	@FXML
     private void handleExit() {
 		saveOptions();
-		System.exit(0);
+		if (MilandrEx.pinoutsModel.isHasUnsavedChanges()) {
+			Optional<ButtonType> result = showAlertDialog().showAndWait();
+			if (result.isPresent()) {
+				if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
+					if (saveCurrentProject() != null) System.exit(0);
+				}
+				if (result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+					System.exit(0);
+				}
+			}
+		} else  System.exit(0);
     }
 
+    private Dialog<ButtonType> showAlertDialog() {
+		ButtonType dlgBtnOk = new ButtonType("Save", ButtonBar.ButtonData.APPLY);
+		ButtonType dlBtnNo = new ButtonType("Quit", ButtonBar.ButtonData.OK_DONE);
+		ButtonType dlgBtnCan = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle("Save confirmation");
+		dialog.setContentText("We have unsaved changes, save or process quit directly?");
+		dialog.getDialogPane().getButtonTypes().add(dlgBtnCan);
+		dialog.getDialogPane().getButtonTypes().add(dlgBtnOk);
+		dialog.getDialogPane().getButtonTypes().add(dlBtnNo);
+		boolean disabled = false; // computed based on content of text fields, for example
+//		dialog.getDialogPane().lookupButton(dlgBtnOk).lookupButton(dlgBtnNo).lookupButton(dlgBtnOk).setDisable(disabled);
+		return dialog;
+	}
 	private void loadOptions() {
 		List<String> opts = Constants.loadTxtStrings(new File("opts.cfg"));
 		for(String opt: opts) {

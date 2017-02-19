@@ -14,6 +14,7 @@ import java.util.Map;
 public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
+	private boolean hasUnsavedChanges = Boolean.FALSE;
 	public interface Observer extends ModelObserver {
 		public void observe(PinoutsModel model);
 	}
@@ -31,8 +32,17 @@ public class PinoutsModel {
 		return selectedPins;
 	}
 
+	public boolean isHasUnsavedChanges() {
+		return hasUnsavedChanges;
+	}
+
+	public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
+		this.hasUnsavedChanges = hasUnsavedChanges;
+	}
+
 	public void setSelectedPin(String key, String value) {
 		this.selectedPins.put(key, value);
+		hasUnsavedChanges = true;
 	}
 
 	public void save(File file) {
@@ -46,6 +56,7 @@ public class PinoutsModel {
 			toSave.add(String.format("pin.%s=%s", key, selectedPins.get(key)));
 		}
 		Constants.saveTxtList(file, toSave, override);
+		hasUnsavedChanges = false;
 	}
 	public static PinoutsModel load(File file) {
 		if (file == null || !file.exists()) return null;
@@ -59,6 +70,7 @@ public class PinoutsModel {
 			if (props[0].startsWith("pin.")) pinoutsModel.
 					setSelectedPin(props[0].substring(4), props[1]);
 		}
+		pinoutsModel.setHasUnsavedChanges(false);
 		return pinoutsModel;
 	}
 }
