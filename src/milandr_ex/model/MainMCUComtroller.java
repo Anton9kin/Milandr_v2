@@ -22,6 +22,7 @@ import milandr_ex.data.DeviceFactory;
 import milandr_ex.data.PinoutsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.method.P;
 
 import java.net.URL;
 import java.util.List;
@@ -340,12 +341,18 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	}
 	private void makeListener(final String key, ReadOnlyProperty property) {
 		property.addListener((ov, t, t1) ->  {
-//			log_debug(String.format("#listen ov=%s t=%s t1=%s", ov, t, t1));
-			Platform.runLater(() -> changeCombo(key, String.valueOf(t), String.valueOf(t1)));
+			if (refillInProgress > 0) return;
+			final String kkey = key;
+//			log_debug(String.format("#listen[%d] ov=%s t=%s t1=%s", refillInProgress, ov, t, t1));
+			Platform.runLater(() -> changeCombo(kkey, String.valueOf(t), String.valueOf(t1)));
 		});
-		if (comboMap.containsKey(key)) {
+		callListener(key, "RESET");
+	}
+	private void callListener(final String key, String value) {
+		if (!comboMap.containsKey(key)) return;
+		if (value.equals("null") || value.equals("RESET")) {
 			Platform.runLater(() -> comboMap.get(key).getSelectionModel().selectFirst());
-		}
+		} else Platform.runLater(() -> comboMap.get(key).getSelectionModel().select(value));
 	}
 
 	private void makePxItem(int i, int j, String key) {
@@ -464,8 +471,9 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	}
 
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
+		if (comboKey == null) return;
 		if(value != null && !value.equals("null") && !value.equals("RESET")) {
-			log_debug(String.format("#switchComboIndex(%s, %s -> %s)", comboKey, prev, value));
+			log_debug(String.format("#switchComboIndex[%d](%s, %s -> %s)", refillInProgress, comboKey, prev, value));
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
@@ -508,10 +516,13 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 
 	private void switchLinkedComboboxes(String key, String prev, String value) {
 		if (prev == null) return;
+		if (refillInProgress > 0) return;
 		if (value != null && !value.equals("null")) {
+			refillInProgress++;
 			refillLinkedPairCombos(key, value);
 			if (value.equals("RESET")) {
 				resetPrevLinkedCombobox(prev);
+				refillInProgress--;
 				return;
 			}
 			String[] values = value.split("\\s");
@@ -521,16 +532,19 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 				resetPrevLinkedCombobox(prev);
 				selMod.select(values[0]);
 			}
+			refillInProgress--;
 		}
 	}
 
+	private int refillInProgress = 0;
 	private void refillLinkedPairCombos(String key, String value) {
 		if (key.matches("\\w{3}-\\d-\\d{2}")) {
 			String link = key.substring(0, 7);
 			List<ComboBox> tempCb = Lists.newArrayList();
-			String[] tempVals = new String[10];
-			String[] cbVals = new String[10];
-			String pair = value.split("\\s")[0];
+			List<String> tempVals = Lists.newArrayList();
+			List<String> cbVals = Lists.newArrayList();
+			List<String> cbKeys = Lists.newArrayList();
+			String skip = value.split("\\s")[0];
 
 			for(int i = 0; i < 10; i++) {
 				if ((link + i).equals(key)) continue;
@@ -538,22 +552,32 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 				if (cb == null) continue;
 				tempCb.add(cb);
 				Object item = cb.getSelectionModel().getSelectedItem();
-				if (item != null) {
-					tempVals[i] = item.toString().split("\\s")[0];
-					cbVals[i] = item.toString();
-				}
-				if (item != null) tempVals[i] = item.toString().split("\\s")[0];
+				tempVals.add(String.valueOf(item).split("\\s")[0]);
+				cbVals.add(String.valueOf(item));
+				cbKeys.add(link + i);
+//				if (item != null) tempVals[i] = item.toString().split("\\s")[0];
 			}
 			for (String itm: tempVals){
 				if (itm == null || itm.isEmpty()) continue;
-				pair += "," + itm;
+				if (itm.equals("RESET")) continue;
+				skip += "," + itm;
 			}
 			for(ComboBox cb: tempCb) {
-				cb.setItems(Constants.genObsList(key.substring(0, 3) + key.substring(4, 5), pair));
-				String itm = cbVals[tempCb.indexOf(cb)];
-				if (itm == null || itm.isEmpty()) {
+				if (cb == null) return;
+				String itm = cbVals.get(tempCb.indexOf(cb));
+				String keep = itm == null || itm.equals("null") ? "none" : tempVals.get(tempCb.indexOf(cb));
+				String skp = skip.replaceAll("," + keep, "")
+						.replaceAll(keep + ",", "")
+						.replaceAll(",,", ",");
+				cb.setItems(Constants.genObsList(key.substring(0, 3) + key.substring(4, 5), skp));
+				if (itm == null || itm.isEmpty() || itm.equals("null")) {
+					itm = "RESET";
 					cb.getSelectionModel().selectFirst();
-				} else cb.getSelectionModel().select(itm);
+				} else  cb.getSelectionModel().select(itm);
+//				changeCombo(cbKeys[tempCb.indexOf(cb)], "itm", itm);
+				String cbKey = cbKeys.get(tempCb.indexOf(cb));
+				if (cbKey == null) continue;
+				switchComboIndex(cbKey, cb, "itm", itm);
 			}
 		}
 	}
