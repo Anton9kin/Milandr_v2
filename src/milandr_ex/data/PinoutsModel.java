@@ -36,13 +36,16 @@ public class PinoutsModel {
 	}
 
 	public void save(File file) {
-		if (file == null || file.exists()) return;
+		save(file, true);
+	}
+	public void save(File file, boolean override) {
+		if (file == null || !override && file.exists()) return;
 		List<String> toSave = Lists.newArrayList();
 		toSave.add("body=" + selectedBody);
 		for(String key: selectedPins.keySet()) {
 			toSave.add(String.format("pin.%s=%s", key, selectedPins.get(key)));
 		}
-		Constants.saveTxtList(file, toSave);
+		Constants.saveTxtList(file, toSave, override);
 	}
 	public static PinoutsModel load(File file) {
 		if (file == null || !file.exists()) return null;
