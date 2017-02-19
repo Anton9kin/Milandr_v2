@@ -41,6 +41,14 @@ public class RootLayoutController {
 		loadOptions();
 	}
 
+	public static void LoadProjectFromFile(ResourceBundle messages, File selectedFile) {
+		if (selectedFile != null) {
+			MilandrEx.pinoutsModel = PinoutsModel.load(selectedFile);
+			ChooseController.setDefaultMCU();
+			MilandrEx.mcuMain = DeviceFactory.getDevice(MilandrEx.pinoutsModel.getSelectedBody()).getMcu();
+			LoadProject(messages);
+		}
+	}
 	public static void LoadProject(ResourceBundle messages) {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
 		McuType mcu = MilandrEx.mcuMain;
@@ -48,8 +56,11 @@ public class RootLayoutController {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setResources(messages);
 			loader.setLocation(MilandrEx.class.getResource("model/mainMCU.fxml"));
-			MilandrEx.pinoutsModel = new PinoutsModel().setSelectedBody(mcu.getProp("pack"));
+			if (MilandrEx.pinoutsModel == null) {
+				MilandrEx.pinoutsModel = new PinoutsModel().setSelectedBody(mcu.getProp("pack"));
+			}
 			MilandrEx.mainLayout = loaderLoad(loader);
+			MilandrEx.observe("pinouts");
 			MilandrEx.rootLayout.setCenter(MilandrEx.mainLayout);
 			MilandrEx.primaryStage.setWidth(1200);
 			MilandrEx.primaryStage.setHeight(800);
@@ -121,10 +132,7 @@ public class RootLayoutController {
 				if (selectedFile != null) {
 					lastSelectedPath = selectedFile.getAbsolutePath();
 					saveOptions();
-					MilandrEx.pinoutsModel = PinoutsModel.load(selectedFile);
-					ChooseController.setDefaultMCU();
-					MilandrEx.mcuMain = DeviceFactory.getDevice(MilandrEx.pinoutsModel.getSelectedBody()).getMcu();
-					LoadProject(messages);
+					LoadProjectFromFile(messages, selectedFile);
 				}
 				break;
 		}

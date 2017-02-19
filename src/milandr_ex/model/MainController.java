@@ -50,6 +50,6 @@ public class MainController {
 
 	@FXML
 	private void handleOpenImage(){
-		RootLayoutController.LoadProject(messages);
+		RootLayoutController.LoadProjectFromFile(messages, null);
 	}
 }

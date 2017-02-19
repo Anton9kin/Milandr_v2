@@ -39,7 +39,9 @@ public class MilandrEx extends Application {
 	}
 
 	public static void observe(String key) {
-    	for(ModelObserver observer: observers.get(key)) {
+		List<ModelObserver> observers = MilandrEx.observers.get(key);
+		if (observers == null || observers.isEmpty()) return;
+		for(ModelObserver observer: observers) {
     		if (observer instanceof PinoutsModel.Observer) {
 				((PinoutsModel.Observer) observer).observe(pinoutsModel);
 			}
