@@ -53,6 +53,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	private Map<String, ObservableList<String>> pxList = Maps.newHashMap();
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
+	private Map<String, TitledPane> tpaneMap = Maps.newHashMap();
 	private PinoutsModel pinoutsModel;
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
 	@FXML
@@ -88,17 +89,25 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		pinoutsModel = model;
 		Platform.runLater(() -> {
 			Map<String, String> pins = pinoutsModel.getSelectedPins();
-			iterateComboMap(pins, comboMap);
-			iterateComboMap(pins, clkMap);
+			iterateComboMap("", pins, comboMap);
+			iterateComboMap("", pins, clkMap);
+			iterateComboMap("t-", pins, tpaneMap);
+			iterateComboMap("c-", pins, cboxMap);
 		});
 	}
 
-	private void iterateComboMap(Map<String, String> pins, Map<String, ComboBox> map) {
+	private void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map) {
 		for(String key: map.keySet()) {
 			String pin = pins.get(key);
+			if (pin == null) pin = pins.get(pref + key);
 			if (pin == null) continue;
-			//noinspection unchecked
-			map.get(key).getSelectionModel().select(pin);
+			Node node = map.get(key);
+			if (node instanceof ComboBox) //noinspection unchecked
+				((ComboBox)node).getSelectionModel().select(pin);
+			if (node instanceof CheckBox) //noinspection unchecked
+				((CheckBox)node).setSelected(pin.equals("true"));
+			if (node instanceof TitledPane) //noinspection unchecked
+				((TitledPane)node).setExpanded(pin.equals("true"));
 		}
 	}
 
@@ -319,6 +328,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	}
 
 	private void makeListener(final String key, TitledPane tPane) {
+		tpaneMap.put(key, tPane);
 		makeListener("t-" + key, tPane.expandedProperty());
 	}
 	private void makeListener(final String key, CheckBox newBox) {
@@ -452,12 +462,13 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		}
 	}
 
-	private void switchComboIndex(String comboKey, ComboBox<String> comboBox, String prev, String value) {
+	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
 		if(value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(String.format("#switchComboIndex(%s, %s -> %s)", comboKey, prev, value));
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
+		if (value != null && !value.equals("null") && pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
 		if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;
@@ -475,7 +486,6 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		SelectionModel model = comboBox.getSelectionModel();
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
-		if (pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
 		switchLinkedComboboxes(prev, value);
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);

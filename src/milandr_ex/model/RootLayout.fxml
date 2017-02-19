@@ -70,6 +70,7 @@
           <Menu mnemonicParsing="false" text="Help">
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
           </Menu>
+          <Menu mnemonicParsing="false" text="Quit" onAction="#handleExit"/>
       </MenuBar>
    </top>
 </BorderPane>
