@@ -24,7 +24,7 @@ public class Constants {
                     "CPU-1|Sim|CPU-1|* 16|\\/ 256",
                     "HSI|8 Mhz|SUB-1|Sim|LSE|32 Khz|LSI|40 Khz|\\Sim",
                     "HSI|8Mhz|HSI|/ 2|HSE|Mhz|HSE|/ 2|\\Sim",
-                    "CPU-1|Sim|CPU-1|* 16|\\/ 2",
+                    "USB-1|Sim|USB-1|* 16|\\/ 2",
                     "",
                     "CPU-1|Sim|USB-1|Sim|CPU-2|Sim|USB-2|Sim|\\Sim",
                     "ADC-1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
@@ -33,6 +33,8 @@ public class Constants {
 
     public static ObservableList<String> clItem = FXCollections.
             observableArrayList("IN-1", "IN-2", "IN-3", "IN-4");
+    public static ObservableList<String> clItem2 = FXCollections.
+            observableArrayList("IN-1", "IN-2");
     public static ObservableList<String> dv256Item = FXCollections.
             observableArrayList("/ 1", "/ 2", "/ 4", "/ 8", "/ 16", "/ 32", "/ 64", "/ 128", "/ 256");
     public static ObservableList<String> ml256Item = FXCollections.

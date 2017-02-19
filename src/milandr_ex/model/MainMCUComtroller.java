@@ -27,9 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static milandr_ex.data.Constants.clItem;
-import static milandr_ex.data.Constants.keyToText;
-import static milandr_ex.data.Constants.textToKey;
+import static milandr_ex.data.Constants.*;
 
 public class MainMCUComtroller implements PinoutsModel.Observer {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUComtroller.class);
@@ -51,11 +49,12 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 
 	private ResourceBundle messages;
 	private Map<String, Label> labMap = Maps.newHashMap();
-	private Map<String, ComboBox<String>> comboMap = Maps.newHashMap();
+	private Map<String, ComboBox> comboMap = Maps.newHashMap();
 	private Map<String, ObservableList<String>> pxList = Maps.newHashMap();
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	private PinoutsModel pinoutsModel;
+	private Map<String, ComboBox> clkMap = Maps.newHashMap();
 	@FXML
 	private TabPane mainTabPane;
 
@@ -87,11 +86,19 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	public void observe(PinoutsModel model) {
 		if (model == null) return;
 		pinoutsModel = model;
-		Map<String, String> pins = pinoutsModel.getSelectedPins();
-		for(String key: comboMap.keySet()) {
+		Platform.runLater(() -> {
+			Map<String, String> pins = pinoutsModel.getSelectedPins();
+			iterateComboMap(pins, comboMap);
+			iterateComboMap(pins, clkMap);
+		});
+	}
+
+	private void iterateComboMap(Map<String, String> pins, Map<String, ComboBox> map) {
+		for(String key: map.keySet()) {
 			String pin = pins.get(key);
 			if (pin == null) continue;
-			comboMap.get(key).getSelectionModel().select(pin);
+			//noinspection unchecked
+			map.get(key).getSelectionModel().select(pin);
 		}
 	}
 
@@ -111,15 +118,12 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	private void setItems(String pack){
 		Device device = DeviceFactory.getDevice(pack);
 
-		for(int i = 0; i < 6; i++) { for(int j = 0; j < 16; j++) {
-			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
-			makePxItem(i, j, key);
-			VBox vBox = makePairs(key);
-			boxCont.getChildren().add(vBox);
-			if ( i > 0) GridPane.setColumnIndex(vBox, i);
-			if ( j > 0) GridPane.setRowIndex(vBox, j);
-		}};
-		int k = 0, l = 0;
+		setupPinCombos();
+		setupPairsCombos(device);
+		fillClockGrid();
+	}
+
+	private void setupPairsCombos(Device device) {
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
 		Integer[] pairs = device.getPairCountsArr();
 		for(int i = 0; i < ePairs.length; i++) {
@@ -144,7 +148,18 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 			makeListener(pairName, tPane);
 			(ePair.ext() ? lcContEx  : lcContIn).getChildren().add(tPane);
 		}
-		fillClockGrid();
+	}
+
+	private void setupPinCombos() {
+		for(int i = 0; i < 6; i++) { for(int j = 0; j < 16; j++) {
+			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
+			makePxItem(i, j, key);
+			VBox vBox = makePairs(key);
+			boxCont.getChildren().add(vBox);
+			if ( i > 0) GridPane.setColumnIndex(vBox, i);
+			if ( j > 0) GridPane.setRowIndex(vBox, j);
+		}}
+		;
 	}
 
 	private void fillClockGrid() {
@@ -166,8 +181,12 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		gridPane.setAlignment(Pos.CENTER);
 		makePaddings(gridPane);
 		addRowToGrid(gridPane, new Label(caption), 0, 0, 1);
-		addRowToGrid(gridPane, new ComboBox<String>(clItem), 1, 0, 1);
-		makeComboGrid(gridPane, combostr, 3);
+		ComboBox<String> box = new ComboBox<>(combostr.split("\\|").length > 5 ? clItem : clItem2);
+		box.getSelectionModel().selectFirst();
+		makeListener("k-" + caption + "-0", box);
+		clkMap.put("k-" + caption + "-0", box);
+		addRowToGrid(gridPane, box, 1, 0, 1);
+		makeComboGrid(gridPane, caption, combostr, 3);
 //		addRowToGrid(gridPane, new Label("output"), 0, 2, 1);
 		String exitStr = combostr.split("\\\\")[1];
 		addRowToGrid(gridPane, makeGridsCombo(exitStr), 1, 2, 1);
@@ -194,33 +213,39 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		gridPane.getChildren().add(label);
 	}
 
-	private GridPane makeComboGrid(GridPane gridPane, String combostr, int span) {
+	private GridPane makeComboGrid(GridPane gridPane, String prefix, String combostr, int span) {
 		GridPane gridPane1 = new GridPane();
 		makePaddings(gridPane1);
 		String[] combos = combostr.split("\\|");
-		addComboToGrid(gridPane1, combos[0], 0,0);
-		addComboToGrid(gridPane1, combos[1], 1, 0);
+		addComboToGrid(gridPane1, prefix, combos[0], 0,0);
+		addComboToGrid(gridPane1, prefix, combos[1], 1, 0);
 		if (combos.length > 3) {
-			addComboToGrid(gridPane1, combos[2], 0, 1);
-			addComboToGrid(gridPane1, combos[3], 1, 1);
+			addComboToGrid(gridPane1, prefix, combos[2], 0, 1);
+			addComboToGrid(gridPane1, prefix, combos[3], 1, 1);
 		}
 		if (combos.length > 5) {
-			addComboToGrid(gridPane1, combos[4], 2, 0);
-			addComboToGrid(gridPane1, combos[5], 3, 0);
+			addComboToGrid(gridPane1, prefix, combos[4], 2, 0);
+			addComboToGrid(gridPane1, prefix, combos[5], 3, 0);
 		}
 		if (combos.length > 7) {
-			addComboToGrid(gridPane1, combos[6], 2, 1);
-			addComboToGrid(gridPane1, combos[7], 3, 1);
+			addComboToGrid(gridPane1, prefix, combos[6], 2, 1);
+			addComboToGrid(gridPane1, prefix, combos[7], 3, 1);
 		}
 		addRowToGrid(gridPane, gridPane1, 0, 1, span);
 		return gridPane1;
 	}
 
-	private void addComboToGrid(GridPane gridPane1, String items, int col, int row) {
+	private Region addComboToGrid(GridPane gridPane1, String prefix, String items, int col, int row) {
 		Region cb = col % 2 == 0 ? new Label(items) : makeGridsCombo(items);
 		GridPane.setColumnIndex(cb, col);
 		GridPane.setRowIndex(cb, row);
 		gridPane1.getChildren().add(cb);
+		if (cb instanceof ComboBox) {
+			String key = "k-" + prefix + "-" + col + row;
+			makeListener(key, (ComboBox) cb);
+			clkMap.put(key, (ComboBox) cb);
+		}
+		return cb;
 	}
 
 	private Region makeGridsCombo(String items) {
@@ -299,7 +324,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	private void makeListener(final String key, CheckBox newBox) {
 		makeListener("c-" + key, newBox.selectedProperty());
 	}
-	private void makeListener(final String key, ComboBox<String> newCombo) {
+	private void makeListener(final String key, ComboBox newCombo) {
 		makeListener(key, newCombo.valueProperty());
 	}
 	private void makeListener(final String key, ReadOnlyProperty property) {
@@ -429,7 +454,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 
 	private void switchComboIndex(String comboKey, ComboBox<String> comboBox, String prev, String value) {
 		if(value != null && !value.equals("null") && !value.equals("RESET")) {
-			log_debug(String.format("#switchComboIndex(%s, %s)", comboKey, value));
+			log_debug(String.format("#switchComboIndex(%s, %s -> %s)", comboKey, prev, value));
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
