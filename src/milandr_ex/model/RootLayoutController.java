@@ -141,7 +141,7 @@ public class RootLayoutController {
 	private FileChooser initFileChooser() {
 		FileChooser chooser = new FileChooser();
 		FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Projects", "*.mpr");
-		chooser.setSelectedExtensionFilter(filter);
+		chooser.getExtensionFilters().add(filter);
 		chooser.setSelectedExtensionFilter(filter);
 		return chooser;
 	}
