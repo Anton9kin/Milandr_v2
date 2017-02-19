@@ -163,6 +163,18 @@ public class RootLayoutController {
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
+				saveCurrentProject(new File(lastSelectedPath));
+				break;
+		}
+	}
+
+	@FXML
+	private void handleSaveAs(ActionEvent event){
+		loadOptions();
+		MenuItem mi = (MenuItem) event.getSource();
+		switch (parseMenuKind(mi)) {
+			case PROJECT:
+			case PROCESSOR:
 				saveCurrentProject();
 				break;
 		}
@@ -170,7 +182,9 @@ public class RootLayoutController {
 
 	private File saveCurrentProject() {
 		fillFileChooser();
-		File selectedFile = chooser.showSaveDialog(null);
+		return chooser.showSaveDialog(null);
+	}
+	private File saveCurrentProject(File selectedFile) {
 		if (selectedFile != null) {
 			lastSelectedPath = selectedFile.getAbsolutePath();
 			saveOptions();
@@ -189,7 +203,7 @@ public class RootLayoutController {
 	@FXML
     private void handleExit() {
 		saveOptions();
-		if (MilandrEx.pinoutsModel.isHasUnsavedChanges()) {
+		if (MilandrEx.pinoutsModel != null && MilandrEx.pinoutsModel.isHasUnsavedChanges()) {
 			Optional<ButtonType> result = showAlertDialog().showAndWait();
 			if (result.isPresent()) {
 				if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {

@@ -22,7 +22,7 @@
                         <KeyCodeCombination alt="UP" code="S" control="ANY" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="%menu.saveas" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="%menu.saveas" />
                   <MenuItem mnemonicParsing="false" onAction="#handleExit" text="%menu.quit">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="Q" control="ANY" meta="UP" shift="UP" shortcut="UP" />
@@ -39,7 +39,7 @@
               <MenuItem mnemonicParsing="false" text="Select" onAction="#handleNew"/>
               <MenuItem mnemonicParsing="false" text="Load" />
               <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave" />
-              <MenuItem mnemonicParsing="false" text="Save as" />
+              <MenuItem mnemonicParsing="false" text="Save as" onAction="#handleSaveAs" />
               <MenuItem mnemonicParsing="false" text="Close" />
               <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
@@ -47,7 +47,7 @@
                 <MenuItem mnemonicParsing="false" text="Clear"  onAction="#handleNew"/>
                 <MenuItem mnemonicParsing="false" text="Load" />
                 <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave"/>
-                <MenuItem mnemonicParsing="false" text="Save as" />
+                <MenuItem mnemonicParsing="false" text="Save as" onAction="#handleSaveAs" />
                 <MenuItem mnemonicParsing="false" text="Close" />
                 <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
@@ -55,7 +55,7 @@
               <MenuItem mnemonicParsing="false" text="Clear"  onAction="#handleNew"/>
               <MenuItem mnemonicParsing="false" text="Load" />
               <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave"/>
-              <MenuItem mnemonicParsing="false" text="Save as" />
+              <MenuItem mnemonicParsing="false" text="Save as" onAction="#handleSaveAs" />
               <MenuItem mnemonicParsing="false" text="Close" />
               <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
@@ -63,7 +63,7 @@
                 <MenuItem mnemonicParsing="false" text="Clear" onAction="#handleNew"/>
                 <MenuItem mnemonicParsing="false" text="Load" />
                 <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave" />
-                <MenuItem mnemonicParsing="false" text="Save as" onAction="#handleSave"/>
+                <MenuItem mnemonicParsing="false" text="Save as" onAction="#handleSaveAs"/>
                 <MenuItem mnemonicParsing="false" text="Close" />
                 <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>

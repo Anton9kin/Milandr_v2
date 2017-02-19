@@ -90,7 +90,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		Platform.runLater(() -> {
 			Map<String, String> pins = pinoutsModel.getSelectedPins();
 			iterateComboMap("", pins, comboMap);
-			iterateComboMap("", pins, clkMap);
+			iterateComboMap("k-", pins, clkMap);
 			iterateComboMap("t-", pins, tpaneMap);
 			iterateComboMap("c-", pins, cboxMap);
 		});
