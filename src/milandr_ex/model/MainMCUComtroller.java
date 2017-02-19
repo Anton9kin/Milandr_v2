@@ -2,6 +2,7 @@ package milandr_ex.model;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.paint.Paint;
 import milandr_ex.MilandrEx;
 import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
@@ -143,11 +144,11 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 			VBox vvBox = new VBox();
 			TitledPane tPane = new TitledPane(pairName, vvBox);
 			tPane.setExpanded(false);
-			for(int j = 0; j < pairSize; j++) {
+			for(int j = 1; j <= pairSize; j++) {
 				String pName = pairName + (pairSize > 1 ? "-" + j: "");
 				CheckBox cBox = getCheckBox(pName);
 				cboxMap.put(pName, cBox);
-				VBox vBox = makePairs(pairName + (j + 1), pName, ePair.getSize());
+				VBox vBox = makePairs(pairName + (j), pName, ePair.getSize());
 				vvBox.getChildren().add(cBox);
 				vvBox.getChildren().add(vBox);
 //				GridPane.setColumnIndex(tPane, l);
@@ -290,7 +291,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	}
 	private VBox makePairs(String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
-			pxList.put(key, FXCollections.observableArrayList(Constants.genLists(sub)));
+			pxList.put(key, Constants.genObsList(sub));
 		}
 		List<Node> result = Lists.newArrayList();
 		Integer pxSize = pxList.get(key).size();
@@ -486,7 +487,7 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		SelectionModel model = comboBox.getSelectionModel();
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
-		switchLinkedComboboxes(prev, value);
+		switchLinkedComboboxes(comboKey, prev, value);
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);
 		label.setText(keyToText(comboKey));
@@ -505,8 +506,10 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 		}
 	}
 
-	private void switchLinkedComboboxes(String prev, String value) {
-		if (value != null) {
+	private void switchLinkedComboboxes(String key, String prev, String value) {
+		if (prev == null) return;
+		if (value != null && !value.equals("null")) {
+			refillLinkedPairCombos(key, value);
 			if (value.equals("RESET")) {
 				resetPrevLinkedCombobox(prev);
 				return;
@@ -517,6 +520,40 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 				SelectionModel selMod = target.getSelectionModel();
 				resetPrevLinkedCombobox(prev);
 				selMod.select(values[0]);
+			}
+		}
+	}
+
+	private void refillLinkedPairCombos(String key, String value) {
+		if (key.matches("\\w{3}-\\d-\\d{2}")) {
+			String link = key.substring(0, 7);
+			List<ComboBox> tempCb = Lists.newArrayList();
+			String[] tempVals = new String[10];
+			String[] cbVals = new String[10];
+			String pair = value.split("\\s")[0];
+
+			for(int i = 0; i < 10; i++) {
+				if ((link + i).equals(key)) continue;
+				ComboBox cb = comboMap.get(link + i);
+				if (cb == null) continue;
+				tempCb.add(cb);
+				Object item = cb.getSelectionModel().getSelectedItem();
+				if (item != null) {
+					tempVals[i] = item.toString().split("\\s")[0];
+					cbVals[i] = item.toString();
+				}
+				if (item != null) tempVals[i] = item.toString().split("\\s")[0];
+			}
+			for (String itm: tempVals){
+				if (itm == null || itm.isEmpty()) continue;
+				pair += "," + itm;
+			}
+			for(ComboBox cb: tempCb) {
+				cb.setItems(Constants.genObsList(key.substring(0, 3) + key.substring(4, 5), pair));
+				String itm = cbVals[tempCb.indexOf(cb)];
+				if (itm == null || itm.isEmpty()) {
+					cb.getSelectionModel().selectFirst();
+				} else cb.getSelectionModel().select(itm);
 			}
 		}
 	}
