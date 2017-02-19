@@ -540,6 +540,13 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	private void refillLinkedPairCombos(String key, String value) {
 		if (key.matches("\\w{3}-\\d-\\d{2}")) {
 			String link = key.substring(0, 7);
+			refillLinkedPairCombos(key, link, value);
+		} else if (key.matches("\\w{4}-\\d-\\d{2}")) {
+			String link = key.substring(0, 8);
+			refillLinkedPairCombos(key, link, value);
+		}
+	}
+	private void refillLinkedPairCombos(String key, String link, String value) {
 			List<ComboBox> tempCb = Lists.newArrayList();
 			List<String> tempVals = Lists.newArrayList();
 			List<String> cbVals = Lists.newArrayList();
@@ -569,7 +576,9 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 				String skp = skip.replaceAll("," + keep, "")
 						.replaceAll(keep + ",", "")
 						.replaceAll(",,", ",");
-				cb.setItems(Constants.genObsList(key.substring(0, 3) + key.substring(4, 5), skp));
+				int linkLen2 = link.length() / 2;
+				cb.setItems(Constants.genObsList(key.substring(0, linkLen2)
+						+ key.substring(linkLen2 + 1, linkLen2 + 2), skp));
 				if (itm == null || itm.isEmpty() || itm.equals("null")) {
 					itm = "RESET";
 					cb.getSelectionModel().selectFirst();
@@ -579,7 +588,6 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 				if (cbKey == null) continue;
 				switchComboIndex(cbKey, cb, "itm", itm);
 			}
-		}
 	}
 
 	private void resetPrevLinkedCombobox(String prev) {
