@@ -55,9 +55,10 @@ public class RootLayoutController {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
 		McuType mcu = MilandrEx.mcuMain;
 		if (mcu != null){
-			FXMLLoader loader = new FXMLLoader();
+			URL location = MilandrEx.class.getResource("model/mainMCU.fxml");
+			FXMLLoader loader = new FXMLLoader(location);
 			loader.setResources(messages);
-			loader.setLocation(MilandrEx.class.getResource("model/mainMCU.fxml"));
+			loader.setLocation(location);
 			if (MilandrEx.pinoutsModel == null) {
 				MilandrEx.pinoutsModel = new PinoutsModel().setSelectedBody(mcu.getProp("pack"));
 			}
@@ -82,9 +83,10 @@ public class RootLayoutController {
 
 	public static void NewProject(ResourceBundle messages) {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
+		URL location = MilandrEx.class.getResource("model/selectDevice.fxml");
 		FXMLLoader loader = new FXMLLoader();
 		loader.setResources(messages);
-		loader.setLocation(MilandrEx.class.getResource("model/selectDevice.fxml"));
+		loader.setLocation(location);
 		AnchorPane page = loaderLoad(loader);
 		
 		//Create dialog winStage
