@@ -84,6 +84,9 @@ public class AppScene extends Scene {
 	}
 
 	public BorderPane getRootLayout() {
+		if (rootLayout == null) {
+			return (BorderPane) getRoot();
+		}
 		return rootLayout;
 	}
 
