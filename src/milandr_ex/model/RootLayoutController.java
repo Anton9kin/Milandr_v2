@@ -124,7 +124,12 @@ public class RootLayoutController {
 	FileChooser chooser = initFileChooser();
 	String lastSelectedPath = "";
 
-    @FXML
+	public void setLastSelectedPath(String lastSelectedPath) {
+		if (lastSelectedPath == null) lastSelectedPath = "";
+		this.lastSelectedPath = lastSelectedPath;
+	}
+
+	@FXML
     private void handleOpen(ActionEvent event) {
     	loadOptions();
 		MenuItem mi = (MenuItem) event.getSource();
@@ -134,7 +139,7 @@ public class RootLayoutController {
 				fillFileChooser();
 				File selectedFile = chooser.showOpenDialog(null);
 				if (selectedFile != null) {
-					lastSelectedPath = selectedFile.getAbsolutePath();
+					setLastSelectedPath(selectedFile.getAbsolutePath());
 					saveOptions();
 					LoadProjectFromFile(messages, selectedFile);
 				}
@@ -188,7 +193,7 @@ public class RootLayoutController {
 	}
 	private File saveCurrentProject(File selectedFile) {
 		if (selectedFile != null) {
-			lastSelectedPath = selectedFile.getAbsolutePath();
+			setLastSelectedPath(selectedFile.getAbsolutePath());
 			saveOptions();
 		}
 		if (MilandrEx.pinoutsModel != null) {
@@ -236,7 +241,8 @@ public class RootLayoutController {
 		List<String> opts = Constants.loadTxtStrings(new File("opts.cfg"));
 		for(String opt: opts) {
 			String[] props = opt.split("=");
-			if (props[0].equals("lastPath")) lastSelectedPath = props[1];
+			if (props.length < 2) continue;
+			if (props[0].equals("lastPath")) setLastSelectedPath(props[1]);
 		}
 	}
 

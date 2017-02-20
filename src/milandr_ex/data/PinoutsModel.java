@@ -66,6 +66,7 @@ public class PinoutsModel {
 		for(String str: strings) {
 			if (!str.contains("=")) continue;
 			String[] props = str.split("=");
+			if (props.length < 2) continue;
 			if (props[0].equals("body")) pinoutsModel.setSelectedBody(props[1]);
 			if (props[0].startsWith("pin.")) pinoutsModel.
 					setSelectedPin(props[0].substring(4), props[1]);

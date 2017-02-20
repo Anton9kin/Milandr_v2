@@ -145,6 +145,7 @@ public class Device {
     }
 
     public void setProp(String[] nameAndValues) {
+        if (nameAndValues.length < 2) return;
         String name = nameAndValues[0];
         String value = nameAndValues[1];
         String value2 = nameAndValues.length > 2 ? nameAndValues[2] : value;
