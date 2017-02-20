@@ -295,8 +295,13 @@ public class Device {
 
     public void addPair(EPairNames pair, int count) {
         pairSets.put(pair, count);
-        //todo fix-it - illegal extending pairs list if already initialized
-        pairCounts.add(count);
+        //xtodo fix-it - illegal extending pairs list if already initialized
+        if (pairCounts.size() <= pair.ordinal()) {
+            pairCounts.add(count);
+        } else {
+            pairCounts.remove(pair.ordinal());
+            pairCounts.add(pair.ordinal(), count);
+        }
     }
 
     /**
@@ -313,7 +318,13 @@ public class Device {
     }
     public void addPort(EPortNames port, int count) {
         portCounts.put(port, count);
-        portSizes.add(port.ordinal() * 100 + count);
+        int pInd = port.ordinal();
+        if (portSizes.size() <= pInd) {
+            portSizes.add(pInd * 100 + count);
+        } else {
+            portSizes.remove(pInd);
+            portSizes.add(pInd,  pInd * 100  + count);
+        }
     }
     public Device addPorts(int... portsSizes) {
         for(int i = 0; i < portsSizes.length; i++) {
