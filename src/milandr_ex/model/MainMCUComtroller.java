@@ -1,37 +1,29 @@
 package milandr_ex.model;
 
-import javafx.event.ActionEvent;
-import javafx.geometry.Pos;
-import javafx.scene.paint.Paint;
-import milandr_ex.MilandrEx;
-import milandr_ex.data.Constants;
-import milandr_ex.data.Device;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import milandr_ex.data.DeviceFactory;
-import milandr_ex.data.PinoutsModel;
+import milandr_ex.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.method.P;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import static milandr_ex.data.Constants.*;
 
-public class MainMCUComtroller implements PinoutsModel.Observer {
+public class MainMCUComtroller extends BasicController implements PinoutsModel.Observer {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUComtroller.class);
 
 	private Background backgroundDefault = null;
@@ -49,7 +41,6 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	@FXML
 	private GridPane clckCont;
 
-	private ResourceBundle messages;
 	private Map<String, Label> labMap = Maps.newHashMap();
 	private Map<String, ComboBox> comboMap = Maps.newHashMap();
 	private Map<String, ObservableList<String>> pxList = Maps.newHashMap();
@@ -62,13 +53,13 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	private TabPane mainTabPane;
 
 	public MainMCUComtroller() {
-		MilandrEx.addObserver("pinouts", this);
 	}
 	
 	public void mainMCUStart(String pack) {
 		// TODO Auto-generated constructor stub
 
-		MilandrEx.primaryStage.setTitle(messages.getString("main.title") + " - " + MilandrEx.mcuMain.getProp("type"));
+		getScene().getAppStage().setTitle(getMessages().getString("main.title") + " - " +
+				getScene().getMcuMain().getProp("type"));
 
 		showItems(0, 0, 0, 0, 0, 0);
 
@@ -79,8 +70,13 @@ public class MainMCUComtroller implements PinoutsModel.Observer {
 	
 	@FXML
 	private void initialize() {
-		messages = Constants.loadBundle("messages", "ru");
-		String pack = MilandrEx.mcuMain.getProp("pack");
+		//do nothing
+	}
+
+	@Override
+	protected void postInit(AppScene scene) {
+		scene.addObserver("pinouts", this);
+		String pack = scene.getMcuMain().getProp("pack");
 		setItems(pack);
 		mainMCUStart(pack);
 	}

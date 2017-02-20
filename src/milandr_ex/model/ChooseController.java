@@ -1,9 +1,7 @@
 package milandr_ex.model;
 
 import javafx.scene.layout.GridPane;
-import milandr_ex.MilandrEx;
-import milandr_ex.data.Constants;
-import milandr_ex.data.Device;
+import milandr_ex.data.*;
 import milandr_ex.McuType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,12 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import milandr_ex.data.DeviceFactory;
-import milandr_ex.data.PropsFactory;
 
-import java.util.ResourceBundle;
-
-public class ChooseController {
+public class ChooseController extends BasicController {
 
 	private Stage dialogStage;
 
@@ -49,10 +43,9 @@ public class ChooseController {
 		
 	}
 
-	private ResourceBundle messages;
+	@SuppressWarnings("unused")
 	@FXML
 	private void initialize() {
-		messages = Constants.loadBundle("messages", "ru");
 		typeColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("type"));
 		packColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("pack"));
 		flashColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("flash"));
@@ -70,7 +63,12 @@ public class ChooseController {
 				(observable, oldValue, newValue) -> showMCUDetails(newValue));
 		
 	}
-	
+
+	@Override
+	protected void postInit(AppScene scene) {
+		//do nothing
+	}
+
 	private void initView(){
 		String[] names = PropsFactory.nameProps().toArray(new String[]{});
 		for(int i = 0; i < names.length; i++) {
@@ -88,6 +86,7 @@ public class ChooseController {
 	public static void setDefaultMCU(){
 		setDefaultMCU(null);
 	}
+	@SuppressWarnings("unchecked")
 	private static void setDefaultMCU(TableView mcuTable){
 		if (mcuTable != null) mcuTable.getItems().clear();
 
@@ -133,14 +132,14 @@ public class ChooseController {
 
 	@FXML
 	private void handleCancel() {
-		MilandrEx.mcuMain = null;
+		getScene().setMcuMain(null);
 		dialogStage.close();
 	}
 	
 	@FXML
 	private void handleOK() {
 		
-		MilandrEx.mcuMain = mcuTable.getSelectionModel().getSelectedItem();
+		getScene().setMcuMain(mcuTable.getSelectionModel().getSelectedItem());
 		
 //		Alert alert = new Alert(AlertType.INFORMATION);
 //		alert.setTitle("Ваш выбор");

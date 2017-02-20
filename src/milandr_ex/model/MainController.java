@@ -1,15 +1,15 @@
 package milandr_ex.model;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import milandr_ex.data.AppScene;
 import milandr_ex.data.Constants;
 
-public class MainController {
+public class MainController extends BasicController {
 
 	@FXML
 	private ImageView openIm;
@@ -25,14 +25,18 @@ public class MainController {
 		// TODO Auto-generated constructor stub
 	}
 
-	private ResourceBundle messages;
+	@SuppressWarnings("unused")
 	@FXML
 	private void initialize() {
-		messages = Constants.loadBundle("messages", "ru");
 		loadImage(openIm, "open.png");
 		loadImage(newIm, "new.png");
 		loadImage(helpIm, "helpicon.png");
 		loadImage(idIm, "milandr_logo2.jpg");
+	}
+
+	@Override
+	protected void postInit(AppScene scene) {
+		//do nothing
 	}
 
 	private void loadImage(ImageView target, String source) {
@@ -43,13 +47,17 @@ public class MainController {
 		}
 	}
 
+	private RootLayoutController getRootController() {
+		return (RootLayoutController) getScene().getRootController();
+	}
+
 	@FXML
 	private void handleNewImage(){
-		RootLayoutController.NewProject(messages);
+		getRootController().NewProject(getMessages());
 	}
 
 	@FXML
 	private void handleOpenImage(){
-		RootLayoutController.LoadProjectFromFile(messages, null);
+		getRootController().doOpenEvent();
 	}
 }

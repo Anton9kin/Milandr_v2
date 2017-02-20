@@ -1,123 +1,112 @@
 package milandr_ex;
-	
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
 
 import com.aquafx_project.AquaFx;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import milandr_ex.data.AppScene;
 import milandr_ex.data.Constants;
-import milandr_ex.data.PinoutsModel;
-import milandr_ex.model.ModelObserver;
+import milandr_ex.model.BasicController;
+import milandr_ex.model.RootLayoutController;
+
+import java.io.IOException;
+import java.util.ResourceBundle;
 
 
 public class MilandrEx extends Application {
-	public static Stage primaryStage;
-	public static BorderPane rootLayout;
-	public static AnchorPane mainLayout;
-	public static String file = "";
-	public static PinoutsModel pinoutsModel;
-	private static Locale locale = new Locale("ru", "RU");
-	public static McuType mcuMain = null;
-	private static ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
-	private static Map<String, List<ModelObserver>> observers = Maps.newHashMap();
-    public static void addObserver(String key, ModelObserver observer) {
-    	if (!observers.containsKey(key)) {
-    		observers.put(key, Lists.newArrayList());
-		}
-    	observers.get(key).add(observer);
+	private AppScene scene;
+
+	public MilandrEx() {
 	}
 
-	public static void observe(String key) {
-		List<ModelObserver> observers = MilandrEx.observers.get(key);
-		if (observers == null || observers.isEmpty()) return;
-		for(ModelObserver observer: observers) {
-    		if (observer instanceof PinoutsModel.Observer) {
-				((PinoutsModel.Observer) observer).observe(pinoutsModel);
-			}
-		}
+	public void setScene(AppScene scene) {
+		this.scene = scene;
 	}
-	public MilandrEx() {
-		bundle = Constants.loadBundle("messages", "ru");
+
+	public AppScene getScene() {
+		return scene;
 	}
 
 	@Override
 	public void start(Stage primStage) {
-		primaryStage = primStage;
-		primaryStage.setTitle(bundle.getString("main.title"));
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
 		AquaFx.style();
-
-		initRootLayout();
-		
-		showMain();
+		showMain(initRootLayout(primStage));
 	}
 
 	/**
 	 * Initializes the root layout
 	 * 
-	 * @param args
+	 * @param stage
 	 */
 	
-	public void initRootLayout(){
+	public BorderPane initRootLayout(Stage stage){
 		try{
+			ResourceBundle bundle = Constants.loadBundle("messages", "ru");
+			stage.setTitle(bundle.getString("main.title"));
 			//load root layout from fmxl file
 			FXMLLoader loader = new FXMLLoader();
 			loader.setResources(bundle);
 			loader.setLocation(MilandrEx.class.getResource("model/RootLayout.fxml"));
-			
-			rootLayout = (BorderPane) loader.load();
+			BorderPane rootLayout = loader.load();
 
 			//show the scene containing root layout
-			Scene scene = new Scene(rootLayout);
-			primaryStage.setScene(scene);
-			primaryStage.setWidth(800);
-			primaryStage.setHeight(600);
-			primaryStage.show();
+			AppScene scene = new AppScene(rootLayout);
+			setScene(scene);
+			scene.setAppStage(stage);
+			scene.setBundle(bundle);
+
+			stage.setScene(scene);
+			stage.setWidth(800);
+			stage.setHeight(600);
+			stage.show();
+			scene.setRootController(addSceneToController(loader, scene).postInit());
+			return rootLayout;
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	/**
 	 * Show recept overview inside root layout
 	 * 
-	 * @param args
+	 * @param rootLayout
 	 */
-	public void showMain(){
+	public void showMain(BorderPane rootLayout){
 		try{
 			//load receipt overview
 			FXMLLoader loader = new FXMLLoader();
-			loader.setResources(bundle);
+			loader.setResources(scene.getBundle());
 			loader.setLocation(MilandrEx.class.getResource("model/Main.fxml"));
-			mainLayout = (AnchorPane) loader.load();
-			
-			
+			AnchorPane mainLayout = loader.load();
+
 			//set receipt overview into center of root layout
 			rootLayout.setCenter(mainLayout);
-			
+			getScene().setRootLayout(rootLayout);
+			getScene().setMainLayout(mainLayout);
+			addSceneToController(loader, scene).postInit();
+
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+	private BasicController addSceneToController(FXMLLoader loader, AppScene scene) {
+		BasicController controller = loader.getController();
+		controller.setScene(scene);
+		return controller;
+	}
+
+
 	/**
 	 * 
 	 * Returns the main stage
 	 */
 	public Stage getPrimaryStage(){
-		return primaryStage;
+		return scene.getAppStage();
 	}
 	
 	public static void main(String[] args) {
