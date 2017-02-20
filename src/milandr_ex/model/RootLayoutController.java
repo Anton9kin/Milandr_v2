@@ -61,7 +61,7 @@ public class RootLayoutController extends BasicController {
 		McuType mcu = getScene().getMcuMain();
 		if (mcu != null){
 			String newTitle = messages.getString("main.title") + " - " + mcu.getProp("type");
-			URL location = MilandrEx.class.getResource("model/mainMCU.fxml");
+			URL location = MilandrEx.class.getResource("view/mainMCU.fxml");
 			FXMLLoader loader = new FXMLLoader(location);
 			loader.setResources(messages);
 			loader.setLocation(location);
@@ -93,7 +93,7 @@ public class RootLayoutController extends BasicController {
 
 	public void NewProject(ResourceBundle messages) {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
-		URL location = MilandrEx.class.getResource("model/selectDevice.fxml");
+		URL location = MilandrEx.class.getResource("view/selectDevice.fxml");
 		FXMLLoader loader = new FXMLLoader();
 		loader.setResources(messages);
 		loader.setLocation(location);

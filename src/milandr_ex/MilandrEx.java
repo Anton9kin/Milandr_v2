@@ -49,7 +49,7 @@ public class MilandrEx extends Application {
 			//load root layout from fmxl file
 			FXMLLoader loader = new FXMLLoader();
 			loader.setResources(bundle);
-			loader.setLocation(MilandrEx.class.getResource("model/RootLayout.fxml"));
+			loader.setLocation(MilandrEx.class.getResource("view/RootLayout.fxml"));
 			BorderPane rootLayout = loader.load();
 
 			//show the scene containing root layout
@@ -80,7 +80,7 @@ public class MilandrEx extends Application {
 			//load receipt overview
 			FXMLLoader loader = new FXMLLoader();
 			loader.setResources(scene.getBundle());
-			loader.setLocation(MilandrEx.class.getResource("model/Main.fxml"));
+			loader.setLocation(MilandrEx.class.getResource("view/Main.fxml"));
 			AnchorPane mainLayout = loader.load();
 
 			//set receipt overview into center of root layout
