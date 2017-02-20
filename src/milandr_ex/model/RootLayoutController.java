@@ -149,7 +149,7 @@ public class RootLayoutController {
 
 	private void fillFileChooser() {
 		if (!lastSelectedPath.isEmpty()) {
-			String pathname = lastSelectedPath.substring(0, lastSelectedPath.lastIndexOf("\\"));
+			String pathname = lastSelectedPath.substring(0, lastSelectedPath.lastIndexOf(File.separator ));
 			chooser.setInitialDirectory(new File(pathname));
 			chooser.setInitialFileName(lastSelectedPath.substring(pathname.length() + 1));
 		}
@@ -189,15 +189,19 @@ public class RootLayoutController {
 
 	private File saveCurrentProject() {
 		fillFileChooser();
-		return chooser.showSaveDialog(null);
+		return saveCurrentProject(chooser.showSaveDialog(null));
 	}
 	private File saveCurrentProject(File selectedFile) {
 		if (selectedFile != null) {
+			String path = selectedFile.getAbsolutePath();
+			if (!path.endsWith(".mpr")) {
+				selectedFile = new File(path + ".mpr");
+			}
 			setLastSelectedPath(selectedFile.getAbsolutePath());
 			saveOptions();
-		}
-		if (MilandrEx.pinoutsModel != null) {
-			MilandrEx.pinoutsModel.save(selectedFile);
+			if (MilandrEx.pinoutsModel != null) {
+				MilandrEx.pinoutsModel.save(selectedFile);
+			}
 		}
 		return selectedFile;
 	}
