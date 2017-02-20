@@ -27,10 +27,10 @@ public class AppScene extends Scene {
 	}
 
 	private Stage appStage;
-	public BorderPane rootLayout;
-	public AnchorPane mainLayout;
-	public PinoutsModel pinoutsModel;
-	public McuType mcuMain = null;
+	private BorderPane rootLayout;
+	private AnchorPane mainLayout;
+	private PinoutsModel pinoutsModel;
+	private McuType mcuMain = null;
 	private ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
 	private Map<String, List<ModelObserver>> observers = Maps.newHashMap();
 	private BasicController rootController;
