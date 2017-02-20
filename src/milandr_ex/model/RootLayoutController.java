@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.google.common.collect.Lists;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -44,7 +45,9 @@ public class RootLayoutController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
-		//do nothing
+		ChooseController.setDefaultMCU();
+		scene.setMcuMain(DeviceFactory.getDevice("LQFP64").getMcu());
+		Platform.runLater(() -> LoadProject(getMessages()));
 	}
 
 	public void LoadProjectFromFile(ResourceBundle messages, File selectedFile) {
