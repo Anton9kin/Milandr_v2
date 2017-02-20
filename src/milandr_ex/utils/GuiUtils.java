@@ -8,6 +8,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.Constants;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.keyToText;
@@ -93,7 +94,9 @@ public class GuiUtils {
 		switchObjects(idx, nodeMap, visible, false);
 	}
 	public static void switchObjects(Integer[] idx, Map<String, ? extends Node> nodeMap, boolean visible, boolean single){
-		for(String comboKey: nodeMap.keySet()) {
+		Iterator<String> nit = nodeMap.keySet().iterator();
+		while (nit.hasNext()) {
+			String comboKey = nit.next();
 			if (!comboKey.matches("cb\\d+")) continue;
 			Node node = nodeMap.get(comboKey);
 			boolean outOfRange = single;

@@ -34,6 +34,8 @@ public class AppScene extends Scene {
 	private ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
 	private Map<String, List<ModelObserver>> observers = Maps.newHashMap();
 	private BasicController rootController;
+	private SetsGenerator setsGenerator;
+
 	public void addObserver(String key, ModelObserver observer) {
 		if (!observers.containsKey(key)) {
 			observers.put(key, Lists.newArrayList());
@@ -108,5 +110,13 @@ public class AppScene extends Scene {
 
 	public void setRootController(BasicController rootController) {
 		this.rootController = rootController;
+	}
+
+	public SetsGenerator getSetsGenerator() {
+		return setsGenerator;
+	}
+
+	public void setSetsGenerator(SetsGenerator setsGenerator) {
+		this.setsGenerator = setsGenerator;
 	}
 }

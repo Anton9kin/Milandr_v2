@@ -170,22 +170,6 @@ public class Constants {
             {"-", "ADDR14", "TMR1_ETR", "SSP2_RXD"},
             {"-", "ADDR15", "TMR1_BLK", "SSP2_TXD"},
     };
-    private static Map<String, List<String>> pairItems = Maps.newHashMap();
-    private static Map<String, Integer[]> pairNumbers = Maps.newHashMap();
-    public static ObservableList<String> genObsList(String setName) {
-        return genObsList(setName, "");
-    }
-    public static ObservableList<String> genObsList(String setName, String skipName) {
-        return FXCollections.observableArrayList(Constants.genLists(setName, skipName));
-    }
-    public static String[] genLists(String setName, String skipName) {
-        generateSets(setName, skipName);
-        return pairItems.get(setName).toArray(new String[]{});
-    }
-    public static Integer[] genNumbers(String setName) {
-        generateSets(setName, "");
-        return pairNumbers.get(setName);
-    }
 
     public static String encodeStr(String value) {
         try {
@@ -195,67 +179,6 @@ public class Constants {
             e.printStackTrace();
         }
         return value;
-    }
-
-    private static void generateSets(String setName, String skipName) {
-        if (!pairItems.containsKey(setName)) {
-            List<String> pairs = genOnePairList(setName, skipName);
-            pairItems.put(setName, pairs);
-        } else if (!skipName.isEmpty()) {
-            List<String> items = pairItems.get(setName);
-            items.clear();
-            items.addAll(genOnePairList(setName, skipName));
-        }
-    }
-
-    private static List<String> genOnePairList(String setName, String skipName) {
-        List<String> pairs = Lists.newArrayList();
-        List<Integer> numbers = Lists.newArrayList();
-        String sName = setName;
-        if (!sName.startsWith("ADC")) {
-			fillInputs(pairs, numbers, sName, skipName);
-		}
-        Collections.sort(pairs);
-        pairs.add(0, "RESET");
-        pairNumbers.put(setName, numbers.toArray(new Integer[]{}));
-        return pairs;
-    }
-
-    private static void fillInputs(List<String> pairs, List<Integer> numbers, String sName, String skipName) {
-        if (sName.startsWith("SPI")) sName = "SSP" + (sName.length() > 3 ? sName.substring(3) : "");
-        if (sName.startsWith("I2C")) {
-            sName = "SDA" + (sName.length() > 3 ? sName.substring(3) : "");
-            findInputs(pairs, numbers, sName, skipName);
-            sName = "SCL" + (sName.length() > 3 ? sName.substring(3) : "");
-        }
-        findInputs(pairs, numbers, sName, skipName);
-    }
-
-    private static void findInputs(List<String> pairs, List<Integer> numbers, String sName, String skipName) {
-        String[] skips = skipName.split(",");
-        for(int i=0; i < comboTexts.length; i++) {
-            int idx = -1;
-            String str = "";
-            String[] comboItems = comboTexts[i];
-            for(String cItem: comboItems) {
-                if (cItem.contains(sName)) {
-                    idx = i;
-                    str = cItem;
-                    break;
-                }
-            }
-            boolean skipIt = false;
-            for(String skp: skips) skipIt |= str.equals(skp);
-            if (skipIt) continue;
-            if (idx >= 0) {
-//                String sId = str;//"" + idx;
-                    int div = idx % 16;
-                    String cbKey = (idx / 16) + (div > 9 ? "" : "0") + div;
-                    String sId = str + " " + keyToText("cb" + cbKey);
-                if (!pairs.contains(sId)) pairs.add(sId);
-                numbers.add(idx);
-            }
-        }
     }
 
     public static String keyToText(String key) {

@@ -2,6 +2,7 @@ package milandr_ex.model.mcu;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.FXCollections;
@@ -18,8 +19,10 @@ import milandr_ex.model.BasicController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static milandr_ex.data.Constants.*;
 import static milandr_ex.utils.GuiUtils.*;
@@ -66,8 +69,8 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
 		setupPinCombos();
-		setupPairsCombos(device);
 		mainMCUStart(pack);
+		setupPairsCombos(device);
 		log.debug("#postInit - initialized");
 	}
 
@@ -118,17 +121,27 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	private void makeListener(final String key, ReadOnlyProperty property) {
 		property.addListener((ov, t, t1) ->  {
 			if (refillInProgress > 0) return;
-			final String kkey = key;
+			final String kkey = key + "";
 //			log_debug(String.format("#listen[%d] ov=%s t=%s t1=%s", refillInProgress, ov, t, t1));
-			Platform.runLater(() -> changeCombo(kkey, String.valueOf(t), String.valueOf(t1)));
+			Platform.runLater(() -> {
+				if (comboMap.containsKey(kkey) && !comboMap.get(kkey).isVisible()) return;
+				changeCombo(kkey, String.valueOf(t), String.valueOf(t1));
+			});
 		});
 		callListener(key, "RESET");
 	}
 	private void callListener(final String key, String value) {
-		if (!comboMap.containsKey(key)) return;
 		if (value.equals("null") || value.equals("RESET")) {
-			Platform.runLater(() -> comboMap.get(key).getSelectionModel().selectFirst());
-		} else Platform.runLater(() -> comboMap.get(key).getSelectionModel().select(value));
+			Platform.runLater(() -> {
+				if (!comboMap.containsKey(key)) return;
+//				if (!comboMap.get(key).isVisible()) return;
+				comboMap.get(key).getSelectionModel().selectFirst();
+			});
+		} else Platform.runLater(() -> {
+			if (!comboMap.containsKey(key)) return;
+//			if (!comboMap.get(key).isVisible()) return;
+			comboMap.get(key).getSelectionModel().select(value);
+		});
 	}
 
 	private void makePxItem(int i, int j, String key) {
@@ -142,6 +155,8 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	}
 
 	private void setupPairsCombos(Device device) {
+		Set<String> portKeys = filterPortKeys();
+		getScene().setSetsGenerator(new SetsGenerator(portKeys));
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
 		Integer[] pairs = device.getPairCountsArr();
 		for(int i = 0; i < ePairs.length; i++) {
@@ -168,6 +183,16 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		}
 	}
 
+	private Set<String> filterPortKeys() {
+		Set<String> portKeys = Sets.newHashSet(comboMap.keySet());
+		Iterator<String> pkit = portKeys.iterator();
+		while (pkit.hasNext()) {
+			ComboBox cb = comboMap.get(pkit.next());
+			if (!cb.isVisible()) pkit.remove();
+		}
+		return portKeys;
+	}
+
 	private void setupPinCombos() {
 		for(int i = 0; i < 6; i++) { for(int j = 0; j < 16; j++) {
 			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
@@ -187,7 +212,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	}
 	private VBox makePairs(String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
-			pxList.put(key, Constants.genObsList(sub));
+			pxList.put(key, getScene().getSetsGenerator().genObsList(sub));
 		}
 		List<Node> result = Lists.newArrayList();
 		Integer pxSize = pxList.get(key).size();
@@ -281,6 +306,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		SelectionModel model = comboBox.getSelectionModel();
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
 		switchLinkedComboboxes(comboKey, prev, value);
+		if (!labMap.containsKey(comboKey)) return;
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);
 		label.setText(keyToText(comboKey));
@@ -362,7 +388,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 					.replaceAll(keep + ",", "")
 					.replaceAll(",,", ",");
 			int linkLen2 = link.length() / 2;
-			cb.setItems(Constants.genObsList(key.substring(0, linkLen2)
+			cb.setItems(getScene().getSetsGenerator().genObsList(key.substring(0, linkLen2)
 					+ key.substring(linkLen2 + 1, linkLen2 + 2), skp));
 			if (itm == null || itm.isEmpty() || itm.equals("null")) {
 				itm = "RESET";
