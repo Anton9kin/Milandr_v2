@@ -27,43 +27,10 @@ public class Device {
             public void set(Device device, int val) {
                 device.setComporator(val);
             }
-        },  USB(1){
-            @Override
-            public void set(Device device, int val) {
-                device.setUsb(val);
-            }
-        },  UART(2){
-            @Override
-            public void set(Device device, int val) {
-                device.setUart(val);
-            }
-        },  CAN(2){
-            @Override
-            public void set(Device device, int val) {
-                device.setCan(val);
-            }
-        },  SPI(4){
-            @Override
-            public void set(Device device, int val) {
-                device.setSpi(val);
-            }
-        },  I2C(2){
-            @Override
-            public void set(Device device, int val) {
-                device.setI2c(val);
-            }
-        },  DAC(1){
-            @Override
-            public void set(Device device, int val) {
-                device.setDac(val);
-            }
-        },  TMR(4){
-            @Override
-            public void set(Device device, int val) {
-                device.addPair(this, val);
-//                device.set(val);
-            }
-        };
+        },
+        USB(1), UART(2), CAN(2), SPI(4), I2C(2), DAC(1),
+        SYST(1), MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
+        TMR(3);
 
         private final int size;
         EPairNames(int size) {
@@ -78,9 +45,12 @@ public class Device {
         public int getSize() {
             return size;
         }
-        public abstract void set(Device device, int val);
+        public void set(Device device, int val) {
+            device.addPair(this, val, true);
+        }
     }
-    private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.I2C, EPairNames.SPI, EPairNames.CAN };
+    private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB,
+            EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
     public enum EPortNames {
         A, B, C, D, E, F
     }
@@ -119,7 +89,7 @@ public class Device {
         sprops.put("body", this::setBody);
         sprops.put("core", this::setCore);
         sprops.put("usbt", this::setUsbType);
-        iprops.put("usb", this::setUsb);
+//        iprops.put("usb", this::setUsb);
         iprops.put("flash", this::setFlash);
         iprops.put("ram", this::setRam);
         iprops.put("io", this::setIo);
@@ -241,35 +211,6 @@ public class Device {
         PropsFactory.Basic.usb.set(mcu, "Device и Host FS (до 12 Мбит/с), " + usbType);
     }
 
-    public Device setUsb(Integer usb) {
-        addPair(EPairNames.USB, usb);
-        return this;
-    }
-
-    public Device setUart(Integer uart) {
-        addPair(EPairNames.UART, uart);
-        PropsFactory.Basic.uart.set(mcu, uart + "");
-        return this;
-    }
-
-    public Device setCan(Integer can) {
-        addPair(EPairNames.CAN, can);
-        PropsFactory.Basic.can.set(mcu, can + "");
-        return this;
-    }
-
-    public Device setSpi(Integer spi) {
-        addPair(EPairNames.SPI, spi);
-        PropsFactory.Basic.spi.set(mcu, spi + "");
-        return this;
-    }
-
-    public Device setI2c(Integer i2c) {
-        addPair(EPairNames.I2C, i2c);
-        PropsFactory.Basic.i2c.set(mcu, i2c + "");
-        return this;
-    }
-
     public Device setAdc(Integer adc) {
         addPair(EPairNames.ADC, adc);
         PropsFactory.Basic.adc.set(mcu, adc + " (12 разрядов, 1 Mb/s, 8 каналов)");
@@ -293,7 +234,11 @@ public class Device {
         return this;
     }
 
-    public void addPair(EPairNames pair, int count) {
+    public Device addPair(EPairNames pair, int count) {
+        addPair(pair, count, false);
+        return this;
+    }
+    public Device addPair(EPairNames pair, int count, boolean withBasic) {
         pairSets.put(pair, count);
         //xtodo fix-it - illegal extending pairs list if already initialized
         if (pairCounts.size() <= pair.ordinal()) {
@@ -302,16 +247,22 @@ public class Device {
             pairCounts.remove(pair.ordinal());
             pairCounts.add(pair.ordinal(), count);
         }
+        if (withBasic) {
+            PropsFactory.Basic.valueOf(pair.name().toLowerCase()).set(mcu, count + "");
+        }
+        return this;
     }
 
     /**
-     * ADC, COMP, USB, UART, CAN, SPI, I2C, DAC, TMR
+     * ADC, COMP, USB, UART, CAN, SPI, I2C, DAC<br>
+     * SYST, MPU, BKP, PWR, EBC, IWDG, WWDG, TMR
      * @param pairCounts see EPairNames
      * @return this
      */
     public Device addPairs(int... pairCounts) {
-        for(int i = 0; i < pairCounts.length; i++) {
-            EPairNames pair = EPairNames.values()[i];
+        EPairNames[] pairNames = EPairNames.values();
+        for(int i = 0; i < pairCounts.length && i < pairNames.length; i++) {
+            EPairNames pair = pairNames[i];
             pair.set(this, pairCounts[i]);
         }
         return this;

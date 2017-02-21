@@ -109,7 +109,7 @@ public class ChooseController extends BasicController {
 
 		d = DeviceFactory.createDefDevice("1986ВЕ93У", "Н16.48-1В", 30);
 		DeviceFactory.updateDevice(d, null, new int[]{8, 7, 1, 4, 7, 6}, new int[]{401, 404, 405});
-		d.setI2c(0).setExtWire(0);
+		d.addPair(Device.EPairNames.I2C, 0, true).setExtWire(0);
 		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
 		fillGenericDevices(mcuTable);

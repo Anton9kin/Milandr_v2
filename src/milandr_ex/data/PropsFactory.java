@@ -14,6 +14,7 @@ public class PropsFactory {
     public enum Basic {
         type, pack,  core, flash, ram,
         vcc, freq, temp, io, usb, uart,
+        tmr, syst, mpu, bkp, pwr, ebc, dma, iwdg, wwdg,
         can, spi, i2c, adc, dac, comp, ext;
         public void set(McuType mcuType, String value) {
             mcuType.setProp(name(), value);
