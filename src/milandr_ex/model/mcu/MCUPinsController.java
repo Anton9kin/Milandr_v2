@@ -91,7 +91,7 @@ public class MCUPinsController extends BasicController
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
-		setupPinCombos();
+		setupPinCombos(device);
 		mainMCUStart(pack);
 		setupPairsCombos(device);
 		log.debug("#postInit - initialized");
@@ -228,14 +228,15 @@ public class MCUPinsController extends BasicController
 		return portKeys;
 	}
 
-	private void setupPinCombos() {
-		for(int i = 0; i < 6; i++) { for(int j = 0; j < 16; j++) {
+	private void setupPinCombos(Device device) {
+		int maxPort = device.getMaxPortSizes();
+		for(int i = 0; i < 6; i++) { for(int j = 0; j < maxPort; j++) {
 			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
 			makePxItem(i, j, key);
 			VBox vBox = makePairs(key);
 			boxCont.getChildren().add(vBox);
 			if ( i > 0) GridPane.setColumnIndex(vBox, i);
-			if ( j > 0) GridPane.setRowIndex(vBox, j);
+			GridPane.setRowIndex(vBox, j + 1);
 		}}
 	}
 

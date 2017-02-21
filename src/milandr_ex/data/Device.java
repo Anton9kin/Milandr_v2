@@ -328,4 +328,12 @@ public class Device {
         }
         return device;
     }
+
+    public Integer getMaxPortSizes() {
+        int maxSize = 0;
+        for(Integer portSize: portSizes) {
+            maxSize = Math.max(maxSize, portSize % 100);
+        }
+        return maxSize;
+    }
 }
