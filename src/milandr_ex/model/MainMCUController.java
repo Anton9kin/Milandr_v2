@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static milandr_ex.data.Constants.clItem;
 import static milandr_ex.data.Constants.clItem2;
+import static milandr_ex.data.Constants.clItem3;
 import static milandr_ex.utils.GuiUtils.*;
 
 public class MainMCUController extends BasicController implements PinoutsModel.Observer {
@@ -80,15 +81,19 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 		gridPane.setAlignment(Pos.CENTER);
 		makePaddings(gridPane);
 		addRowToGrid(gridPane, new Label(caption), 0, 0, 1);
-		ComboBox<String> box = new ComboBox<>(combostr.split("\\|").length > 5 ? clItem : clItem2);
-		box.getSelectionModel().selectFirst();
+		String exitStr = combostr.split("\\\\")[1];
+		if (!exitStr.equals("Not")) {
+			int splitLen = combostr.split("\\|").length;
+			ComboBox<String> box = new ComboBox<>(splitLen > 5 ? (splitLen > 7 ? clItem3 : clItem) : clItem2);
+			box.getSelectionModel().selectFirst();
 //todo		makeListener("k-" + caption + "-0", box);
-		clkMap.put("k-" + caption + "-0", box);
-		addRowToGrid(gridPane, box, 1, 0, 1);
+			clkMap.put("k-" + caption + "-0", box);
+			addRowToGrid(gridPane, box, 1, 0, 1);
+		}
 		makeComboGrid(gridPane, caption, combostr, 3);
 //		addRowToGrid(gridPane, new Label("output"), 0, 2, 1);
-		String exitStr = combostr.split("\\\\")[1];
 		addRowToGrid(gridPane, makeGridsCombo(exitStr), 1, 2, 1);
+		if (!exitStr.equals("Sim") && !exitStr.equals("Not"))
 		addRowToGrid(gridPane, new CheckBox("Allow"), 2, 2, 1);
 		addRowToGrid(clckCont, new VBox(gridPane), col, row, 1);
 	}
@@ -97,25 +102,18 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 		GridPane gridPane1 = new GridPane();
 		makePaddings(gridPane1);
 		String[] combos = combostr.split("\\|");
-		addComboToGrid(gridPane1, prefix, combos[0], 0,0);
-		addComboToGrid(gridPane1, prefix, combos[1], 1, 0);
-		if (combos.length > 3) {
-			addComboToGrid(gridPane1, prefix, combos[2], 0, 1);
-			addComboToGrid(gridPane1, prefix, combos[3], 1, 1);
+		int i = 0;
+		while (combos.length > i) {
+			addComboToGrid(gridPane1, prefix, combos[i], i % 4, i / 4);
+			i++;
 		}
-		if (combos.length > 5) {
-			addComboToGrid(gridPane1, prefix, combos[4], 2, 0);
-			addComboToGrid(gridPane1, prefix, combos[5], 3, 0);
-		}
-		if (combos.length > 7) {
-			addComboToGrid(gridPane1, prefix, combos[6], 2, 1);
-			addComboToGrid(gridPane1, prefix, combos[7], 3, 1);
-		}
+
 		addRowToGrid(gridPane, gridPane1, 0, 1, span);
 		return gridPane1;
 	}
 
 	private Region addComboToGrid(GridPane gridPane1, String prefix, String items, int col, int row) {
+		if (items.startsWith("\\")) return null;
 		Region cb = col % 2 == 0 ? new Label(items) : makeGridsCombo(items);
 		GridPane.setColumnIndex(cb, col);
 		GridPane.setRowIndex(cb, row);
