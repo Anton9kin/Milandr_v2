@@ -64,6 +64,7 @@ public class SetsGenerator {
 
 	private void fillInputs(List<String> pairs, List<Integer> numbers, String sName, String skipName) {
 		if (sName.startsWith("SPI")) sName = "SSP" + (sName.length() > 3 ? sName.substring(3) : "");
+		if (sName.startsWith("COMP")) sName = "COMP";
 		if (sName.startsWith("I2C")) {
 			sName = "SDA" + (sName.length() > 3 ? sName.substring(3) : "");
 			findInputs(pairs, numbers, sName, skipName);

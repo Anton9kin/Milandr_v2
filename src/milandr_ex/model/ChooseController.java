@@ -73,6 +73,7 @@ public class ChooseController extends BasicController {
 		String[] names = PropsFactory.nameProps().toArray(new String[]{});
 		for(int i = 0; i < names.length; i++) {
 			PropsFactory.Prop prop = PropsFactory.getProp(names[i]);
+			if (prop.getText().equals(prop.getName())) continue;
 			Label caption = new Label(prop.getText());
 			contLabel.getChildren().add(caption);
 			GridPane.setRowIndex(caption, i);
@@ -161,6 +162,7 @@ public class ChooseController extends BasicController {
 		String[] names = PropsFactory.nameProps().toArray(new String[]{});
 		for(int i = 0; i < names.length; i++) {
 			PropsFactory.Prop prop = PropsFactory.getProp(names[i]);
+			if (prop.getText().equals(prop.getName())) continue;
 			prop.getLabel().setText(mcu == null ? "" : mcu.getProp(prop.getName()));
 		}
 	}
