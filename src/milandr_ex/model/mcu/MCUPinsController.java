@@ -3,6 +3,7 @@ package milandr_ex.model.mcu;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
@@ -19,6 +20,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
+import milandr_ex.utils.ChangeCallBackImpl;
+import milandr_ex.utils.ChangeCallback;
+import milandr_ex.utils.ChangeCallbackChecker;
+import milandr_ex.utils.GuiUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +39,8 @@ import static milandr_ex.utils.GuiUtils.*;
 /**
  * Created by lizard on 20.02.17 at 16:38.
  */
-public class MCUPinsController extends BasicController implements PinoutsModel.Observer {
+public class MCUPinsController extends BasicController
+		implements PinoutsModel.Observer, ChangeCallbackChecker {
 	private static final Logger log	= LoggerFactory.getLogger(MCUPinsController.class);
 	@FXML
 	private GridPane boxCont;
@@ -51,6 +57,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	private Map<String, TitledPane> tpaneMap = Maps.newHashMap();
+	private ChangeCallback changeCallback;
 
 	public MCUPinsController() {
 		log.debug("mcuPins Controller initialized");
@@ -68,7 +75,19 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	}
 
 	@Override
+	public boolean check() {
+		return refillInProgress > 0;
+	}
+
+	@Override
 	protected void postInit(AppScene scene) {
+		changeCallback = new ChangeCallBackImpl(this, comboMap) {
+			@Override
+			public void callListener(String key, String prev, String value) {
+				changeCombo(key, prev, value);
+			}
+		};
+
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
@@ -92,7 +111,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 	private CheckBox getCheckBox(String pName) {
 		CheckBox cBox = new CheckBox(pName);
 		initItem(cBox, 1);
-		makeListener(pName, cBox);
+		GuiUtils.makeListener(pName, cBox, changeCallback);
 		cBox.setSelected(false);
 		return cBox;
 	}
@@ -101,7 +120,11 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		if (key.startsWith("ADC")) {
 			ObservableList<String> observableList = getScene().getSetsGenerator().genObsList(key, true);
 			CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
-			ccb.focusedProperty().addListener((observable, oldValue, newValue) -> System.out.println("CheckComboBox focused: "+newValue));
+			Platform.runLater(()->{
+				if (ccb.getSkin() == null) ccb.setSkin(new ComboBox().getSkin());
+				GuiUtils.makeListener(key, ccb, changeCallback);
+			});
+//			ccb.focusedProperty().addListener((observable, oldValue, newValue) -> System.out.println("CheckComboBox focused: "+newValue));
 			result.add(ccb);
 		}
 	}
@@ -116,13 +139,13 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 			labMap.put(sKey, newLabel);
 			comboMap.put(sKey, newCombo);
 			newCombo.setItems(pxList.get(key));
-			makeListener(sKey, newCombo);
+			GuiUtils.makeListener(sKey, newCombo, changeCallback);
 		}
 	}
 
 	private void makeListener(final String key, TitledPane tPane) {
 		tpaneMap.put(key, tPane);
-		makeListener("t-" + key, tPane.expandedProperty());
+		GuiUtils.makeListener("t-" + key, tPane.expandedProperty(), changeCallback);
 	}
 	private void makeListener(final String key, CheckBox newBox) {
 		makeListener("c-" + key, newBox.selectedProperty());

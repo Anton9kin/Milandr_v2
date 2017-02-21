@@ -30,7 +30,7 @@ public class SetsGenerator {
 	public ObservableList<String> genObsList(String setName, boolean cust) {
 		if (cust && setName.startsWith("ADC")) {
 			List<String> adcList = Lists.newArrayList();
-			for(int i=0; i < 16; i++) adcList.add(('a' + i) + "");
+			for(int i=0; i < 16; i++) adcList.add(i + "");
 			return genObsList(adcList);
 		}
 		return genObsList(setName, "");

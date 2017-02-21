@@ -1,5 +1,8 @@
 package milandr_ex.utils;
 
+import impl.org.controlsfx.skin.CheckComboBoxSkin;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -7,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.Constants;
+import org.controlsfx.control.CheckComboBox;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -20,6 +24,30 @@ public class GuiUtils {
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
+
+	public static void makeListener(final String key, CheckBox newBox, ChangeCallback callback) {
+		makeListener("c-" + key, newBox.selectedProperty(), callback);
+	}
+	public static void makeListener(final String key, ComboBox newCombo, ChangeCallback callback) {
+		makeListener(key, newCombo.valueProperty(), callback);
+	}
+	public static void makeListener(final String key, CheckComboBox newCombo, ChangeCallback callback) {
+		CheckComboBoxSkin skin = (CheckComboBoxSkin)newCombo.getSkin();
+		ComboBox combo = (ComboBox)skin.getChildren().get(0);
+		makeListener(key, combo.valueProperty(), callback);
+	}
+	public static void makeListener(final String key, ReadOnlyProperty property, ChangeCallback callback) {
+		property.addListener((ov, t, t1) -> {
+			Map<String, ? extends Node> map = callback.nodeMap();
+			String kkey = callback.listenChange(key, map);
+			if (kkey == null) return;
+			Platform.runLater(() -> {
+				if (map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
+				callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
+			});
+		});
+		callback.callListener(key, "null", "RESET");
+	}
 
 	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map) {
 		for(String key: map.keySet()) {
@@ -69,7 +97,7 @@ public class GuiUtils {
 			((TextField) cb).setEditable(false);
 			cb.setDisable(true);
 		}
-		cb.setPrefWidth(80.0);
+		cb.setPrefWidth(120.0);
 		return cb;
 	}
 

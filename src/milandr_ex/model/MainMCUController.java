@@ -16,6 +16,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.mcu.MCUPinsController;
+import milandr_ex.utils.ChangeCallBackImpl;
+import milandr_ex.utils.ChangeCallback;
+import milandr_ex.utils.ChangeCallbackChecker;
+import milandr_ex.utils.GuiUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,8 @@ import static milandr_ex.data.Constants.clItem2;
 import static milandr_ex.data.Constants.clItem3;
 import static milandr_ex.utils.GuiUtils.*;
 
-public class MainMCUController extends BasicController implements PinoutsModel.Observer {
+public class MainMCUController extends BasicController
+		implements PinoutsModel.Observer, ChangeCallbackChecker {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUController.class);
 
 	@FXML
@@ -40,12 +45,25 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 	private Parent mcuPins;
 	@FXML
 	private MCUPinsController mcuPinsController ;
+	private ChangeCallback changeCallback;
 
 	public MainMCUController() {
 	}
-	
+
+	@Override
+	public boolean check() {
+		return false;
+	}
+
 	@Override
 	protected void postInit(AppScene scene) {
+		changeCallback = new ChangeCallBackImpl(this, clkMap) {
+			@Override
+			public void callListener(String key, String prev, String value) {
+				//changeCombo(key, prev, value);
+			}
+		};
+
 		mcuPinsController.setScene(scene);
 		mcuPinsController.postInit();
 		scene.addObserver("pinouts", this);
@@ -54,11 +72,11 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 		ObservableList<String> observableList = getScene().getSetsGenerator().genObsList("ADC", true);
 		CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
 //		((Control) ccb.getSkin().getSkinnable()).setEd
-		ccb.setSkin(new ComboBox<>().getSkin());
-//		Platform.runLater(() -> {
+		Platform.runLater(() -> {
+			ccb.setSkin(new ComboBox<>().getSkin());
 //			Skinnable skinnable = ccb.getSkin().getSkinnable();
 //			((ComboBoxBase) skinnable).setEditable(true);
-//		});
+		});
 		tmrPane.getChildren().add(new VBox(ccb));
 	}
 
@@ -100,7 +118,8 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 			int splitLen = combostr.split("\\|").length;
 			ComboBox<String> box = new ComboBox<>(splitLen > 5 ? (splitLen > 7 ? clItem3 : clItem) : clItem2);
 			box.getSelectionModel().selectFirst();
-//todo		makeListener("k-" + caption + "-0", box);
+//xtodo		makeListener("k-" + caption + "-0", box);
+			GuiUtils.makeListener("k-" + caption + "-0", box, changeCallback);
 			clkMap.put("k-" + caption + "-0", box);
 			addRowToGrid(gridPane, box, 1, 0, 1);
 		}
