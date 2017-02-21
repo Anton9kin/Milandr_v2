@@ -57,6 +57,7 @@ public class MilandrEx extends Application {
 			setScene(scene);
 			scene.setAppStage(stage);
 			scene.setBundle(bundle);
+//			scene.getStylesheets().add("milandr_ex/application.css");
 
 			stage.setScene(scene);
 			stage.setWidth(800);

@@ -1,18 +1,22 @@
 package milandr_ex.model;
 
 import com.google.common.collect.Maps;
+import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.mcu.MCUPinsController;
+import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +32,8 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 
 	@FXML
 	private GridPane clckCont;
-
+	@FXML
+	private AnchorPane tmrPane;
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
 
 	@FXML
@@ -46,6 +51,15 @@ public class MainMCUController extends BasicController implements PinoutsModel.O
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
 		log.debug("#postInit - initialized");
+		ObservableList<String> observableList = getScene().getSetsGenerator().genObsList("ADC", true);
+		CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
+//		((Control) ccb.getSkin().getSkinnable()).setEd
+		ccb.setSkin(new ComboBox<>().getSkin());
+//		Platform.runLater(() -> {
+//			Skinnable skinnable = ccb.getSkin().getSkinnable();
+//			((ComboBoxBase) skinnable).setEditable(true);
+//		});
+		tmrPane.getChildren().add(new VBox(ccb));
 	}
 
 	@Override

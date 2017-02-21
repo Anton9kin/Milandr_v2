@@ -25,10 +25,21 @@ public class SetsGenerator {
 	private static Map<String, List<String>> pairItems = Maps.newHashMap();
 	private static Map<String, Integer[]> pairNumbers = Maps.newHashMap();
 	public ObservableList<String> genObsList(String setName) {
+		return genObsList(setName, false);
+	}
+	public ObservableList<String> genObsList(String setName, boolean cust) {
+		if (cust && setName.startsWith("ADC")) {
+			List<String> adcList = Lists.newArrayList();
+			for(int i=0; i < 16; i++) adcList.add(('a' + i) + "");
+			return genObsList(adcList);
+		}
 		return genObsList(setName, "");
 	}
 	public ObservableList<String> genObsList(String setName, String skipName) {
 		return FXCollections.observableArrayList(genLists(setName, skipName));
+	}
+	public ObservableList<String> genObsList(List<String> items) {
+		return FXCollections.observableArrayList(items);
 	}
 	public String[] genLists(String setName, String skipName) {
 		generateSets(setName, skipName);

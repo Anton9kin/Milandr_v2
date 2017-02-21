@@ -5,7 +5,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
+import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +97,14 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		return cBox;
 	}
 
+	private void genCustPair(String key, List<Node> result) {
+		if (key.startsWith("ADC")) {
+			ObservableList<String> observableList = getScene().getSetsGenerator().genObsList(key, true);
+			CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
+			ccb.focusedProperty().addListener((observable, oldValue, newValue) -> System.out.println("CheckComboBox focused: "+newValue));
+			result.add(ccb);
+		}
+	}
 
 	private void genVboxPair(String key, int pairCnt, List<Node> result) {
 		for(int i = 0; i < pairCnt; i++) {
@@ -217,6 +229,7 @@ public class MCUPinsController extends BasicController implements PinoutsModel.O
 		List<Node> result = Lists.newArrayList();
 		Integer pxSize = pxList.get(key).size();
 		if (pxSize > 1) genVboxPair(key, pairCnt, result);
+		else genCustPair(key, result);
 		VBox vBox = new VBox((Node[]) result.toArray(new Node[]{}));
 		if (pairCnt > 0) vboxMap.put(key, vBox);
 		initItem(vBox, pxSize > 1 ? (pairCnt * 2 + 1) : 0);
