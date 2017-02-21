@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
  */
 public class LoaderUtils {
 	public static FXMLLoader loadLayout(ResourceBundle bundle, String viewName) {
+		if (bundle == null) bundle = Constants.loadBundle("messages", "ru");
 		try{
 			//load root layout from fmxl file
 			FXMLLoader loader = new FXMLLoader();
