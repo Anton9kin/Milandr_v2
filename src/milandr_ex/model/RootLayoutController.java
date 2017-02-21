@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import milandr_ex.McuType;
 import milandr_ex.MilandrEx;
@@ -122,6 +123,45 @@ public class RootLayoutController extends BasicController {
 		Menu mn = item.getParentMenu();
 		String menuCaption = mn.getText();
 		return MenuKind.valueOf(menuCaption.toUpperCase());
+	}
+
+	@FXML
+	public void handleClose(ActionEvent event) {
+		MenuItem mi = (MenuItem) event.getSource();
+		switch (parseMenuKind(mi)) {
+			case PROJECT:
+			case PROCESSOR:
+				CloseProject(messages);
+				break;
+		}
+	}
+
+	public void CloseProject(ResourceBundle messages) {
+		try{
+			AppScene scene = getScene();
+			scene.setMcuMain(null);
+			BorderPane rootLayout = scene.getRootLayout();
+			//load receipt overview
+			FXMLLoader loader = new FXMLLoader();
+			loader.setResources(scene.getBundle());
+			loader.setLocation(MilandrEx.class.getResource("view/Main.fxml"));
+			AnchorPane mainLayout = loader.load();
+
+			//set receipt overview into center of root layout
+			rootLayout.setCenter(mainLayout);
+			getScene().setRootLayout(rootLayout);
+			getScene().setMainLayout(mainLayout);
+			addSceneToController(loader, scene).postInit();
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	private BasicController addSceneToController(FXMLLoader loader, AppScene scene) {
+		BasicController controller = loader.getController();
+		controller.setScene(scene);
+		return controller;
 	}
 
 	@FXML

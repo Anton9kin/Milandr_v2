@@ -23,6 +23,7 @@
                      </accelerator>
                   </MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="%menu.saveas" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleClose" text="%menu.close" />
                   <MenuItem mnemonicParsing="false" onAction="#handleExit" text="%menu.quit">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="Q" control="ANY" meta="UP" shift="UP" shortcut="UP" />

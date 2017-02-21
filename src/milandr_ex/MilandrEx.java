@@ -77,22 +77,7 @@ public class MilandrEx extends Application {
 	 * @param rootLayout
 	 */
 	public void showMain(BorderPane rootLayout){
-		try{
-			//load receipt overview
-			FXMLLoader loader = new FXMLLoader();
-			loader.setResources(scene.getBundle());
-			loader.setLocation(MilandrEx.class.getResource("view/Main.fxml"));
-			AnchorPane mainLayout = loader.load();
-
-			//set receipt overview into center of root layout
-			rootLayout.setCenter(mainLayout);
-			getScene().setRootLayout(rootLayout);
-			getScene().setMainLayout(mainLayout);
-			addSceneToController(loader, scene).postInit();
-
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		((RootLayoutController) getScene().getRootController()).CloseProject(scene.getBundle());
 	}
 
 	private BasicController addSceneToController(FXMLLoader loader, AppScene scene) {
