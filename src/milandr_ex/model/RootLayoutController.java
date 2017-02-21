@@ -25,6 +25,7 @@ import milandr_ex.data.AppScene;
 import milandr_ex.data.Constants;
 import milandr_ex.data.DeviceFactory;
 import milandr_ex.data.PinoutsModel;
+import milandr_ex.utils.LoaderUtils;
 
 public class RootLayoutController extends BasicController {
 
@@ -64,25 +65,12 @@ public class RootLayoutController extends BasicController {
 		if (messages == null) messages = Constants.loadBundle("messages", "ru");
 		McuType mcu = getScene().getMcuMain();
 		if (mcu != null){
-			String newTitle = messages.getString("main.title") + " - " + mcu.getProp("type");
-			URL location = MilandrEx.class.getResource("view/mainMCU.fxml");
-			FXMLLoader loader = new FXMLLoader(location);
-			loader.setResources(messages);
-			loader.setLocation(location);
 			if (getScene().getPinoutsModel() == null) {
-				getScene().setPinoutsModel(new PinoutsModel().setSelectedBody(mcu.getProp("pack")));
+				getScene().setPinoutsModel(PinoutsModel.get(mcu));
 			}
-			getScene().setMainLayout(loaderLoad(loader));
-			BasicController main = loader.getController();
-			main.setScene(getScene());
-			main.postInit();
+			LoaderUtils.initAnyLayout(getScene(), "mainMCU", "main.title");
 			getScene().observe("pinouts");
-			getScene().getRootLayout().setCenter(getScene().getMainLayout());
-			Stage stage = getScene().getAppStage();
-			stage.setWidth(1200);
-			stage.setHeight(800);
-			stage.setTitle(newTitle);
-			stage.centerOnScreen();
+			LoaderUtils.initStage(getScene().getAppStage(), 1200, 800);
 		}
 	}
 
@@ -96,12 +84,9 @@ public class RootLayoutController extends BasicController {
 	}
 
 	public void NewProject(ResourceBundle messages) {
-		if (messages == null) messages = Constants.loadBundle("messages", "ru");
-		URL location = MilandrEx.class.getResource("view/selectDevice.fxml");
-		FXMLLoader loader = new FXMLLoader();
-		loader.setResources(messages);
-		loader.setLocation(location);
-		AnchorPane page = loaderLoad(loader);
+//		LoaderUtils.initAnyLayout(getScene(), "selectDevice", "main.choose.title");
+		FXMLLoader loader = LoaderUtils.loadLayout(messages, "selectDevice");
+		AnchorPane page = loader.getRoot();
 		
 		//Create dialog winStage
 		Stage chooseStage = new Stage();
@@ -131,37 +116,16 @@ public class RootLayoutController extends BasicController {
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
-				CloseProject(messages);
+				CloseProject();
 				break;
 		}
 	}
 
-	public void CloseProject(ResourceBundle messages) {
-		try{
-			AppScene scene = getScene();
-			scene.setMcuMain(null);
-			BorderPane rootLayout = scene.getRootLayout();
-			//load receipt overview
-			FXMLLoader loader = new FXMLLoader();
-			loader.setResources(scene.getBundle());
-			loader.setLocation(MilandrEx.class.getResource("view/Main.fxml"));
-			AnchorPane mainLayout = loader.load();
-
-			//set receipt overview into center of root layout
-			rootLayout.setCenter(mainLayout);
-			getScene().setRootLayout(rootLayout);
-			getScene().setMainLayout(mainLayout);
-			addSceneToController(loader, scene).postInit();
-
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-
-	private BasicController addSceneToController(FXMLLoader loader, AppScene scene) {
-		BasicController controller = loader.getController();
-		controller.setScene(scene);
-		return controller;
+	public void CloseProject() {
+		getScene().setMcuMain(null);
+		PinoutsModel model = getScene().getPinoutsModel();
+		if (model != null) model.setHasUnsavedChanges(false);
+		LoaderUtils.initAnyLayout(getScene(), "Main", "main.title");
 	}
 
 	@FXML

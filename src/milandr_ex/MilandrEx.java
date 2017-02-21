@@ -2,17 +2,11 @@ package milandr_ex;
 
 import com.aquafx_project.AquaFx;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import milandr_ex.data.AppScene;
-import milandr_ex.data.Constants;
-import milandr_ex.model.BasicController;
 import milandr_ex.model.RootLayoutController;
-
-import java.io.IOException;
-import java.util.ResourceBundle;
+import milandr_ex.utils.LoaderUtils;
 
 
 public class MilandrEx extends Application {
@@ -33,7 +27,8 @@ public class MilandrEx extends Application {
 	public void start(Stage primStage) {
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
 		AquaFx.style();
-		showMain(initRootLayout(primStage));
+		initRootLayout(primStage);
+		showMain();
 	}
 
 	/**
@@ -43,49 +38,18 @@ public class MilandrEx extends Application {
 	 */
 	
 	public BorderPane initRootLayout(Stage stage){
-		try{
-			ResourceBundle bundle = Constants.loadBundle("messages", "ru");
-			stage.setTitle(bundle.getString("main.title"));
-			//load root layout from fmxl file
-			FXMLLoader loader = new FXMLLoader();
-			loader.setResources(bundle);
-			loader.setLocation(MilandrEx.class.getResource("view/RootLayout.fxml"));
-			BorderPane rootLayout = loader.load();
-
-			//show the scene containing root layout
-			AppScene scene = new AppScene(rootLayout);
-			setScene(scene);
-			scene.setAppStage(stage);
-			scene.setBundle(bundle);
-			scene.getStylesheets().add("milandr_ex/application.css");
-
-			stage.setScene(scene);
-			stage.setWidth(800);
-			stage.setHeight(600);
-			stage.show();
-			scene.setRootController(addSceneToController(loader, scene).postInit());
-			return rootLayout;
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		return null;
+		LoaderUtils.initRootLayout(stage);
+		setScene((AppScene) stage.getScene());
+		return getScene().getRootLayout();
 	}
-	
+
 	/**
 	 * Show recept overview inside root layout
 	 * 
-	 * @param rootLayout
 	 */
-	public void showMain(BorderPane rootLayout){
-		((RootLayoutController) getScene().getRootController()).CloseProject(scene.getBundle());
+	public void showMain(){
+		((RootLayoutController) getScene().getRootController()).CloseProject();
 	}
-
-	private BasicController addSceneToController(FXMLLoader loader, AppScene scene) {
-		BasicController controller = loader.getController();
-		controller.setScene(scene);
-		return controller;
-	}
-
 
 	/**
 	 * 

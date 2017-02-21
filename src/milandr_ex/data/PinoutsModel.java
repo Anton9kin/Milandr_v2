@@ -2,6 +2,7 @@ package milandr_ex.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import milandr_ex.McuType;
 import milandr_ex.model.ModelObserver;
 
 import java.io.File;
@@ -73,5 +74,13 @@ public class PinoutsModel {
 		}
 		pinoutsModel.setHasUnsavedChanges(false);
 		return pinoutsModel;
+	}
+
+	public static PinoutsModel get(McuType mcuType) {
+		return get(mcuType.getProp("pack"));
+	}
+
+	public static PinoutsModel get(String body) {
+		return new PinoutsModel().setSelectedBody(body);
 	}
 }
