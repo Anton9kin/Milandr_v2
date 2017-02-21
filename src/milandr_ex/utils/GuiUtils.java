@@ -68,6 +68,7 @@ public class GuiUtils {
 		node.setVisible(Boolean.TRUE);
 		node.setMinWidth(100.0);
 		node.setPrefWidth(100.0);
+		node.setMaxWidth(100000.0);
 		node.setMinHeight(25 * k);
 		node.setPrefHeight(25 * k);
 	}
