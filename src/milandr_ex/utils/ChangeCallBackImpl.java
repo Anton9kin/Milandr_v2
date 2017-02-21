@@ -8,12 +8,12 @@ import java.util.Map;
  * Created by lizard on 21.02.17 at 12:26.
  */
 public abstract class ChangeCallBackImpl implements ChangeCallback {
-	private ChangeCallbackChecker checker;
+	protected ChangeCallbackOwner checker;
 	private Map<String, ? extends Node> nodeMap;
 
-	public ChangeCallBackImpl(ChangeCallbackChecker checker, Map<String, ? extends Node> nodeMap) {
-		this.checker = checker;
-		this.nodeMap = nodeMap;
+	public ChangeCallBackImpl(ChangeCallbackOwner owner) {
+		this.checker = owner;
+		this.nodeMap = owner.nodeMap();
 	}
 
 	@Override

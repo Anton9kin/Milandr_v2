@@ -7,8 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import milandr_ex.data.AppScene;
+import milandr_ex.model.BasicController;
 
-public class MCUSystickController {
+public class MCUSystickController extends BasicController {
 
 	@FXML
 	private ComboBox<String> ist;
@@ -35,17 +37,19 @@ public class MCUSystickController {
 	private Button btnOK;
 	@FXML
 	private Button btnCansel;
-	
-	
-	@FXML
-	private void initialize(){
+
+	@Override
+	protected void postInit(AppScene scene) {
 		ist.setItems(istList);
-		ist.getSelectionModel().select(0);
-		
 		mode.setItems(modeList);
-		mode.getSelectionModel().select(0);
-		
 		unit.setItems(unitList);
+	}
+
+	@Override
+	protected void initLater(AppScene scene) {
+		super.initLater(scene);
+		ist.getSelectionModel().select(0);
+		mode.getSelectionModel().select(0);
 		unit.getSelectionModel().select(0);
 	}
 }

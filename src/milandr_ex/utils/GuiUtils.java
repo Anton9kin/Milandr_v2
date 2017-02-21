@@ -33,6 +33,7 @@ public class GuiUtils {
 	}
 	public static void makeListener(final String key, CheckComboBox newCombo, ChangeCallback callback) {
 		CheckComboBoxSkin skin = (CheckComboBoxSkin)newCombo.getSkin();
+		if (skin == null) return;
 		ComboBox combo = (ComboBox)skin.getChildren().get(0);
 		makeListener(key, combo.valueProperty(), callback);
 	}

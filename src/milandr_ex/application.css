@@ -162,3 +162,12 @@
     -fx-text-fill: white;
 }
 *  */
+VBox {
+    /*!*css code for debug alignment*!*/
+    /*-fx-border-color: #f78218;*/
+}
+/*HBox, VBox, AnchorPane, TabPane, GridPane {*/
+    /*-fx-background-color: #393939;*/
+    /*-fx-text-fill: #f78218;*/
+    /*-fx-font-color: #fff;*/
+/*}*/

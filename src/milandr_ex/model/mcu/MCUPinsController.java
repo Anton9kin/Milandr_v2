@@ -57,7 +57,6 @@ public class MCUPinsController extends BasicController
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	private Map<String, TitledPane> tpaneMap = Maps.newHashMap();
-	private ChangeCallback changeCallback;
 
 	public MCUPinsController() {
 		log.debug("mcuPins Controller initialized");
@@ -75,19 +74,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	@Override
-	public boolean check() {
-		return refillInProgress > 0;
-	}
-
-	@Override
 	protected void postInit(AppScene scene) {
-		changeCallback = new ChangeCallBackImpl(this, comboMap) {
-			@Override
-			public void callListener(String key, String prev, String value) {
-				changeCombo(key, prev, value);
-			}
-		};
-
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
@@ -147,24 +134,7 @@ public class MCUPinsController extends BasicController
 		tpaneMap.put(key, tPane);
 		GuiUtils.makeListener("t-" + key, tPane.expandedProperty(), changeCallback);
 	}
-	private void makeListener(final String key, CheckBox newBox) {
-		makeListener("c-" + key, newBox.selectedProperty());
-	}
-	private void makeListener(final String key, ComboBox newCombo) {
-		makeListener(key, newCombo.valueProperty());
-	}
-	private void makeListener(final String key, ReadOnlyProperty property) {
-		property.addListener((ov, t, t1) ->  {
-			if (refillInProgress > 0) return;
-			final String kkey = key + "";
-//			log_debug(String.format("#listen[%d] ov=%s t=%s t1=%s", refillInProgress, ov, t, t1));
-			Platform.runLater(() -> {
-				if (comboMap.containsKey(kkey) && !comboMap.get(kkey).isVisible()) return;
-				changeCombo(kkey, String.valueOf(t), String.valueOf(t1));
-			});
-		});
-		callListener(key, "RESET");
-	}
+
 	private void callListener(final String key, String value) {
 		if (value.equals("null") || value.equals("RESET")) {
 			Platform.runLater(() -> {
@@ -259,19 +229,19 @@ public class MCUPinsController extends BasicController
 		initItem(vBox, pxSize > 1 ? (pairCnt * 2 + 1) : 0);
 		return vBox;
 	}
-	private void changeCombo(){
-		for(String comboKey: comboMap.keySet()) {
-			changeCombo(comboKey, "", "");
-		}
-	}
-	private void changeCombo(String comboKey, String prev, String value){
-		switchComboIndex(comboKey, comboMap.get(comboKey), prev, value);
-	}
+
+//	private void changeCombo(){
+//		for(String comboKey: comboMap.keySet()) {
+//			changeCombo(comboKey, "", "");
+//		}
+//	}
+
 	private void changeSets(String[] comboKey, Boolean value){
 		for(String key: comboKey) {
 			switchObjects(key, vboxMap, value, true);
 		}
 	}
+
 	private void changeSet(String comboKey, Boolean value){
 		switchObjects(comboKey, vboxMap, value, true);
 	}
@@ -314,6 +284,21 @@ public class MCUPinsController extends BasicController
 
 	private void switchCombos(Integer[] idx, boolean visible, boolean single){
 		switchObjects(idx, comboMap, visible, single);
+	}
+
+	@Override
+	public boolean check() {
+		return refillInProgress > 0;
+	}
+
+	@Override
+	public Map<String, ? extends Node> nodeMap() {
+		return comboMap;
+	}
+
+	@Override
+	public void callListener(String comboKey, String prev, String value) {
+		switchComboIndex(comboKey, comboMap.get(comboKey), prev, value);
 	}
 
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {

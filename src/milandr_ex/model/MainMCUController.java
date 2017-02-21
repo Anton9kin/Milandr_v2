@@ -16,6 +16,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.mcu.MCUPinsController;
+import milandr_ex.model.mcu.MCUPowerController;
+import milandr_ex.model.mcu.MCUSystickController;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackChecker;
@@ -32,7 +34,7 @@ import static milandr_ex.data.Constants.clItem3;
 import static milandr_ex.utils.GuiUtils.*;
 
 public class MainMCUController extends BasicController
-		implements PinoutsModel.Observer, ChangeCallbackChecker {
+		implements PinoutsModel.Observer {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUController.class);
 
 	@FXML
@@ -45,27 +47,21 @@ public class MainMCUController extends BasicController
 	private Parent mcuPins;
 	@FXML
 	private MCUPinsController mcuPinsController ;
-	private ChangeCallback changeCallback;
+	@FXML
+	private Parent mcuPower;
+	@FXML
+	private MCUPowerController mcuPowerController;
+	@FXML
+	private Parent mcuSystick;
+	@FXML
+	private MCUSystickController mcuSystickController ;
 
 	public MainMCUController() {
 	}
 
 	@Override
-	public boolean check() {
-		return false;
-	}
-
-	@Override
 	protected void postInit(AppScene scene) {
-		changeCallback = new ChangeCallBackImpl(this, clkMap) {
-			@Override
-			public void callListener(String key, String prev, String value) {
-				//changeCombo(key, prev, value);
-			}
-		};
-
-		mcuPinsController.setScene(scene);
-		mcuPinsController.postInit();
+		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
 		log.debug("#postInit - initialized");

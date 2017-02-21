@@ -4,11 +4,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import milandr_ex.data.AppScene;
+import milandr_ex.model.BasicController;
 
-public class MCUPowerController {
+public class MCUPowerController extends BasicController {
 
 	@FXML
 	private ComboBox<String> ucc;
@@ -24,15 +24,17 @@ public class MCUPowerController {
 	private Button btnOK;
 	@FXML
 	private Button btnCansel;
-	
-	
-	@FXML
-	private void initialize(){
+
+	@Override
+	protected void postInit(AppScene scene) {
 		ucc.setItems(uccList);
-		ucc.getSelectionModel().select(0);
-		
 		bucc.setItems(buccList);
+	}
+
+	@Override
+	protected void initLater(AppScene scene) {
+		super.initLater(scene);
+		ucc.getSelectionModel().select(0);
 		bucc.getSelectionModel().select(0);
-		
 	}
 }
