@@ -8,7 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class PowerController {
+public class MCUPowerController {
 
 	@FXML
 	private ComboBox<String> ucc;

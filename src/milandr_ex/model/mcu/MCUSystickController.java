@@ -8,7 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class SystickController {
+public class MCUSystickController {
 
 	@FXML
 	private ComboBox<String> ist;
