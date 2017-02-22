@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
  */
 public class LoaderUtils {
 	public static FXMLLoader loadLayout(ResourceBundle bundle, String viewName) {
+		if (bundle == null) bundle = Constants.loadBundle("messages", "ru");
 		try{
 			//load root layout from fmxl file
 			FXMLLoader loader = new FXMLLoader();
@@ -54,10 +55,9 @@ public class LoaderUtils {
 	}
 
 	public static BorderPane initRootLayout(Stage stage) {
-		ResourceBundle bundle = Constants.loadBundle("messages", "ru");
-		FXMLLoader loader = loadLayout(bundle, "RootLayout");
-		getAppScene(stage, bundle, loader.getRoot());
-		stage.setTitle(bundle.getString("main.title"));
+		FXMLLoader loader = loadLayout(null, "RootLayout");
+		getAppScene(stage, loader.getResources(), loader.getRoot());
+		stage.setTitle(((AppScene)stage.getScene()).getBundle().getString("main.title"));
 
 		initStage(stage, 800, 600);
 		AppScene scene = (AppScene) stage.getScene();
@@ -66,7 +66,8 @@ public class LoaderUtils {
 	}
 
 	public static Region initAnyLayout(AppScene scene, String viewName, String titleKey) {
-		ResourceBundle bundle = Constants.loadBundle("messages", "ru");
+		scene.clearObservers();
+		ResourceBundle bundle = scene.getBundle();
 		FXMLLoader loader = loadLayout(bundle, viewName);
 		scene.getAppStage().setTitle(bundle.getString(titleKey));
 		setupNewLayout(scene, loader);
@@ -75,6 +76,7 @@ public class LoaderUtils {
 	}
 
 	private static void setupNewLayout(AppScene scene, FXMLLoader loader) {
+		scene.setBundle(loader.getResources());
 		initStage(scene.getAppStage(), 800, 600);
 		BorderPane rootLayout = scene.getRootLayout();
 		AnchorPane mainLayout = loader.getRoot();
