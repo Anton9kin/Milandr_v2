@@ -11,10 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import milandr_ex.data.*;
 import milandr_ex.model.mcu.*;
 import milandr_ex.utils.ChangeCallBackImpl;
@@ -146,7 +143,14 @@ public class MainMCUController extends BasicController
 		}
 		makeComboGrid(gridPane, caption, combostr, 3);
 //		addRowToGrid(gridPane, new Label("output"), 0, 2, 1);
-		addRowToGrid(gridPane, makeGridsCombo(exitStr), 1, 2, 1);
+		Region rgn = makeGridsCombo(exitStr);
+		if (rgn instanceof ComboBox) {
+			GuiUtils.makeListener("k-" + caption + "-9", (ComboBox) rgn, changeCallback);
+			clkMap.put("k-" + caption + "-9", (ComboBox) rgn);
+			rgn = new HBox(rgn, new Label(exitStr));
+			rgn.setMinWidth(120.0);
+		}
+		addRowToGrid(gridPane, rgn, 1, 2, 1);
 		if (!exitStr.equals("Sim") && !exitStr.equals("Not"))
 		addRowToGrid(gridPane, new CheckBox("Allow"), 2, 2, 1);
 		addRowToGrid(clckCont, new VBox(gridPane), col, row, 1);
@@ -167,17 +171,21 @@ public class MainMCUController extends BasicController
 		return gridPane1;
 	}
 
+	private void setGridRowCol(GridPane gp, Node node, int row, int col) {
+		GridPane.setColumnIndex(node, col);
+		GridPane.setRowIndex(node, row);
+		gp.getChildren().add(node);
+	}
 	private Region addComboToGrid(GridPane gridPane1, String prefix, String items, int col, int row) {
 		if (items.startsWith("\\")) return null;
 		Region cb = col % 2 == 0 ? makeLabel(items) : makeGridsCombo(items);
-		GridPane.setColumnIndex(cb, col);
-		GridPane.setRowIndex(cb, row);
-		gridPane1.getChildren().add(cb);
 		if (cb instanceof ComboBox) {
 			String key = "k-" + prefix + "-" + col + row;
 			makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
+			cb = new HBox(cb, new Label(items));
 		}
+		setGridRowCol(gridPane1, cb, row, col);
 		return cb;
 	}
 
@@ -198,6 +206,7 @@ public class MainMCUController extends BasicController
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		if (clock == null) return;
 		if (subInd == 0) clock.setSelected(subKey, Integer.parseInt(value.split("-")[1]) - 1);
+		else if (subInd == 9) clock.setFactor(subKey, "out", value);
 		else clock.setFactor(subKey, factors.indexOf(subInd), value);
 		log_debug(log, clock.calc().toStr(subKey));
 	}
@@ -223,8 +232,19 @@ public class MainMCUController extends BasicController
 		int blockInd = 0;
 		for(String key: clkBlocks.keySet()) {
 			fillBlocksInputs(key, subInd, clock, key);
+			String hzText = makeHzText(clock.getOut(key, -1));
 			TextField label = findTextFromGrid(clkBlocks.get(key), 2, 1);
-			if (label != null) label.setText(makeHzText(clock.getOut(key, -1)));
+			if (label != null)  {
+				label.setText(hzText);
+			} else {
+				HBox hb = findHBTextFromGrid(clkBlocks.get(key),2, 1);
+				if (hb != null) {
+					List<Node> hbc = hb.getChildren();
+					for(Node nd: hbc) {
+						if (nd instanceof Label) ((Label)nd).setText(hzText);
+					}
+				}
+			}
 //			blockInd++;
 		}
 	}
@@ -249,6 +269,6 @@ public class MainMCUController extends BasicController
 		String pinSuff = "Hz";
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
-		return pinOut + pinSuff;
+		return "  " + pinOut + pinSuff + "  ";
 	}
 }

@@ -3,6 +3,7 @@ package milandr_ex.data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,9 @@ import java.util.Set;
  * Created by lizard on 22.02.17 at 13:23.
  */
 public class ClockModel {
+	private static Map<String, String> pinAliases = new HashMap<String, String>(){{
+		put("ADC-CLK", "ADC-2");put("CPU-CLK", "CPU-3");put("USB-CLK", "USB-2");
+	}};
 	public static class InOut {
 		private String alias;
 		private final String name;
@@ -64,6 +68,7 @@ public class ClockModel {
 			return this;
 		}
 		public static InOut get(String name, String body, String from) {
+			if (pinAliases.containsKey(from)) from = pinAliases.get(from);
 			return new InOut(name, body, from).checkFullSetup();
 		}
 
@@ -200,6 +205,8 @@ public class ClockModel {
 			checkFullSetup();
 			if (inputs.containsKey(name)) {
 				inputs.get(name).setFactor(value);
+			} else if (name.equals("out")) {
+				output.setFactor(value);
 			}
 			return this;
 		}
@@ -282,26 +289,31 @@ public class ClockModel {
 		for(Block block: blocks) {
 			if (block.equals(inputs)) continue;
 			if (block.equals(outputs)) continue;
-			int cnt = block.getPinSize();
-			InOut seld = block.getSelected();
-			for(int i = 0; i < cnt; i++) {
-				InOut pin = block.select(i).getSelected();//block.getSelected();
-				Block fromBlock = blockMap.get(pin.from);
-				boolean fromInp = false;
-				if (fromBlock == null) {
-					fromBlock = inputs;
-					fromInp = true;
-				}
-				if (fromBlock != null) {
-					pin.setValue(fromBlock.getPin(fromInp ? pin.from : "out")).getValue();
-				}
-				block.calc();
-			}
-			block.setSelected(seld).calc();
+			calcOneBlock(block);
 		}
-		outputs.calc();
+		calcOneBlock(outputs);
 		return this;
 	}
+
+	private void calcOneBlock(Block block) {
+		int cnt = block.getPinSize();
+		InOut seld = block.getSelected();
+		for(int i = 0; i < cnt; i++) {
+			InOut pin = block.select(i).getSelected();//block.getSelected();
+			Block fromBlock = blockMap.get(pin.from);
+			boolean fromInp = false;
+			if (fromBlock == null) {
+				fromBlock = inputs;
+				fromInp = true;
+			}
+			if (fromBlock != null) {
+				pin.setValue(fromBlock.getPin(fromInp ? pin.from : "out")).getValue();
+			}
+			block.calc();
+		}
+		block.setSelected(seld).calc();
+	}
+
 	public Integer getOut(String name) {
 		checkFullSetup();
 		return outputs.getPin(name);

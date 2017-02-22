@@ -93,6 +93,10 @@ public class GuiUtils {
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof TextField ? (TextField)node : null;
 	}
+	public static HBox findHBTextFromGrid(GridPane grid, int row, int col) {
+		Node node = findNodeFromGrid(grid, row, col);
+		return node instanceof HBox? (HBox) node : null;
+	}
 	public static Label findLabelFromGrid(GridPane grid, int row, int col) {
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof Label ? (Label)node : null;
@@ -114,6 +118,9 @@ public class GuiUtils {
 	}
 
 	public static Region makeGridsCombo(String items) {
+		return makeGridsCombo(items, "", null);
+	}
+	public static Region makeGridsCombo(String items, String key, ChangeCallback callBack) {
 		Region cb;
 		if (items.matches("\\d+\\s[MK]Hz")) {
 			int max = Integer.parseInt(items.substring(0, items.indexOf(' ')));
@@ -122,11 +129,13 @@ public class GuiUtils {
 				new ComboBox<String>(Constants.getDvMlItems(items));
 		if (cb instanceof ComboBox) {
 			((ComboBox) cb).getSelectionModel().selectLast();
+			if (!key.isEmpty()) makeListener(key, (ComboBox) cb, callBack);
 		} else if (cb instanceof TextField) {
 			((TextField) cb).setEditable(false);
 			cb.setDisable(true);
 		}
-		cb.setPrefWidth(120.0);
+		cb.setPrefWidth(80.0);
+//		cb.setPrefWidth(cb instanceof ComboBox ? 120.0 : 80.0);
 		return cb;
 	}
 
