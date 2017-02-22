@@ -16,19 +16,23 @@ import java.util.*;
  */
 public class Constants {
     public static String[][] combostrs = {
+            {"INPUTS", "", "OUTPUT"},
             {"CPU-1", "CPU-2", "CPU-3"},
-            {"USB-1", "USB-2", "INPUTS"},
-            {"ADC-1", "ADC-2", "OUTPUT"},
+            {"USB-1", "USB-2", ""},
+            {"ADC-1", "ADC-2", ""},
             {
+                    "HSI|8Mhz|HSE|8 Mhz|LSE|32 Khz|LSI|40 Khz|\\Not",
+                    "",
+                    "F-CLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSI|/ 256|HSE|/ 256|\\Not",
                     "HSI|8Mhz|HSI|/ 2|HSE|MHz|HSE|/ 2|\\Sim",
                     "CPU-1|Sim|CPU-1|* 16|\\Sim",
                     "HSI|8 Mhz|CPU-2|/ 256|LSE|32 Khz|LSI|40 Khz|\\Out",
                     "HSI|8Mhz|HSI|/ 2|HSE|Mhz|HSE|/ 2|\\Sim",
                     "USB-1|Sim|USB-1|* 16|\\/ 2",
-                    "HSI|8Mhz|HSE|8 Mhz|LSE|32 Khz|LSI|40 Khz|\\Not",
+                    "",
                     "CPU-1|Sim|USB-1|Sim|CPU-2|Sim|USB-2|Sim|\\Sim",
                     "ADC-1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
-					"F-CLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSI|/ 256|HSE|/ 256|\\Not",
+                    "",
             }};
 
     public static ObservableList<String> clItem = FXCollections.
