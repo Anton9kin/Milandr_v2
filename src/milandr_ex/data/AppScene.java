@@ -35,6 +35,7 @@ public class AppScene extends Scene {
 	private Map<String, List<ModelObserver>> observers = Maps.newHashMap();
 	private BasicController rootController;
 	private SetsGenerator setsGenerator;
+	private boolean setupInProcess = false;
 
 	public void addObserver(String key, ModelObserver observer) {
 		if (!observers.containsKey(key)) {
@@ -51,6 +52,26 @@ public class AppScene extends Scene {
 				((PinoutsModel.Observer) observer).observe(pinoutsModel);
 			}
 		}
+	}
+
+	public void clearObservers() {
+		observers.clear();
+	}
+
+	public boolean isSetupInProcess() {
+		return setupInProcess;
+	}
+
+	public void startSetupProcess() {
+		setSetupInProcess(true);
+	}
+
+	public void stopSetupProcess() {
+		setSetupInProcess(false);
+	}
+
+	public void setSetupInProcess(boolean setupInProcess) {
+		this.setupInProcess = setupInProcess;
 	}
 
 	public void setBundle(ResourceBundle bundle) {

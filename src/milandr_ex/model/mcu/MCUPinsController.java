@@ -308,7 +308,7 @@ public class MCUPinsController extends BasicController
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
-		PinoutsModel pinoutsModel = getScene().getPinoutsModel();
+		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
 		if (value != null && !value.equals("null") && pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
 		if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);

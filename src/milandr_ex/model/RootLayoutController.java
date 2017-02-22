@@ -14,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import milandr_ex.McuType;
-import milandr_ex.MilandrEx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -29,7 +28,6 @@ import milandr_ex.utils.LoaderUtils;
 
 public class RootLayoutController extends BasicController {
 
-	private ResourceBundle messages;
 	public enum MenuKind {
 		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR
 	}
@@ -48,8 +46,10 @@ public class RootLayoutController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		ChooseController.setDefaultMCU();
-		scene.setMcuMain(DeviceFactory.getDevice("LQFP64").getMcu());
-		Platform.runLater(() -> LoadProject(getMessages()));
+		Platform.runLater(() -> {
+			scene.setMcuMain(DeviceFactory.getDevice("LQFP64").getMcu());
+			LoadProject(getMessages());
+		});
 	}
 
 	public void LoadProjectFromFile(ResourceBundle messages, File selectedFile) {
@@ -62,7 +62,6 @@ public class RootLayoutController extends BasicController {
 		}
 	}
 	public void LoadProject(ResourceBundle messages) {
-		if (messages == null) messages = Constants.loadBundle("messages", "ru");
 		McuType mcu = getScene().getMcuMain();
 		if (mcu != null){
 			if (getScene().getPinoutsModel() == null) {
@@ -72,15 +71,6 @@ public class RootLayoutController extends BasicController {
 			getScene().observe("pinouts");
 			LoaderUtils.initStage(getScene().getAppStage(), 1200, 800);
 		}
-	}
-
-	private static AnchorPane loaderLoad(FXMLLoader loader) {
-		try {
-			return  (AnchorPane)loader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public void NewProject(ResourceBundle messages) {
@@ -134,7 +124,7 @@ public class RootLayoutController extends BasicController {
 		switch (parseMenuKind(mi)) {
 			case PROJECT:
 			case PROCESSOR:
-				NewProject(messages);
+				NewProject(getMessages());
 				break;
 		}
 	}
@@ -165,7 +155,7 @@ public class RootLayoutController extends BasicController {
 		if (selectedFile != null) {
 			setLastSelectedPath(selectedFile.getAbsolutePath());
 			saveOptions();
-			LoadProjectFromFile(messages, selectedFile);
+			LoadProjectFromFile(getMessages(), selectedFile);
 		}
 	}
 

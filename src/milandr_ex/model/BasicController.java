@@ -36,8 +36,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 				checker.callListener(key, prev, value);
 			}
 		};
+		getScene().startSetupProcess();
 		postInit(getScene());
 		Platform.runLater(()->initLater(getScene()));
+		getScene().stopSetupProcess();
 		return (T) this;
 	}
 	protected abstract void postInit(AppScene scene);
