@@ -6,6 +6,7 @@ import milandr_ex.data.AppScene;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackOwner;
+import org.slf4j.Logger;
 
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -67,4 +68,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	public ResourceBundle getMessages() {
 		return messages;
 	}
+
+	protected void log_debug(Logger log, String logText) {
+		if (log != null) log.debug(logText);
+		System.out.println(logText);
+	}
+
 }

@@ -1,5 +1,6 @@
 package milandr_ex.model;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
@@ -24,6 +25,7 @@ import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.clItem;
@@ -40,6 +42,7 @@ public class MainMCUController extends BasicController
 	@FXML
 	private AnchorPane tmrPane;
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
+	private Map<String, GridPane> clkBlocks = Maps.newHashMap();
 
 	@FXML
 	private Parent mcuPins;
@@ -109,21 +112,28 @@ public class MainMCUController extends BasicController
 		clckCont.setStyle("-fx-background-color: white; -fx-grid-lines-visible: true");
 		makePaddings(clckCont);
 		String[][] combostrs = Constants.combostrs;
+		List<ClockModel.Block> blocks = Lists.newArrayList();
 		for(int i = 0; i < combostrs.length - 1; i++) {
 			for(int j = 0; j < combostrs[i].length; j++) {
 				String namestr = combostrs[i][j];
 				if (namestr.isEmpty()) continue;
 				String combostr = combostrs[combostrs.length - 1][i * combostrs[i].length + j];
 				makeClockGridItem(namestr, combostr, j, i);
+				blocks.add(ClockModel.Block.get(namestr, combostr));
 			}
 		}
+		PinoutsModel model = getScene().getPinoutsModel();
+		ClockModel clock = ClockModel.get(model.getSelectedBody(), blocks);
+		model.setClockModel(clock);
+		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
+		clock.calc();
 	}
 
 	private void makeClockGridItem(String caption, String combostr, int col, int row) {
 		GridPane gridPane = new GridPane();
 		gridPane.setAlignment(Pos.CENTER);
 		makePaddings(gridPane);
-		addRowToGrid(gridPane, new Label(caption), 0, 0, 1);
+		addRowToGrid(gridPane, makeLabel(caption), 0, 0, 1);
 		String exitStr = combostr.split("\\\\")[1];
 		if (!exitStr.equals("Not")) {
 			int splitLen = combostr.split("\\|").length;
@@ -140,6 +150,7 @@ public class MainMCUController extends BasicController
 		if (!exitStr.equals("Sim") && !exitStr.equals("Not"))
 		addRowToGrid(gridPane, new CheckBox("Allow"), 2, 2, 1);
 		addRowToGrid(clckCont, new VBox(gridPane), col, row, 1);
+		clkBlocks.put(caption, gridPane);
 	}
 
 	private GridPane makeComboGrid(GridPane gridPane, String prefix, String combostr, int span) {
@@ -158,15 +169,48 @@ public class MainMCUController extends BasicController
 
 	private Region addComboToGrid(GridPane gridPane1, String prefix, String items, int col, int row) {
 		if (items.startsWith("\\")) return null;
-		Region cb = col % 2 == 0 ? new Label(items) : makeGridsCombo(items);
+		Region cb = col % 2 == 0 ? makeLabel(items) : makeGridsCombo(items);
 		GridPane.setColumnIndex(cb, col);
 		GridPane.setRowIndex(cb, row);
 		gridPane1.getChildren().add(cb);
 		if (cb instanceof ComboBox) {
 			String key = "k-" + prefix + "-" + col + row;
-//todo			makeListener(key, (ComboBox) cb);
+			makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
 		}
 		return cb;
+	}
+
+	@Override
+	public Map<String, ? extends Node> nodeMap() {
+		return clkMap;
+	}
+
+	@Override
+	public void callListener(String key, String prev, String value) {
+		switchComboIndex(key, clkMap.get(key), prev, value);
+	}
+
+	private static List<Integer> factors = Lists.newArrayList(10, 30, 11, 31, 12, 32);
+	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
+		if (comboKey == null) return;
+		if (value != null && !value.equals("null") && !value.equals("RESET")) {
+			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", 0, comboKey, prev, value));
+		}
+		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
+		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
+		// 0, 10, 11, 12, 30, 31, 32
+		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
+		ClockModel clock = getScene().getPinoutsModel().getClockModel();
+		clock.setFactor(subKey, factors.indexOf(subInd), value).calc();
+		log_debug(log, String.format("#switchComboIndex[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
+		int row = subInd % 10; int col = subInd / 10;
+		for(String key: clkBlocks.keySet()) {
+			Node input = findNodeFromGrid(clkBlocks.get(key), row, col - 1);
+			if (input != null) {
+				((Label) input).setText(clock.getOut(subKey, factors.indexOf(subInd)) + "");
+			}
+		}
 	}
 }

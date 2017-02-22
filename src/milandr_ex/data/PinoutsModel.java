@@ -16,6 +16,7 @@ public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
 	private boolean hasUnsavedChanges = Boolean.FALSE;
+	private ClockModel clockModel;
 	public interface Observer extends ModelObserver {
 		public void observe(PinoutsModel model);
 	}
@@ -26,6 +27,15 @@ public class PinoutsModel {
 
 	public PinoutsModel setSelectedBody(String selectedBody) {
 		this.selectedBody = selectedBody;
+		return this;
+	}
+
+	public ClockModel getClockModel() {
+		return clockModel;
+	}
+
+	public PinoutsModel setClockModel(ClockModel clockModel) {
+		this.clockModel = clockModel;
 		return this;
 	}
 
@@ -81,6 +91,6 @@ public class PinoutsModel {
 	}
 
 	public static PinoutsModel get(String body) {
-		return new PinoutsModel().setSelectedBody(body);
+		return new PinoutsModel().setSelectedBody(body);//.setClockModel(ClockModel.get(body));
 	}
 }

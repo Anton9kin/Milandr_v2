@@ -75,7 +75,9 @@ public class GuiUtils {
 	}
 
 	public static Label makeLabel(String key) {
-		return new Label(keyToText(key));
+		Label label = new Label("   " + keyToText(key));
+		label.setMinWidth(80.0);
+		return label;
 	}
 
 	public static ComboBox<String> makeCombo(String pText) {
@@ -84,6 +86,18 @@ public class GuiUtils {
 		newCombo.setPromptText(keyToText(pText));
 		initItem(newCombo, 1);
 		return newCombo;
+	}
+
+	public static Node findNodeFromGrid(GridPane grid, int row, int col) {
+		if (row < 0 || col < 0) return null;
+		Node input = null;
+		for (Node node : grid.getChildren()) {
+			if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
+				input = node;
+				break;
+			}
+		}
+		return input;
 	}
 
 	public static Region makeGridsCombo(String items) {
