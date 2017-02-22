@@ -26,26 +26,28 @@ public class ClockModel {
 			this.from = from;
 		}
 
-		public void setAlias(String alias) {
+		public InOut setAlias(String alias) {
 			this.alias = alias;
+			return this;
 		}
 
-		public void setFactor(String baseFactor) {
+		public InOut setFactor(String baseFactor) {
 			System.out.println(String.format("pin::%s factor changed %s -> %s", this, this.baseFactor, baseFactor));
 			this.baseFactor = baseFactor;
+			return this;
 		}
 
-		public void setValue(Integer value) {
+		public InOut setValue(Integer value) {
 			this.baseValue = value;
+			return this;
 		}
 
 		public int getValue() {
 			checkFullSetup();
 			int result = baseValue == null ? 1 : baseValue;
-			if (!name.equals("Sim") && body.contains("\\s")) {
-				String[] parts = body.split("\\s");
-				String factorS = baseFactor == null ? parts[1] : baseFactor;
-				int factor = Integer.parseInt(factorS);
+			if (!name.equals("Sim") && body.contains(" ")) {
+				String[] parts = (baseFactor == null ? body : baseFactor).split("\\s");
+				int factor = parts[1].matches("\\d+") ? Integer.parseInt(parts[1]) : 1;
 				if (parts[0].equals("*")) {
 					return result * factor;
 				} else if (parts[0].equals("/")) {
@@ -72,8 +74,20 @@ public class ClockModel {
 					", name='" + name + '\'' +
 					", body='" + body + '\'' +
 					", from='" + from + '\'' +
+					", baseFactor=" + baseFactor +
 					", baseValue=" + baseValue +
-					", value=" + value +
+					", value=" + getValue() +
+					'}';
+		}
+
+		public String toStr() {
+			return "\tIOt{" +
+					", nm='" + name + '\'' +
+					", bd='" + body + '\'' +
+					", fr='" + from + '\'' +
+					", bF=" + baseFactor +
+					", bV=" + baseValue +
+					", val=" + getValue() +
 					'}';
 		}
 	}
@@ -90,13 +104,14 @@ public class ClockModel {
 			initBody();
 		}
 
-		private void initBody() {
+		private Block initBody() {
 			String exitStr = body.split("\\\\")[1];
 			String[] combos = body.split("\\|");
 			for(int i = 0; i < (combos.length - 1); i = i + 2) {
 				addInp(InOut.get(name + "-" + i, combos[i + 1], combos[i]));
 			}
 			setOut(InOut.get("out", exitStr, name));
+			return this;
 		}
 
 		public Block addInp(InOut input) {
@@ -115,8 +130,9 @@ public class ClockModel {
 			return selected;
 		}
 
-		private void setSelected(InOut selected) {
+		private Block setSelected(InOut selected) {
 			this.selected = selected;
+			return this;
 		}
 
 		public Set<String> getPinNames() {
@@ -164,6 +180,7 @@ public class ClockModel {
 			return output.getValue();
 		}
 		private String getPinName(int ind) {
+			if (ind < 0 || ind >= inputs.size()) return "out";
 			return inputs.keySet().toArray(new String[]{})[ind];
 		}
 		public Block setPin(int ind, Integer value) {
@@ -172,7 +189,7 @@ public class ClockModel {
 		public Block setPin(String name, Integer value) {
 			checkFullSetup();
 			if (inputs.containsKey(name)) {
-				inputs.get(name).baseValue = value;
+				inputs.get(name).setValue(value);
 			}
 			return this;
 		}
@@ -190,6 +207,7 @@ public class ClockModel {
 			for(InOut pin: inputs.values()) {
 				pin.getValue();
 			}
+			output.setValue(selected.getValue()).getValue();
 			return this;
 		}
 		private Block checkFullSetup() {
@@ -200,6 +218,27 @@ public class ClockModel {
 		}
 		public static Block get(String name, String body) {
 			return new Block(name, body).checkFullSetup();
+		}
+
+		@Override
+		public String toString() {
+			return "\nBlock{" +
+					"name='" + name + '\'' +
+					", body='" + body + '\'' +
+					",\n inputs=" + inputs +
+					", selected=" + selected +
+					", output=" + output +
+					'}';
+		}
+
+		public String toStr() {
+			return "\nBlk{" +
+					"nm='" + name + '\'' +
+					", bd='" + body + '\'' +
+					",\n\tinp=" + toIOStr(inputs) +
+					",\n\tseld=" + selected.toStr() +
+					",\n\tout=" + output.toStr() +
+					'}';
 		}
 	}
 
@@ -239,12 +278,14 @@ public class ClockModel {
 	}
 	public ClockModel calc() {
 		checkFullSetup();
+		inputs.calc();
 		for(Block block: blocks) {
 			if (block.equals(inputs)) continue;
 			if (block.equals(outputs)) continue;
 			int cnt = block.getPinSize();
+			InOut seld = block.getSelected();
 			for(int i = 0; i < cnt; i++) {
-				InOut pin = block.getSelected();
+				InOut pin = block.select(i).getSelected();//block.getSelected();
 				Block fromBlock = blockMap.get(pin.from);
 				boolean fromInp = false;
 				if (fromBlock == null) {
@@ -252,9 +293,11 @@ public class ClockModel {
 					fromInp = true;
 				}
 				if (fromBlock != null) {
-					pin.setValue(fromBlock.getPin(fromInp ? pin.from : "out"));
+					pin.setValue(fromBlock.getPin(fromInp ? pin.from : "out")).getValue();
 				}
+				block.calc();
 			}
+			block.setSelected(seld).calc();
 		}
 		outputs.calc();
 		return this;
@@ -285,12 +328,25 @@ public class ClockModel {
 		blockMap.get(block).setPinFactor(name, value);
 		return this;
 	}
+	public ClockModel setSelected(String block, int ind) {
+		checkFullSetup();
+		blockMap.get(block).select(ind);
+		return this;
+	}
+	public ClockModel setSelected(String block, String name) {
+		checkFullSetup();
+		blockMap.get(block).select(name);
+		return this;
+	}
 	public ClockModel setInputs(String[] names, int[] values) {
 		int ind = 0;
 		for(String name: names) {
 			inputs.setPin(name, values[ind++]);
 		}
 		return this;
+	}
+	public Integer getOut(int blkInd, int index) {
+		return getOut(getBlockName(blkInd), index);
 	}
 	public Integer getOut(String blockName, int index) {
 		checkFullSetup();
@@ -319,10 +375,52 @@ public class ClockModel {
 		return this;
 	}
 
+	@Override
+	public String toString() {
+		return "ClockModel{" +
+				"inputs=" + inputs +
+				", outputs=" + outputs +
+				", blocks=" + blocks +
+				", blockMap=" + blockMap +
+				'}';
+	}
+
+	public String toStr() {
+		return "Clk{" +
+				"in=" + inputs.toStr() +
+				", out=" + outputs.toStr() +
+				", map=" + toBlStr(blockMap, "") +
+				'}';
+	}
+
+	public String toStr(String key) {
+		return "Clk{" +
+				"in=" + inputs.toStr() +
+				", out=" + outputs.toStr() +
+				", map=" + toBlStr(blockMap, key) +
+				'}';
+	}
+
 	public static ClockModel get(String body) {
 		return get(body, Lists.newArrayList());
 	}
 	public static ClockModel get(String body, List<ClockModel.Block> blocks) {
 		return new ClockModel(body, blocks).checkFullSetup();
+	}
+
+	public static String toIOStr(Map<String, InOut> map) {
+		String result = "";
+		for(String key: map.keySet()) {
+			result += String.format("\n\t\t[%s=%s]", key, map.get(key).toStr());
+		}
+		return result;
+	}
+	public static String toBlStr(Map<String, Block> map, String key) {
+		String result = "";
+		for(String mkey: map.keySet()) {
+			if (!key.isEmpty() && !mkey.equals(key)) continue;
+			result += String.format("\n[%s=%s]", key, map.get(key).toStr());
+		}
+		return result;
 	}
 }

@@ -10,4 +10,5 @@ import java.util.Map;
 public interface ChangeCallbackOwner extends ChangeCallbackChecker {
 	public Map<String, ? extends Node> nodeMap();
 	public void callListener(String key, String prev, String value);
+	public void callGuiListener(String key, String prev, String value);
 }

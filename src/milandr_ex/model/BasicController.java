@@ -36,6 +36,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			public void callListener(String key, String prev, String value) {
 				checker.callListener(key, prev, value);
 			}
+			@Override
+			public void callGuiListener(String key, String prev, String value) {
+				checker.callGuiListener(key, prev, value);
+			}
 		};
 		getScene().startSetupProcess();
 		postInit(getScene());
@@ -63,6 +67,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	public void callListener(String key, String prev, String value) {
+		//do nothing by default
+	}
+	public void callGuiListener(String key, String prev, String value) {
 		//do nothing by default
 	}
 	public ResourceBundle getMessages() {

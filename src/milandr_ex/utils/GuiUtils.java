@@ -42,9 +42,10 @@ public class GuiUtils {
 			Map<String, ? extends Node> map = callback.nodeMap();
 			String kkey = callback.listenChange(key, map);
 			if (kkey == null) return;
+			callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
 			Platform.runLater(() -> {
 				if (map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
-				callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
+				callback.callGuiListener(kkey, String.valueOf(t), String.valueOf(t1));
 			});
 		});
 		callback.callListener(key, "null", "RESET");
@@ -88,6 +89,18 @@ public class GuiUtils {
 		return newCombo;
 	}
 
+	public static TextField findTextFromGrid(GridPane grid, int row, int col) {
+		Node node = findNodeFromGrid(grid, row, col);
+		return node instanceof TextField ? (TextField)node : null;
+	}
+	public static Label findLabelFromGrid(GridPane grid, int row, int col) {
+		Node node = findNodeFromGrid(grid, row, col);
+		return node instanceof Label ? (Label)node : null;
+	}
+	public static GridPane findGridFromGrid(GridPane grid, int row, int col) {
+		Node node = findNodeFromGrid(grid, row, col);
+		return node instanceof GridPane ? (GridPane)node : null;
+	}
 	public static Node findNodeFromGrid(GridPane grid, int row, int col) {
 		if (row < 0 || col < 0) return null;
 		Node input = null;

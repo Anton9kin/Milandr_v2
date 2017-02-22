@@ -42,7 +42,7 @@ public class MainMCUController extends BasicController
 	@FXML
 	private AnchorPane tmrPane;
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
-	private Map<String, GridPane> clkBlocks = Maps.newHashMap();
+	private Map<String, GridPane> clkBlocks = Maps.newLinkedHashMap();
 
 	@FXML
 	private Parent mcuPins;
@@ -186,12 +186,27 @@ public class MainMCUController extends BasicController
 		return clkMap;
 	}
 
+	private static List<Integer> factors = Lists.newArrayList(10, 30, 11, 31, 12, 32);
 	@Override
-	public void callListener(String key, String prev, String value) {
+	public void callListener(String comboKey, String prev, String value) {
+		if (comboKey == null || value == null) return;
+		if (!value.equals("null") && !value.equals("RESET")) {
+			log_debug(log, String.format("#callListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
+		}
+		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
+		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
+		ClockModel clock = getScene().getPinoutsModel().getClockModel();
+		if (clock == null) return;
+		if (subInd == 0) clock.setSelected(subKey, Integer.parseInt(value.split("-")[1]) - 1);
+		else clock.setFactor(subKey, factors.indexOf(subInd), value);
+		log_debug(log, clock.calc().toStr(subKey));
+	}
+
+	@Override
+	public void callGuiListener(String key, String prev, String value) {
 		switchComboIndex(key, clkMap.get(key), prev, value);
 	}
 
-	private static List<Integer> factors = Lists.newArrayList(10, 30, 11, 31, 12, 32);
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
 		if (comboKey == null) return;
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
@@ -203,14 +218,37 @@ public class MainMCUController extends BasicController
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
-		clock.setFactor(subKey, factors.indexOf(subInd), value).calc();
 		log_debug(log, String.format("#switchComboIndex[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
-		int row = subInd % 10; int col = subInd / 10;
+//		int row = subInd % 10; int col = subInd / 10;
+		int blockInd = 0;
 		for(String key: clkBlocks.keySet()) {
-			Node input = findNodeFromGrid(clkBlocks.get(key), row, col - 1);
-			if (input != null) {
-				((Label) input).setText(clock.getOut(subKey, factors.indexOf(subInd)) + "");
+			fillBlocksInputs(key, subInd, clock, key);
+			TextField label = findTextFromGrid(clkBlocks.get(key), 2, 1);
+			if (label != null) label.setText(makeHzText(clock.getOut(key, -1)));
+//			blockInd++;
+		}
+	}
+
+	private void fillBlocksInputs(String subKey, Integer subInd, ClockModel clock, String key) {
+		GridPane subGr = findGridFromGrid(clkBlocks.get(key), 1, 0);
+		if (subGr != null) {
+			for(int col = 0; col < 4; col++) for(int row = 0; row < 4; row++) {
+				int pinOut = clock.getOut(key, (col / 2) + row * 2);
+				TextField textF = findTextFromGrid(subGr, row, col);
+				if (textF != null) textF.setText(makeHzText(pinOut));
+//				Label label = findLabelFromGrid(subGr, row, col);
+//				if (label != null) {
+////					int pinOut = clock.getOut(subKey, factors.indexOf(subInd));
+//					label.setText(makeHzText(pinOut));
+//				}
 			}
 		}
+	}
+
+	private String makeHzText(int pinOut) {
+		String pinSuff = "Hz";
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
+		return pinOut + pinSuff;
 	}
 }

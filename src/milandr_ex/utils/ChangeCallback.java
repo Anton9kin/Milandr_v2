@@ -11,4 +11,5 @@ public interface ChangeCallback {
 	public Map<String, ? extends Node> nodeMap();
 	public String listenChange(String key, Map<String, ? extends Node> nodeMap);
 	public void callListener(String key, String prev, String value);
+	public void callGuiListener(String key, String prev, String value);
 }

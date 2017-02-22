@@ -297,7 +297,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	@Override
-	public void callListener(String comboKey, String prev, String value) {
+	public void callGuiListener(String comboKey, String prev, String value) {
 		switchComboIndex(comboKey, comboMap.get(comboKey), prev, value);
 	}
 
