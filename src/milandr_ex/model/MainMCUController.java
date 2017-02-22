@@ -183,7 +183,7 @@ public class MainMCUController extends BasicController
 			String key = "k-" + prefix + "-" + col + row;
 			makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
-			cb = new HBox(cb, new Label(items));
+//			cb = new HBox(cb, new Label(items));
 		}
 		setGridRowCol(gridPane1, cb, row, col);
 		return cb;
