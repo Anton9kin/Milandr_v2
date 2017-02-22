@@ -32,7 +32,7 @@ public class MCUAdcController {
 	@FXML
 	private Button btnOK;
 	@FXML
-	private Button btnCansel;
+	private Button btnCancel;
 	
 	
 	@FXML

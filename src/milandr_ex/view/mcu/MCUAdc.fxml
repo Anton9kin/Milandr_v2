@@ -29,7 +29,7 @@
             <TextField fx:id="listChanel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       </GridPane>
       <HBox layoutX="283.0" layoutY="433.0" spacing="20.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
-            <Button layoutX="126.0" layoutY="320.0" mnemonicParsing="false" text="OK" />
-            <Button layoutX="201.0" layoutY="320.0" mnemonicParsing="false" text="Отмена" />
+            <Button fx:id="btnOK" layoutX="126.0" layoutY="320.0" mnemonicParsing="false" text="OK" />
+            <Button fx:id="btnCancel" layoutX="201.0" layoutY="320.0" mnemonicParsing="false" text="Отмена" />
       </HBox>
 </AnchorPane>
