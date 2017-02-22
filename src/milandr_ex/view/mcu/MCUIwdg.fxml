@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="469.0" prefWidth="402.0"
+<AnchorPane prefHeight="100.0" prefWidth="200.0"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="milandr_ex.model.mcu.MCUIwdgController">
       <GridPane layoutX="14.0" layoutY="47.0" prefHeight="120.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0">
@@ -25,8 +25,4 @@ fx:controller="milandr_ex.model.mcu.MCUIwdgController">
             <Label text="Выберите единицы" GridPane.rowIndex="2" />
             <ComboBox fx:id="unit" prefHeight="22.0" prefWidth="195.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       </GridPane>
-      <HBox layoutX="283.0" layoutY="433.0" spacing="20.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
-            <Button layoutX="126.0" layoutY="320.0" mnemonicParsing="false" text="OK" />
-            <Button layoutX="201.0" layoutY="320.0" mnemonicParsing="false" text="Отмена" />
-      </HBox>
 </AnchorPane>

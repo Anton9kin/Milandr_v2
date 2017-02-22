@@ -7,8 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import milandr_ex.data.AppScene;
+import milandr_ex.model.BasicController;
 
-public class MCUCanController {
+public class MCUCanController extends BasicController {
 
 	@FXML
 	private ComboBox<String> div;
@@ -38,18 +40,20 @@ public class MCUCanController {
 	private TextField errSpeed;
 	
 	@FXML
-	private Button btnOK;
-	@FXML
-	private Button btnCansel;
-	
-	
-	@FXML
 	private void initialize(){
+
+	}
+
+	@Override
+	protected void postInit(AppScene scene) {
 		div.setItems(divList);
-		div.getSelectionModel().select(0);
-		
 		speed.setItems(speedList);
+	}
+
+	@Override
+	protected void initLater(AppScene scene) {
+		super.initLater(scene);
+		div.getSelectionModel().select(0);
 		speed.getSelectionModel().select(0);
-		
 	}
 }

@@ -20,11 +20,6 @@ public class MCUPowerController extends BasicController {
 	ObservableList<String> buccList = FXCollections.
 			observableArrayList("1.8 B", "2.2 B", "2.6 B", "3.0 B");
 	
-	@FXML
-	private Button btnOK;
-	@FXML
-	private Button btnCansel;
-
 	@Override
 	protected void postInit(AppScene scene) {
 		ucc.setItems(uccList);

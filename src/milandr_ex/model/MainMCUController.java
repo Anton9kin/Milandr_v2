@@ -15,9 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
-import milandr_ex.model.mcu.MCUPinsController;
-import milandr_ex.model.mcu.MCUPowerController;
-import milandr_ex.model.mcu.MCUSystickController;
+import milandr_ex.model.mcu.*;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackChecker;
@@ -55,13 +53,30 @@ public class MainMCUController extends BasicController
 	private Parent mcuSystick;
 	@FXML
 	private MCUSystickController mcuSystickController ;
+	@FXML
+	private Parent mcuAdc;
+	@FXML
+	private MCUAdcController mcuAdcController;
+	@FXML
+	private Parent mcuCan;
+	@FXML
+	private MCUCanController mcuCanController;
+	@FXML
+	private Parent mcuIWdg;
+	@FXML
+	private MCUIwdgController mcuIwdgController;
+	@FXML
+	private Parent mcuWWdg;
+	@FXML
+	private MCUWwdgController mcuWwdgController;
 
 	public MainMCUController() {
 	}
 
 	@Override
 	protected void postInit(AppScene scene) {
-		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController);
+		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
+				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
 		log.debug("#postInit - initialized");

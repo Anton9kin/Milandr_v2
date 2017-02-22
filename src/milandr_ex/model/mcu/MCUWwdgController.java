@@ -7,8 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import milandr_ex.data.AppScene;
+import milandr_ex.model.BasicController;
 
-public class MCUWwdgController {
+public class MCUWwdgController extends BasicController {
 
 	@FXML
 	private ComboBox<String> div;
@@ -26,14 +28,13 @@ public class MCUWwdgController {
 	
 	
 	@FXML
-	private Button btnOK;
-	@FXML
-	private Button btnCansel;
-	
-	
-	@FXML
 	private void initialize(){
 		div.setItems(divList);
 		div.getSelectionModel().select(0);
+	}
+
+	@Override
+	protected void postInit(AppScene scene) {
+
 	}
 }

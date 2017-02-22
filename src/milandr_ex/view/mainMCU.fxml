@@ -33,6 +33,7 @@
 					<TitledPane text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
 					<TitledPane text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
 					<TitledPane text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
+					<TitledPane text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
 					<TitledPane text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
 					<TitledPane text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
 				</VBox>

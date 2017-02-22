@@ -33,11 +33,6 @@ public class MCUSystickController extends BasicController {
 	ObservableList<String> unitList = FXCollections.
 			observableArrayList("с", "мс", "мкс", "Гц", "кГц", "МГц");
 	
-	@FXML
-	private Button btnOK;
-	@FXML
-	private Button btnCansel;
-
 	@Override
 	protected void postInit(AppScene scene) {
 		ist.setItems(istList);
