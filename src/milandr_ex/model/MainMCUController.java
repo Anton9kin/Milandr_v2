@@ -211,15 +211,12 @@ public class MainMCUController extends BasicController
 	}
 
 	@Override
-	public void callGuiListener(String key, String prev, String value) {
-		switchComboIndex(key, clkMap.get(key), prev, value);
-	}
-
-	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
+	public void callGuiListener(String comboKey, String prev, String value) {
 		if (comboKey == null) return;
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		}
+		ComboBox comboBox = clkMap.get(comboKey);
 		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
