@@ -303,7 +303,7 @@ public class MCUPinsController extends BasicController
 
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
 		if (comboKey == null) return;
-		if(value != null && !value.equals("null") && !value.equals("RESET")) {
+		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", refillInProgress, comboKey, prev, value));
 		}
 		String subKey = comboKey.substring(2);
@@ -333,6 +333,10 @@ public class MCUPinsController extends BasicController
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
 		switchLinkedComboboxes(comboKey, prev, value);
 		if (!labMap.containsKey(comboKey)) return;
+		switchLinkedLabel(comboKey, comboBox, model);
+	}
+
+	private void switchLinkedLabel(String comboKey, ComboBox comboBox, SelectionModel model) {
 		Background newBack = backgroundDefault;
 		Label label = labMap.get(comboKey);
 		label.setText(keyToText(comboKey));
@@ -363,11 +367,13 @@ public class MCUPinsController extends BasicController
 				return;
 			}
 			String[] values = value.split("\\s");
-			ComboBox<String> target = comboMap.get(textToKey(values[values.length - 1]));
+			String cKey = textToKey(values[values.length - 1]);
+			ComboBox<String> target = comboMap.get(cKey);
 			if (target != null && target.getSelectionModel() != null) {
 				SelectionModel selMod = target.getSelectionModel();
 				resetPrevLinkedCombobox(prev);
 				selMod.select(values[0]);
+				switchLinkedLabel(cKey, target, selMod);
 			}
 			refillInProgress--;
 		}
@@ -429,8 +435,14 @@ public class MCUPinsController extends BasicController
 
 	private void resetPrevLinkedCombobox(String prev) {
 		if (prev.contains(" ")) {
-			ComboBox<String> pTarget = comboMap.get(textToKey(prev.split("\\s")[1]));
-			if (pTarget != null) pTarget.getSelectionModel().selectFirst();
+			String cKey = textToKey(prev.split("\\s")[1]);
+			//noinspection unchecked
+			ComboBox<String> pTarget = comboMap.get(cKey);
+			if (pTarget != null) {
+				SingleSelectionModel<String> selMod = pTarget.getSelectionModel();
+				selMod.selectFirst();
+				switchLinkedLabel(cKey, pTarget, selMod);
+			}
 		}
 	}
 
