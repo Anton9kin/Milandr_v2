@@ -1,5 +1,6 @@
 package milandr_ex.model;
 
+import com.google.common.collect.Maps;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.model.mcu.*;
@@ -16,6 +18,8 @@ import milandr_ex.utils.GuiUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 public class MainMCUController extends BasicController {
 	private static final Logger	log	= LoggerFactory.getLogger(MainMCUController.class);
@@ -57,6 +61,8 @@ public class MainMCUController extends BasicController {
 
 	@FXML
 	private VBox cfg_vbox;
+	private Map<String, TitledPane> cfgMap = Maps.newHashMap();
+
 	public MainMCUController() {
 		mcuClockController = new MCUClockController();
 	}
@@ -79,10 +85,17 @@ public class MainMCUController extends BasicController {
 		});
 		tmrPane.getChildren().add(new VBox(ccb));
 		for(Node node: cfg_vbox.getChildren()) {
+			String key = node.getId();
 			if (node instanceof TitledPane) {
-				GuiUtils.makeListener(node.getId(), (TitledPane)node, changeCallback);
+				cfgMap.put("t-" + key, (TitledPane) node);
+				GuiUtils.makeListener(key, (TitledPane)node, changeCallback);
 			}
 		}
+	}
+
+	@Override
+	public Map<String, ? extends Node> nodeMap() {
+		return cfgMap;
 	}
 
 	@Override
