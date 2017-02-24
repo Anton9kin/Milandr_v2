@@ -48,7 +48,7 @@ public class RootLayoutController extends BasicController {
 		ChooseController.setDefaultMCU();
 		Platform.runLater(() -> {
 			scene.setMcuMain(DeviceFactory.getDevice("LQFP64").getMcu());
-			LoadProject(getMessages());
+			LoadProject(true);
 		});
 	}
 
@@ -58,14 +58,15 @@ public class RootLayoutController extends BasicController {
 			ChooseController.setDefaultMCU();
 			getScene().setMcuMain(DeviceFactory.getDevice(
 					getScene().getPinoutsModel().getSelectedBody()).getMcu());
-			LoadProject(messages);
+			LoadProject(false);
 		}
 	}
-	public void LoadProject(ResourceBundle messages) {
+	public void LoadProject(Boolean clean) {
 		McuType mcu = getScene().getMcuMain();
 		if (mcu != null){
-			if (getScene().getPinoutsModel() == null) {
+			if (clean || getScene().getPinoutsModel() == null) {
 				getScene().setPinoutsModel(PinoutsModel.get(mcu));
+				getScene().getPinoutsModel().getSelectedPins().clear();
 			}
 			LoaderUtils.initAnyLayout(getScene(), "mainMCU", "main.title");
 			getScene().observe("pinouts");
@@ -91,7 +92,7 @@ public class RootLayoutController extends BasicController {
 		chContr.setScene(getScene());
 		chContr.postInit();
 		chooseStage.showAndWait();
-		LoadProject(messages);
+		LoadProject(true);
 	}
 
 	private MenuKind parseMenuKind(MenuItem item) {
@@ -114,7 +115,10 @@ public class RootLayoutController extends BasicController {
 	public void CloseProject() {
 		getScene().setMcuMain(null);
 		PinoutsModel model = getScene().getPinoutsModel();
-		if (model != null) model.setHasUnsavedChanges(false);
+		if (model != null) {
+			model.setHasUnsavedChanges(false);
+			model.getSelectedPins().clear();
+		}
 		LoaderUtils.initAnyLayout(getScene(), "Main", "main.title");
 	}
 
