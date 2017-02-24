@@ -17,21 +17,21 @@ import java.util.*;
 public class Constants {
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
-            {"CPU-1", "CPU-2", "CPU-3"},
-            {"USB-1", "USB-2", ""},
-            {"ADC-1", "ADC-2", ""},
+            {"CPU-C1", "CPU-C2", "CPU-C3"},
+            {"USB-C1", "USB-C2", ""},
+            {"ADC-C1", "ADC-C2", ""},
             {
                     "HSI|8Mhz|HSE|8 Mhz|LSE|32 Khz|LSI|40 Khz|\\Not",
                     "",
                     "F-CLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSI|/ 256|HSE|/ 256|\\Not",
                     "HSI|8Mhz|HSI|/ 2|HSE|MHz|HSE|/ 2|\\Sim",
-                    "CPU-1|Sim|CPU-1|* 16|\\Sim",
-                    "HSI|8 Mhz|CPU-2|/ 256|LSE|32 Khz|LSI|40 Khz|\\Out",
+                    "CPU-C1|Sim|CPU-C1|* 16|\\Sim",
+                    "HSI|8 Mhz|CPU-C2|/ 256|LSE|32 Khz|LSI|40 Khz|\\Out",
                     "HSI|8Mhz|HSI|/ 2|HSE|Mhz|HSE|/ 2|\\Sim",
-                    "USB-1|Sim|USB-1|* 16|\\/ 2",
+                    "USB-C1|Sim|USB-C1|* 16|\\/ 2",
                     "",
-                    "CPU-1|Sim|USB-1|Sim|CPU-2|Sim|USB-2|Sim|\\Sim",
-                    "ADC-1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
+                    "CPU-C1|Sim|USB-C1|Sim|CPU-C2|Sim|USB-C2|Sim|\\Sim",
+                    "ADC-C1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
                     "",
             }};
 

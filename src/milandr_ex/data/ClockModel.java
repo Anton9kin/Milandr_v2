@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class ClockModel {
 	private static Map<String, String> pinAliases = new HashMap<String, String>(){{
-		put("ADC-CLK", "ADC-2");put("CPU-CLK", "CPU-3");put("USB-CLK", "USB-2");
+		put("ADC-CLK", "ADC-C2");put("CPU-CLK", "CPU-C3");put("USB-CLK", "USB-C2");
 	}};
 	public static class InOut {
 		private String alias;
