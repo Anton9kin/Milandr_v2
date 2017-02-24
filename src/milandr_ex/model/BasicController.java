@@ -1,5 +1,6 @@
 package milandr_ex.model;
 
+import com.google.common.collect.Lists;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import milandr_ex.data.AppScene;
@@ -8,6 +9,7 @@ import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackOwner;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -28,9 +30,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	protected ChangeCallback changeCallback;
+	protected List<BasicController> subControllers = Lists.newArrayList();
 
 	@SuppressWarnings("unchecked")
 	public <T extends BasicController> T postInit() {
+		if (getParentController() != null) {
+			getParentController().addChildController(this);
+		}
 		changeCallback = new ChangeCallBackImpl(this) {
 			@Override
 			public void callListener(String key, String prev, String value) {
@@ -47,9 +53,21 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		getScene().stopSetupProcess();
 		return (T) this;
 	}
+	protected BasicController getParentController() {
+		return null;
+	}
+	protected void addChildController(BasicController child) {
+		subControllers.add(child);
+	}
 	protected abstract void postInit(AppScene scene);
 	protected void initLater(AppScene scene){}
 	protected void initSubControllers(BasicController... controllers) {
+		initSubControllers(Lists.newArrayList(controllers));
+	}
+	protected void initSubControllers() {
+		initSubControllers(subControllers);
+	}
+	protected void initSubControllers(List<BasicController> controllers) {
 		for(BasicController controller: controllers) {
 			controller.setScene(scene);
 			controller.postInit();
@@ -81,4 +99,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		System.out.println(logText);
 	}
 
+	protected String makeHzText(int pinOut) {
+		String pinSuff = "Hz";
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
+		return "  " + pinOut + pinSuff + "  ";
+	}
 }
