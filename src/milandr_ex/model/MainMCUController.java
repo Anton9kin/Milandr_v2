@@ -136,6 +136,15 @@ public class MainMCUController extends BasicController
 		model.setClockModel(clock);
 		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
 		clock.calc();
+		// make usb 48 MHz
+		selectCBox("k-USB-C2-0", "IN-2");
+		selectCBox("k-USB-C2-9", "/ 1");
+		selectCBox("k-USB-C2-30", "* 6");
+	}
+
+	@SuppressWarnings("unchecked")
+	private void selectCBox(String comboKey, String value) {
+		clkMap.get(comboKey).getSelectionModel().select(value);
 	}
 
 	private void makeClockGridItem(String caption, String combostr, int col, int row) {

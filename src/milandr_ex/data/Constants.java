@@ -48,18 +48,23 @@ public class Constants {
     public static ObservableList<String> dv16Item = FXCollections.
             observableArrayList("/ 1", "/ 2", "/ 4", "/ 8", "/ 16");
     public static ObservableList<String> ml16Item = FXCollections.
-            observableArrayList("* 1", "* 2", "* 4", "* 8", "* 16");
+            observableArrayList("* 1", "* 2", "* 3", "* 4", "* 5", "* 6", "* 7", "* 8",
+                    "* 9", "* 10", "* 11", "* 12", "* 13", "* 14", "* 15", "* 16");
+    public static ObservableList<String> dv8Item = FXCollections.
+            observableArrayList("/ 1", "/ 2", "/ 4", "/ 8");
+    public static ObservableList<String> ml8Item = FXCollections.
+            observableArrayList("* 1", "* 2", "* 3", "* 4", "* 5", "* 6", "* 7", "* 8");
     public static ObservableList<String> dv4Item = FXCollections.
             observableArrayList("/ 1", "/ 2", "/ 4");
     public static ObservableList<String> ml4Item = FXCollections.
-            observableArrayList("* 1", "* 2", "* 4");
+            observableArrayList("* 1", "* 2", "* 3", "* 4");
     public static ObservableList<String> dv2Item = FXCollections.
             observableArrayList("/ 1", "/ 2");
     public static ObservableList<String> ml2Item = FXCollections.
             observableArrayList("* 1", "* 2");
 
-    public static ObservableList[] dvItems = new ObservableList[]{dv2Item, dv4Item, dv16Item, dv256Item};
-    public static ObservableList[] mlItems = new ObservableList[]{ml2Item, ml4Item, ml16Item, ml256Item};
+    public static ObservableList[] dvItems = new ObservableList[]{dv2Item, dv4Item, dv8Item, dv16Item, dv256Item};
+    public static ObservableList[] mlItems = new ObservableList[]{ml2Item, ml4Item, ml8Item, ml16Item, ml256Item};
 
     public static Map<String, ObservableList> dvmlMap = Maps.newHashMap();
     public static ObservableList getDvMlItems(String code) {
