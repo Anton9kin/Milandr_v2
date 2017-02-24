@@ -132,7 +132,7 @@ public class MCUPinsController extends BasicController
 
 	private void makeListener(final String key, TitledPane tPane) {
 		tpaneMap.put(key, tPane);
-		GuiUtils.makeListener("t-" + key, tPane.expandedProperty(), changeCallback);
+		GuiUtils.makeListener(key, tPane, changeCallback);
 	}
 
 	private void callListener(final String key, String value) {
@@ -320,6 +320,10 @@ public class MCUPinsController extends BasicController
 			for(int i = 0; i < 10; i++) {
 				String ssKey = subKey + "-" + i;
 				checkCBoxHiding(ssKey, cboxMap.get(ssKey));
+			}
+			if (inValue) for(String tKey: tpaneMap.keySet()) {
+				if (tKey.equals(subKey)) continue;
+				tpaneMap.get(tKey).setExpanded(false);
 			}
 			return;
 		}

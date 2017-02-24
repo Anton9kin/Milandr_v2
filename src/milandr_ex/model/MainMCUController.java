@@ -70,6 +70,8 @@ public class MainMCUController extends BasicController
 	@FXML
 	private MCUWwdgController mcuWwdgController;
 
+	@FXML
+	private VBox cfg_vbox;
 	public MainMCUController() {
 	}
 
@@ -89,6 +91,16 @@ public class MainMCUController extends BasicController
 //			((ComboBoxBase) skinnable).setEditable(true);
 		});
 		tmrPane.getChildren().add(new VBox(ccb));
+		for(Node node: cfg_vbox.getChildren()) {
+			if (node instanceof TitledPane) {
+				makeListener(node.getId(), (TitledPane)node);
+			}
+		}
+	}
+
+	private void makeListener(final String key, TitledPane tPane) {
+//		tpaneMap.put(key, tPane);
+		GuiUtils.makeListener(key, tPane, changeCallback);
 	}
 
 	@Override
@@ -181,7 +193,7 @@ public class MainMCUController extends BasicController
 		Region cb = col % 2 == 0 ? makeLabel(items) : makeGridsCombo(items);
 		if (cb instanceof ComboBox) {
 			String key = "k-" + prefix + "-" + col + row;
-			makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
+			GuiUtils.makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
 //			cb = new HBox(cb, new Label(items));
 		}
@@ -198,6 +210,7 @@ public class MainMCUController extends BasicController
 	@Override
 	public void callListener(String comboKey, String prev, String value) {
 		if (comboKey == null || value == null) return;
+		if (comboKey.startsWith("t-")) return;
 		if (value.equals("null") || value.equals("RESET")) return;
 		log_debug(log, String.format("#callListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
@@ -216,8 +229,19 @@ public class MainMCUController extends BasicController
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		}
+		String subKey = comboKey.substring(2);
+		Boolean inValue = value != null && value.equals("true");
+		if (comboKey.startsWith("t-")) {
+			if (!inValue) return;
+			for(Node node: cfg_vbox.getChildren()) {
+				if (node instanceof TitledPane && !node.getId().equals(subKey)) {
+					((TitledPane)node).setExpanded(false);
+				}
+			}
+			return;
+		}
 		ComboBox comboBox = clkMap.get(comboKey);
-		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
+		subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;

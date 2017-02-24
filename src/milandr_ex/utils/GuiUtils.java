@@ -25,6 +25,9 @@ public class GuiUtils {
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 
+	public static void makeListener(final String key, TitledPane newPane, ChangeCallback callback) {
+		makeListener("t-" + key, newPane.expandedProperty(), callback);
+	}
 	public static void makeListener(final String key, CheckBox newBox, ChangeCallback callback) {
 		makeListener("c-" + key, newBox.selectedProperty(), callback);
 	}

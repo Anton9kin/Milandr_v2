@@ -26,16 +26,16 @@
 		</Tab>
 		<Tab text="Configuration">
 			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-				<VBox alignment="TOP_CENTER"
+				<VBox alignment="TOP_CENTER" fx:id="cfg_vbox"
 							layoutX="14.0" layoutY="14.0" prefHeight="731.0"
 							prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
 							AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
-					<TitledPane text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
-					<TitledPane text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
-					<TitledPane text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
-					<TitledPane text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
-					<TitledPane text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
-					<TitledPane text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_pwr" text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_syst" text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_adc" text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_iwd" text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
+					<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
 				</VBox>
 			</AnchorPane>
 		</Tab>
