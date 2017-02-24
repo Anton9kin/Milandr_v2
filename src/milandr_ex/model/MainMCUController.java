@@ -135,7 +135,8 @@ public class MainMCUController extends BasicController
 		ClockModel clock = ClockModel.get(model.getSelectedBody(), blocks);
 		model.setClockModel(clock);
 		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
-		clock.calc();
+		clock.addRestriction("USB-C2", "= 48000000");
+		clock.addRestriction("ADC-C2", "< 14000000");
 		// make usb 48 MHz
 		selectCBox("k-USB-C2-0", "IN-2");
 		selectCBox("k-USB-C2-9", "/ 1");
@@ -284,7 +285,15 @@ public class MainMCUController extends BasicController
 			for(int col = 0; col < 4; col++) for(int row = 0; row < 4; row++) {
 				int pinOut = clock.getOut(key, (col / 2) + row * 2);
 				TextField textF = findTextFromGrid(subGr, row, col);
-				if (textF != null) textF.setText(makeHzText(pinOut));
+				if (textF != null) {
+					textF.setText(makeHzText(pinOut));
+					String restr = clock.getRestr(key, (col / 2) + row * 2);
+					if (!restr.isEmpty() && restr.contains(" ")) {
+						boolean isFailed = checkClockRestrictions(restr, pinOut);
+						textF.setStyle(isFailed ? textStyleDef : textStyleError);
+//						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
+					}
+				}
 //				Label label = findLabelFromGrid(subGr, row, col);
 //				if (label != null) {
 ////					int pinOut = clock.getOut(subKey, factors.indexOf(subInd));
@@ -294,6 +303,17 @@ public class MainMCUController extends BasicController
 		}
 	}
 
+	private boolean checkClockRestrictions(String restr, int value) {
+		String[] opp = restr.split("\\s");
+		if (opp[0].equals("=")) {
+			return value == Integer.parseInt(opp[1]);
+		} else if (opp[0].equals("<")) {
+			return value <= Integer.parseInt(opp[1]);
+		} else if (opp[0].equals(">")) {
+			return value >= Integer.parseInt(opp[1]);
+		}
+		return false;
+	}
 	private String makeHzText(int pinOut) {
 		String pinSuff = "Hz";
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }

@@ -24,6 +24,9 @@ public class GuiUtils {
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
+	public static Background backgroundError = new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY));
+	public static String textStyleDef = "-fx-text-fill: black; -fx-font-size: 12; -fx-background-color: white;";
+	public static String textStyleError = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: red;";
 
 	public static void makeListener(final String key, TitledPane newPane, ChangeCallback callback) {
 		makeListener("t-" + key, newPane.expandedProperty(), callback);

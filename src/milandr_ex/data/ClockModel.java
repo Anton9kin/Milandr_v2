@@ -22,6 +22,7 @@ public class ClockModel {
 		private final String from;
 		private Integer baseValue;
 		private String baseFactor;
+		private String restriction = "";
 		private Integer value;
 
 		public InOut(String name, String body, String from) {
@@ -43,6 +44,15 @@ public class ClockModel {
 
 		public InOut setValue(Integer value) {
 			this.baseValue = value;
+			return this;
+		}
+
+		public String getRestr() {
+			return restriction;
+		}
+
+		public InOut setRestr(String restr) {
+			restriction = restr;
 			return this;
 		}
 
@@ -188,6 +198,16 @@ public class ClockModel {
 			if (ind < 0 || ind >= inputs.size()) return "out";
 			return inputs.keySet().toArray(new String[]{})[ind];
 		}
+		private String getPinRestr(int ind) {
+			return getPinRestr(getPinName(ind));
+		}
+		private String getPinRestr(String name) {
+			checkFullSetup();
+			if (inputs.containsKey(name)) {
+				return inputs.get(name).getRestr();
+			}
+			return output.getRestr();
+		}
 		public Block setPin(int ind, Integer value) {
 			return setPin(getPinName(ind), value);
 		}
@@ -207,6 +227,18 @@ public class ClockModel {
 				inputs.get(name).setFactor(value);
 			} else if (name.equals("out")) {
 				output.setFactor(value);
+			}
+			return this;
+		}
+		public Block setPinRestr(int ind, String value) {
+			return setPinRestr(getPinName(ind), value);
+		}
+		public Block setPinRestr(String name, String value) {
+			checkFullSetup();
+			if (inputs.containsKey(name)) {
+				inputs.get(name).setRestr(value);
+			} else if (name.equals("out")) {
+				output.setRestr(value);
 			}
 			return this;
 		}
@@ -253,6 +285,7 @@ public class ClockModel {
 	private Block outputs;
 	private final List<Block> blocks;
 	private final Map<String, Block> blockMap;
+	private Map<String, String> restrictions = Maps.newHashMap();
 	public ClockModel(String body, List<Block> blocks) {
 		this.blocks = blocks;
 		this.blockMap = Maps.newHashMap();
@@ -269,6 +302,16 @@ public class ClockModel {
 			if (block.name.equals("OUTPUT")) outputs = block;
 			blockMap.put(block.name, block);
 		}
+	}
+
+	public ClockModel addRestriction(String name, String restriction) {
+		this.restrictions.put(name, restriction);
+		this.outputs.setPinRestr(name, restriction);
+		return this;
+	}
+
+	public Map<String, String> getRestrictions() {
+		return restrictions;
 	}
 
 	public ClockModel setInputs(Block inputs) {
@@ -368,6 +411,24 @@ public class ClockModel {
 			}
 		}
 		return outputs.getPin(index);
+	}
+	public String getRestr(String blockName, int index) {
+		checkFullSetup();
+		for(Block block: blocks) {
+			if (block.name.equals(blockName)) {
+				return block.getPinRestr(index);
+			}
+		}
+		return outputs.getPinRestr(index);
+	}
+	public String getRestr(String blockName, String name) {
+		checkFullSetup();
+		for(Block block: blocks) {
+			if (block.name.equals(blockName)) {
+				return block.getPinRestr(name);
+			}
+		}
+		return outputs.getPinRestr(name);
 	}
 	public Integer getOut(String blockName, String name) {
 		checkFullSetup();
