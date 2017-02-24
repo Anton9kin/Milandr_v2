@@ -49,6 +49,7 @@ public class GuiUtils {
 			});
 		});
 		callback.callListener(key, "null", "RESET");
+		Platform.runLater(() -> callback.callGuiListener(key, "null", "RESET"));
 	}
 
 	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map) {
