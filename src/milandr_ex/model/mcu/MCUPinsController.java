@@ -361,21 +361,21 @@ public class MCUPinsController extends BasicController
 		}
 	}
 
-	private boolean switchLinkedComboboxes(String key, String prev, String value) {
+	private boolean switchLinkedComboboxes(String srcKey, String prev, String value) {
 		boolean result = true;
 		if (prev == null) return result;
 		if (refillInProgress > 0) return result;
 		if (value != null && !value.equals("null")) {
 			refillInProgress++;
-			refillLinkedPairCombos(key, value);
-			changeTargetCBoxAndLabel(prev, "RESET");
-			result = changeTargetCBoxAndLabel(value, value);
+			refillLinkedPairCombos(srcKey, value);
+			changeTargetCBoxAndLabel(srcKey, prev, "RESET");
+			result = changeTargetCBoxAndLabel(srcKey, value, value);
 			refillInProgress--;
 		}
 		return result;
 	}
 
-	private boolean changeTargetCBoxAndLabel(String crVal, String newVal) {
+	private boolean changeTargetCBoxAndLabel(String srcKey, String crVal, String newVal) {
 		if (crVal.equals("null") || crVal.equals("RESET")) return true;
 		String[] values = crVal.split("\\s");
 		String cKey = textToKey(values[values.length - 1]);
@@ -384,10 +384,10 @@ public class MCUPinsController extends BasicController
 			String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
 			cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
 		}
-		return switchTargetBoxAndLabel(values[0], newVal, cbkey);
+		return switchTargetBoxAndLabel(srcKey, newVal, cbkey);
 	}
 
-	private boolean switchTargetBoxAndLabel(String value0, String value1, CBoxAndKey cbkey) {
+	private boolean switchTargetBoxAndLabel(String srcKey, String value1, CBoxAndKey cbkey) {
 		ComboBox target = cbkey.cBox;
 		selectAndExpandPairGroup(cbkey.key);
 		if (target != null && target.getSelectionModel() != null) {
@@ -395,7 +395,12 @@ public class MCUPinsController extends BasicController
 			String cKey = cbkey.key;
 			resetPrevLinkedCombobox(target, cKey);
 			if (!value1.equals("RESET")) {
-				selMod.select(value1.split("\\s")[0]);
+				String selItem = value1.split("\\s")[0];
+				if (srcKey.startsWith("cb")) {
+					selItem += " " + keyToText(srcKey);
+					refillLinkedPairCombos(cKey, selItem);
+				}
+				selMod.select(selItem);
 				switchLinkedLabel(cKey, target, selMod);
 			}
 			return true;
