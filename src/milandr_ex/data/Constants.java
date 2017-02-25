@@ -206,11 +206,15 @@ public class Constants {
             int portGroup = Device.EPortNames.valueOf(text.substring(1, 2)).ordinal();
             int portNumber = Integer.parseInt(text.substring(2));
             return String.format("cb%s%s%d", portGroup, portNumber > 9 ? "" : "0", portNumber);
-        } else if (text.matches("\\w{1,4}\\d_\\w{1,3}")) {
-            text = text.substring(0, text.indexOf("_"));
-            if (text.startsWith("SSP")) text = "SPI-" + text.substring(3);
-            if (text.startsWith("SDA")) text = "I2C-" + text.substring(3);
-            if (text.startsWith("SCL")) text = "I2C-" + text.substring(3);
+        } else if (text.matches("\\w{1,4}\\d") || text.matches("\\w{1,4}\\d_\\w{1,3}")) {
+			int spInd = text.indexOf("_");
+			if (spInd < 0) spInd = text.length();
+			String resText = text.substring(0, spInd - 1) + "-" + text.substring(spInd -1, spInd);
+			text = text.substring(0, spInd);
+            if (text.startsWith("SSP")) resText = "SPI-" + text.substring(3);
+            if (text.startsWith("SDA")) resText = "I2C-" + text.substring(3);
+            if (text.startsWith("SCL")) resText = "I2C-" + text.substring(3);
+            return resText;
         }
         return text;
     }

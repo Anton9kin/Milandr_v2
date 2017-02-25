@@ -321,10 +321,7 @@ public class MCUPinsController extends BasicController
 				String ssKey = subKey + "-" + i;
 				checkCBoxHiding(ssKey, cboxMap.get(ssKey));
 			}
-			if (inValue) for(String tKey: tpaneMap.keySet()) {
-				if (tKey.equals(subKey)) continue;
-				tpaneMap.get(tKey).setExpanded(false);
-			}
+			collapseOtherTPanes(subKey, inValue);
 			return;
 		}
 //		if (!comboKey.startsWith("cb")) return;
@@ -334,6 +331,13 @@ public class MCUPinsController extends BasicController
 		switchLinkedComboboxes(comboKey, prev, value);
 		if (!labMap.containsKey(comboKey)) return;
 		switchLinkedLabel(comboKey, comboBox, model);
+	}
+
+	private void collapseOtherTPanes(String subKey, Boolean inValue) {
+		if (inValue) for(String tKey: tpaneMap.keySet()) {
+			if (tKey.equals(subKey)) continue;
+			tpaneMap.get(tKey).setExpanded(false);
+		}
 	}
 
 	private void switchLinkedLabel(String comboKey, ComboBox comboBox, SelectionModel model) {
@@ -371,7 +375,9 @@ public class MCUPinsController extends BasicController
 		if (crVal.equals("null") || crVal.equals("RESET")) return;
 		String[] values = crVal.split("\\s");
 		String cKey = textToKey(values[values.length - 1]);
+		String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
 		CBoxAndKey cbkey = refindTargetCBox(cKey, crVal, !newVal.equals("RESET"));
+		if (cbkey.cBox == null) cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
 		switchTargetBoxAndLabel(values[0], newVal, cbkey);
 	}
 
@@ -379,10 +385,19 @@ public class MCUPinsController extends BasicController
 		ComboBox target = cbkey.cBox;
 		if (target != null && target.getSelectionModel() != null) {
 			SelectionModel selMod = target.getSelectionModel();
-			resetPrevLinkedCombobox(target, cbkey.key);
+			String cKey = cbkey.key;
+			resetPrevLinkedCombobox(target, cKey);
+			if (cKey.contains("-")) {
+				String subCKey = cKey.substring(0, cKey.lastIndexOf("-"));
+				String subTKey = cKey.substring(0, cKey.indexOf("-"));
+				tpaneMap.get(subTKey).setExpanded(true);
+				collapseOtherTPanes(subTKey, true);
+				cboxMap.get(subCKey).setSelected(true);
+				switchObjects(subCKey, vboxMap, true, true);
+			}
 			if (!value1.equals("RESET")) {
-				selMod.select(value1);
-				switchLinkedLabel(cbkey.key, target, selMod);
+				selMod.select(value1.split("\\s")[0]);
+				switchLinkedLabel(cKey, target, selMod);
 			}
 		}
 	}
