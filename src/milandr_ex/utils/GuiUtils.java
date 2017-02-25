@@ -59,10 +59,14 @@ public class GuiUtils {
 	}
 
 	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map) {
+		iterateComboMap(pref, pins, map, false);
+	}
+	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map, boolean skipReset) {
 		for(String key: map.keySet()) {
 			String pin = pins.get(key);
 			if (pin == null) pin = pins.get(pref + key);
 			if (pin == null) continue;
+			if (skipReset && pin.equals("RESET")) continue;
 			Node node = map.get(key);
 			if (node instanceof ComboBox) //noinspection unchecked
 				((ComboBox)node).getSelectionModel().select(pin);

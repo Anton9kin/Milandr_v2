@@ -2,7 +2,6 @@ package milandr_ex.model.mcu;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -55,10 +54,8 @@ public class MCUClockController extends BasicController
 	@Override
 	public void observe(PinoutsModel pinoutsModel) {
 		if (pinoutsModel == null) return;
-		Platform.runLater(() -> {
-			Map<String, String> pins = pinoutsModel.getSelectedPins();
-			iterateComboMap("k-", pins, clkMap);
-		});
+		Map<String, String> pins = pinoutsModel.getSelectedPins();
+		iterateComboMap("k-", pins, clkMap, true);
 	}
 
 	private void fillClockGrid() {
