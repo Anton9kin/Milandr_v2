@@ -392,6 +392,7 @@ public class MCUPinsController extends BasicController
 		if (cbkey.cBox == null && cKey.contains("-")) {
 			String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
 			cbkey = refindTargetCBox(srcKey, cKey1, crVal, !newVal.equals("RESET"));
+			if (cbkey.cBox == null) cbkey.setKey(cKey);
 		}
 		return switchTargetBoxAndLabel(srcKey, newVal, cbkey);
 	}
@@ -424,7 +425,10 @@ public class MCUPinsController extends BasicController
 			if (!tpaneMap.containsKey(subTKey)) return;
 			tpaneMap.get(subTKey).setExpanded(true);
 			collapseOtherTPanes(subTKey, true);
-			if (subCKey.equals(subTKey) && !cboxMap.containsKey(subCKey)) subCKey += "-1";
+			if (subCKey.equals(subTKey)) {
+				if (cboxMap.containsKey(cKey)) subCKey = cKey;
+				if (!cboxMap.containsKey(subCKey)) subCKey += "-1";
+			}
 			cboxMap.get(subCKey).setSelected(true);
 			switchObjects(subCKey, vboxMap, true, true);
 		}
