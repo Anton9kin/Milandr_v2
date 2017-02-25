@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.PinoutsModel;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackOwner;
@@ -105,4 +106,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
 		return "  " + pinOut + pinSuff + "  ";
 	}
+
+	protected void saveSelectedPin(String comboKey, String value) {
+		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
+		if (value != null && !value.equals("null") && pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
+	}
+
 }

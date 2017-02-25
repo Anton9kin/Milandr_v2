@@ -189,6 +189,7 @@ public class MCUClockController extends BasicController
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
+		saveSelectedPin(comboKey, value);
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		log_debug(log, String.format("#switchComboIndex[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
 //		int row = subInd % 10; int col = subInd / 10;
