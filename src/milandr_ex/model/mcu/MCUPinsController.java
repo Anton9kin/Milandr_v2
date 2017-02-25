@@ -361,21 +361,94 @@ public class MCUPinsController extends BasicController
 		if (value != null && !value.equals("null")) {
 			refillInProgress++;
 			refillLinkedPairCombos(key, value);
-			if (value.equals("RESET")) {
-				resetPrevLinkedCombobox(prev);
-				refillInProgress--;
-				return;
-			}
-			String[] values = value.split("\\s");
-			String cKey = textToKey(values[values.length - 1]);
-			ComboBox<String> target = comboMap.get(cKey);
-			if (target != null && target.getSelectionModel() != null) {
-				SelectionModel selMod = target.getSelectionModel();
-				resetPrevLinkedCombobox(prev);
-				selMod.select(values[0]);
-				switchLinkedLabel(cKey, target, selMod);
-			}
+			changeTargetCBoxAndLabel(prev, "RESET");
+			changeTargetCBoxAndLabel(value, value);
 			refillInProgress--;
+		}
+	}
+
+	private void changeTargetCBoxAndLabel(String crVal, String newVal) {
+		if (crVal.equals("null") || crVal.equals("RESET")) return;
+		String[] values = crVal.split("\\s");
+		String cKey = textToKey(values[values.length - 1]);
+		CBoxAndKey cbkey = refindTargetCBox(cKey, crVal, !newVal.equals("RESET"));
+		switchTargetBoxAndLabel(values[0], newVal, cbkey);
+	}
+
+	private void switchTargetBoxAndLabel(String value0, String value1, CBoxAndKey cbkey) {
+		ComboBox target = cbkey.cBox;
+		if (target != null && target.getSelectionModel() != null) {
+			SelectionModel selMod = target.getSelectionModel();
+			resetPrevLinkedCombobox(target, cbkey.key);
+			if (!value1.equals("RESET")) {
+				selMod.select(value1);
+				switchLinkedLabel(cbkey.key, target, selMod);
+			}
+		}
+	}
+
+	private static class CBoxAndKey {
+		String key;
+		ComboBox cBox;
+
+		public CBoxAndKey(String key, ComboBox cBox) {
+			this.key = key;
+			this.cBox = cBox;
+		}
+
+		public CBoxAndKey setKey(String key) {
+			this.key = key;
+			return this;
+		}
+
+		public CBoxAndKey setcBox(ComboBox cBox) {
+			this.cBox = cBox;
+			return this;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private CBoxAndKey refindTargetCBox(String cKey, String crVal, boolean forNew) {
+		ComboBox<String> target = comboMap.get(cKey);
+		CBoxAndKey result = new CBoxAndKey(cKey, target);
+		String lKey = cKey;
+		if (target == null) {
+			int i  = 0;
+			lKey = cKey;
+			while (i < 9 && target == null) {
+				lKey = cKey + "-0" + i++;
+				target = comboMap.get(lKey);
+				if (forNew && isTargetHasSelection(target)) target = null;
+				else if (!forNew && !isTargetHasSelection(target, crVal)) target = null;
+			}
+		}
+		return result.setKey(lKey).setcBox(target);
+	}
+
+	private boolean isTargetHasSelection(ComboBox<String> target) {
+		return target != null && target.getSelectionModel().getSelectedItem() != null;
+	}
+
+	private boolean isTargetHasSelection(ComboBox<String> target, String crVal) {
+		if (target == null) return false;
+		String selectedItem = target.getSelectionModel().getSelectedItem();
+		if (selectedItem == null) return false;
+		return selectedItem.startsWith(crVal);
+	}
+
+	private void resetPrevLinkedCombobox(String prev) {
+		if (prev.contains(" ")) {
+			String cKey = textToKey(prev.split("\\s")[1]);
+			//noinspection unchecked
+			resetPrevLinkedCombobox(comboMap.get(cKey), cKey);
+		}
+	}
+	private void resetPrevLinkedCombobox(ComboBox pTarget, String cKey) {
+		if (pTarget != null) {
+			//noinspection unchecked
+			SingleSelectionModel<String> selMod = pTarget.getSelectionModel();
+			selMod.selectFirst();
+			switchLinkedLabel(cKey, pTarget, selMod);
 		}
 	}
 
@@ -430,19 +503,6 @@ public class MCUPinsController extends BasicController
 			String cbKey = cbKeys.get(tempCb.indexOf(cb));
 			if (cbKey == null) continue;
 			switchComboIndex(cbKey, cb, "itm", itm);
-		}
-	}
-
-	private void resetPrevLinkedCombobox(String prev) {
-		if (prev.contains(" ")) {
-			String cKey = textToKey(prev.split("\\s")[1]);
-			//noinspection unchecked
-			ComboBox<String> pTarget = comboMap.get(cKey);
-			if (pTarget != null) {
-				SingleSelectionModel<String> selMod = pTarget.getSelectionModel();
-				selMod.selectFirst();
-				switchLinkedLabel(cKey, pTarget, selMod);
-			}
 		}
 	}
 
