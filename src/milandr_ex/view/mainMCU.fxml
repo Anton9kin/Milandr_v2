@@ -26,17 +26,30 @@
 		</Tab>
 		<Tab text="Configuration">
 			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-				<VBox alignment="TOP_CENTER" fx:id="cfg_vbox"
-							layoutX="14.0" layoutY="14.0" prefHeight="731.0"
-							prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
-							AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
-					<TitledPane fx:id="cfg_pwr" text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
-					<TitledPane fx:id="cfg_syst" text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
-					<TitledPane fx:id="cfg_adc" text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
-					<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
-					<TitledPane fx:id="cfg_iwd" text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
-					<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
-				</VBox>
+				<GridPane alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="731.0"
+						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
+						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+					<columnConstraints>
+						<ColumnConstraints percentWidth="50"/>
+						<ColumnConstraints percentWidth="50"/>
+					</columnConstraints>
+					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_in" GridPane.columnIndex="0"
+						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
+						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
+						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+						<TitledPane fx:id="cfg_pwr" text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_syst" text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_adc" text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_iwd" text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
+					</VBox>
+					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ex" GridPane.columnIndex="1"
+						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
+						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
+						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+						<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
+					</VBox>
+				</GridPane>
 			</AnchorPane>
 		</Tab>
 	</TabPane>

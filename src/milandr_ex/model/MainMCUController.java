@@ -19,6 +19,7 @@ import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 public class MainMCUController extends BasicController {
@@ -60,7 +61,9 @@ public class MainMCUController extends BasicController {
 	private MCUClockController mcuClockController;
 
 	@FXML
-	private VBox cfg_vbox;
+	private VBox cfg_vbox_in;
+	@FXML
+	private VBox cfg_vbox_ex;
 	private Map<String, TitledPane> cfgMap = Maps.newHashMap();
 
 	public MainMCUController() {
@@ -84,7 +87,12 @@ public class MainMCUController extends BasicController {
 //			((ComboBoxBase) skinnable).setEditable(true);
 		});
 		tmrPane.getChildren().add(new VBox(ccb));
-		for(Node node: cfg_vbox.getChildren()) {
+		makeLiteners(cfg_vbox_in.getChildren());
+		makeLiteners(cfg_vbox_ex.getChildren());
+	}
+
+	private void makeLiteners(List<Node> cfg_vbox) {
+		for(Node node: cfg_vbox) {
 			String key = node.getId();
 			if (node instanceof TitledPane) {
 				cfgMap.put("t-" + key, (TitledPane) node);
@@ -108,10 +116,15 @@ public class MainMCUController extends BasicController {
 		Boolean inValue = value != null && value.equals("true");
 		if (comboKey.startsWith("t-")) {
 			if (!inValue) return;
-			for (Node node : cfg_vbox.getChildren()) {
-				if (node instanceof TitledPane && !node.getId().equals(subKey)) {
-					((TitledPane) node).setExpanded(false);
-				}
+			collapseChildren(subKey, cfg_vbox_in.getChildren());
+			collapseChildren(subKey, cfg_vbox_ex.getChildren());
+		}
+	}
+
+	private void collapseChildren(String subKey, List<Node> children) {
+		for (Node node : children) {
+			if (node instanceof TitledPane && !node.getId().equals(subKey)) {
+				((TitledPane) node).setExpanded(false);
 			}
 		}
 	}
