@@ -388,10 +388,10 @@ public class MCUPinsController extends BasicController
 		if (crVal.equals("null") || crVal.equals("RESET")) return true;
 		String[] values = crVal.split("\\s");
 		String cKey = textToKey(values[values.length - 1]);
-		CBoxAndKey cbkey = refindTargetCBox(cKey, crVal, !newVal.equals("RESET"));
+		CBoxAndKey cbkey = refindTargetCBox(srcKey, cKey, crVal, !newVal.equals("RESET"));
 		if (cbkey.cBox == null && cKey.contains("-")) {
 			String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
-			cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
+			cbkey = refindTargetCBox(srcKey, cKey1, crVal, !newVal.equals("RESET"));
 		}
 		return switchTargetBoxAndLabel(srcKey, newVal, cbkey);
 	}
@@ -451,7 +451,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	@SuppressWarnings("unchecked")
-	private CBoxAndKey refindTargetCBox(String cKey, String crVal, boolean forNew) {
+	private CBoxAndKey refindTargetCBox(String srcKey, String cKey, String crVal, boolean forNew) {
 		ComboBox<String> target = comboMap.get(cKey);
 		CBoxAndKey result = new CBoxAndKey(cKey, target);
 		String lKey = cKey;
@@ -461,15 +461,20 @@ public class MCUPinsController extends BasicController
 			while (i <= 9 && target == null) {
 				lKey = cKey + "-0" + i++;
 				target = comboMap.get(lKey);
-				if (forNew && isTargetHasSelection(target)) target = null;
+				if (forNew && isTargetHasAnySelection(target, crVal + " " + keyToText(srcKey))) target = null;
 				else if (!forNew && !isTargetHasSelection(target, crVal)) target = null;
 			}
 		}
 		return result.setKey(lKey).setcBox(target);
 	}
 
-	private boolean isTargetHasSelection(ComboBox<String> target) {
-		return target != null && target.getSelectionModel().getSelectedItem() != null;
+	private boolean isTargetHasAnySelection(ComboBox<String> target, String crVal) {
+		if (target == null) return false;
+		if (target.getSelectionModel() == null) return false;
+		SingleSelectionModel model = target.getSelectionModel();
+		if (model.getSelectedItem() != null) return true;
+		if (target.getItems() == null) return false;
+		return (!target.getItems().contains(crVal));
 	}
 
 	private boolean isTargetHasSelection(ComboBox<String> target, String crVal) {
