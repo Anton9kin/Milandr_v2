@@ -206,7 +206,8 @@ public class Constants {
             int portGroup = Device.EPortNames.valueOf(text.substring(1, 2)).ordinal();
             int portNumber = Integer.parseInt(text.substring(2));
             return String.format("cb%s%s%d", portGroup, portNumber > 9 ? "" : "0", portNumber);
-        } else if (text.matches("\\w{1,4}\\d") || text.matches("\\w{1,4}\\d_\\w{1,3}")) {
+        } else if (text.matches("\\w{1,4}\\d") || text.matches("\\w{1,4}\\d_\\w{1,3}")
+				|| text.matches("\\w{1,4}\\d[\\w+-]") || text.matches("\\w{1,4}\\d_\\w{1,3}[\\w+-]")) {
 			int spInd = text.indexOf("_");
 			if (spInd < 0) spInd = text.length();
 			String resText = text.substring(0, spInd - 1) + "-" + text.substring(spInd -1, spInd);

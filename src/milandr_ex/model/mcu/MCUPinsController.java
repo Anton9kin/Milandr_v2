@@ -375,30 +375,38 @@ public class MCUPinsController extends BasicController
 		if (crVal.equals("null") || crVal.equals("RESET")) return;
 		String[] values = crVal.split("\\s");
 		String cKey = textToKey(values[values.length - 1]);
-		String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
 		CBoxAndKey cbkey = refindTargetCBox(cKey, crVal, !newVal.equals("RESET"));
-		if (cbkey.cBox == null) cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
+		if (cbkey.cBox == null && cKey.contains("-")) {
+			String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
+			cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
+		}
 		switchTargetBoxAndLabel(values[0], newVal, cbkey);
 	}
 
 	private void switchTargetBoxAndLabel(String value0, String value1, CBoxAndKey cbkey) {
 		ComboBox target = cbkey.cBox;
+		selectAndExpandPairGroup(cbkey.key);
 		if (target != null && target.getSelectionModel() != null) {
 			SelectionModel selMod = target.getSelectionModel();
 			String cKey = cbkey.key;
 			resetPrevLinkedCombobox(target, cKey);
-			if (cKey.contains("-")) {
-				String subCKey = cKey.substring(0, cKey.lastIndexOf("-"));
-				String subTKey = cKey.substring(0, cKey.indexOf("-"));
-				tpaneMap.get(subTKey).setExpanded(true);
-				collapseOtherTPanes(subTKey, true);
-				cboxMap.get(subCKey).setSelected(true);
-				switchObjects(subCKey, vboxMap, true, true);
-			}
 			if (!value1.equals("RESET")) {
 				selMod.select(value1.split("\\s")[0]);
 				switchLinkedLabel(cKey, target, selMod);
 			}
+		}
+	}
+
+	private void selectAndExpandPairGroup(String cKey) {
+		if (cKey.contains("-")) {
+			String subCKey = cKey.substring(0, cKey.lastIndexOf("-"));
+			String subTKey = cKey.substring(0, cKey.indexOf("-"));
+			if (!tpaneMap.containsKey(subTKey)) return;
+			tpaneMap.get(subTKey).setExpanded(true);
+			collapseOtherTPanes(subTKey, true);
+			if (subCKey.equals(subTKey) && !cboxMap.containsKey(subCKey)) subCKey += "-1";
+			cboxMap.get(subCKey).setSelected(true);
+			switchObjects(subCKey, vboxMap, true, true);
 		}
 	}
 
@@ -430,7 +438,7 @@ public class MCUPinsController extends BasicController
 		if (target == null) {
 			int i  = 0;
 			lKey = cKey;
-			while (i < 9 && target == null) {
+			while (i <= 9 && target == null) {
 				lKey = cKey + "-0" + i++;
 				target = comboMap.get(lKey);
 				if (forNew && isTargetHasSelection(target)) target = null;
