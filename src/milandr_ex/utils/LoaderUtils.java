@@ -57,11 +57,11 @@ public class LoaderUtils {
 	public static BorderPane initRootLayout(Stage stage) {
 		FXMLLoader loader = loadLayout(null, "RootLayout");
 		getAppScene(stage, loader.getResources(), loader.getRoot());
-		stage.setTitle(((AppScene)stage.getScene()).getBundle().getString("main.title"));
-
-		initStage(stage, 800, 600);
 		AppScene scene = (AppScene) stage.getScene();
-		scene.setRootController(addSceneToController(loader, scene).postInit());
+		stage.setTitle(scene.getBundle().getString("main.title"));
+		BasicController bc = addSceneToController(loader, scene).preInit();
+		initStage(stage, 800, 600);
+		scene.setRootController(bc.postInit());
 		return scene.getRootLayout();
 	}
 
@@ -70,8 +70,9 @@ public class LoaderUtils {
 		ResourceBundle bundle = scene.getBundle();
 		FXMLLoader loader = loadLayout(bundle, viewName);
 		scene.getAppStage().setTitle(bundle.getString(titleKey));
+		BasicController bc = addSceneToController(loader, scene).preInit();
 		setupNewLayout(scene, loader);
-		addSceneToController(loader, scene).postInit();
+		bc.postInit();
 		return scene.getRootLayout();
 	}
 

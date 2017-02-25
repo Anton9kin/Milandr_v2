@@ -33,6 +33,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected ChangeCallback changeCallback;
 	protected List<BasicController> subControllers = Lists.newArrayList();
 
+	public <T extends BasicController> T preInit() {
+		preInit(getScene());
+		return (T) this;
+	}
 	@SuppressWarnings("unchecked")
 	public <T extends BasicController> T postInit() {
 		if (getParentController() != null) {
@@ -60,6 +64,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected void addChildController(BasicController child) {
 		subControllers.add(child);
 	}
+	protected void preInit(AppScene scene) {}
 	protected abstract void postInit(AppScene scene);
 	protected void initLater(AppScene scene){}
 	protected void initSubControllers(BasicController... controllers) {

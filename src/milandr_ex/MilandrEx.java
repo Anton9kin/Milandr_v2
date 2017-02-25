@@ -1,6 +1,6 @@
 package milandr_ex;
 
-import com.aquafx_project.AquaFx;
+//import com.aquafx_project.AquaFx;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -26,7 +26,7 @@ public class MilandrEx extends Application {
 	@Override
 	public void start(Stage primStage) {
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
-		AquaFx.style();
+//		AquaFx.style();
 		initRootLayout(primStage);
 		showMain();
 	}
