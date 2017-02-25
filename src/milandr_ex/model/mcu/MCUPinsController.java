@@ -327,7 +327,10 @@ public class MCUPinsController extends BasicController
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 		SelectionModel model = comboBox.getSelectionModel();
 		if (model.getSelectedItem() == null || model.getSelectedIndex() < 0) return;
-		switchLinkedComboboxes(comboKey, prev, value);
+		if (!switchLinkedComboboxes(comboKey, prev, value)){
+			comboBox.getSelectionModel().clearSelection();
+			return;
+		}
 		if (!labMap.containsKey(comboKey)) return;
 		switchLinkedLabel(comboKey, comboBox, model);
 	}
@@ -358,20 +361,22 @@ public class MCUPinsController extends BasicController
 		}
 	}
 
-	private void switchLinkedComboboxes(String key, String prev, String value) {
-		if (prev == null) return;
-		if (refillInProgress > 0) return;
+	private boolean switchLinkedComboboxes(String key, String prev, String value) {
+		boolean result = true;
+		if (prev == null) return result;
+		if (refillInProgress > 0) return result;
 		if (value != null && !value.equals("null")) {
 			refillInProgress++;
 			refillLinkedPairCombos(key, value);
 			changeTargetCBoxAndLabel(prev, "RESET");
-			changeTargetCBoxAndLabel(value, value);
+			result = changeTargetCBoxAndLabel(value, value);
 			refillInProgress--;
 		}
+		return result;
 	}
 
-	private void changeTargetCBoxAndLabel(String crVal, String newVal) {
-		if (crVal.equals("null") || crVal.equals("RESET")) return;
+	private boolean changeTargetCBoxAndLabel(String crVal, String newVal) {
+		if (crVal.equals("null") || crVal.equals("RESET")) return true;
 		String[] values = crVal.split("\\s");
 		String cKey = textToKey(values[values.length - 1]);
 		CBoxAndKey cbkey = refindTargetCBox(cKey, crVal, !newVal.equals("RESET"));
@@ -379,10 +384,10 @@ public class MCUPinsController extends BasicController
 			String cKey1 = cKey.substring(0, cKey.lastIndexOf("-"));
 			cbkey = refindTargetCBox(cKey1, crVal, !newVal.equals("RESET"));
 		}
-		switchTargetBoxAndLabel(values[0], newVal, cbkey);
+		return switchTargetBoxAndLabel(values[0], newVal, cbkey);
 	}
 
-	private void switchTargetBoxAndLabel(String value0, String value1, CBoxAndKey cbkey) {
+	private boolean switchTargetBoxAndLabel(String value0, String value1, CBoxAndKey cbkey) {
 		ComboBox target = cbkey.cBox;
 		selectAndExpandPairGroup(cbkey.key);
 		if (target != null && target.getSelectionModel() != null) {
@@ -393,7 +398,9 @@ public class MCUPinsController extends BasicController
 				selMod.select(value1.split("\\s")[0]);
 				switchLinkedLabel(cKey, target, selMod);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	private void selectAndExpandPairGroup(String cKey) {
