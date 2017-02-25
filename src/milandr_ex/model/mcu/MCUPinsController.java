@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
@@ -57,6 +58,7 @@ public class MCUPinsController extends BasicController
 	private Map<String, VBox> vboxMap = Maps.newHashMap();
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	private Map<String, TitledPane> tpaneMap = Maps.newHashMap();
+	private Map<String, Button> tbtnMap = Maps.newHashMap();
 
 	public MCUPinsController() {
 		log.debug("mcuPins Controller initialized");
@@ -175,9 +177,12 @@ public class MCUPinsController extends BasicController
 			for(int j = 1; j <= pairSize; j++) {
 				String pName = pairName + (pairSize > 1 ? "-" + j: "");
 				CheckBox cBox = getCheckBox(pName);
+				Button cBtn = new Button("clear");
+				GuiUtils.makeListener(pName, cBtn, changeCallback);
+				HBox hBox =new HBox(cBox, cBtn);
 				cboxMap.put(pName, cBox);
 				VBox vBox = makePairs(pairName + (j), pName, ePair.getSize());
-				vvBox.getChildren().add(cBox);
+				vvBox.getChildren().add(hBox);
 				vvBox.getChildren().add(vBox);
 //				GridPane.setColumnIndex(tPane, l);
 //				GridPane.setRowIndex(tPane, k++);
@@ -309,6 +314,10 @@ public class MCUPinsController extends BasicController
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
 		saveSelectedPin(comboKey, value);
+		if (comboKey.startsWith("b-")) {
+			uncheckObjects(subKey, comboMap);
+			return;
+		}
 		if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;

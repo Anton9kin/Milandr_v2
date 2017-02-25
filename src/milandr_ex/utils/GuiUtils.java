@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.keyToText;
+import static milandr_ex.data.Constants.textToKey;
 
 /**
  * Created by lizard on 20.02.17 at 16:55.
@@ -28,6 +29,14 @@ public class GuiUtils {
 	public static String textStyleDef = "-fx-text-fill: black; -fx-font-size: 12; -fx-background-color: white;";
 	public static String textStyleError = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: red;";
 
+	public static void makeListener(final String key, Button newBtn, ChangeCallback callback) {
+//		makeListener("b-" + key, newBtn.onMouseEnteredProperty(), callback);
+		newBtn.setOnAction((event) -> {
+			String kkey = "b-" + key;
+			callback.callListener(kkey, "none", "click");
+			Platform.runLater(() -> callback.callGuiListener(kkey, "none", "click"));
+		});
+	}
 	public static void makeListener(final String key, TitledPane newPane, ChangeCallback callback) {
 		makeListener("t-" + key, newPane.expandedProperty(), callback);
 	}
@@ -190,14 +199,31 @@ public class GuiUtils {
 		}
 	}
 
-	public static void switchObjects(String pref, Map<String, ? extends Node> nodeMap, boolean visible, boolean single){
-		for(String comboKey: nodeMap.keySet()) {
-			if (!comboKey.startsWith(pref)) continue;
-			Node node = nodeMap.get(comboKey);
+	public static void uncheckObjects(String pref, Map<String, ? extends Node> nodeMap) {
+		iterateObjects(pref, nodeMap, (node) -> ((ComboBox) node).getSelectionModel().select("RESET"));
+	}
+	public static void switchObjects(String pref, Map<String, ? extends Node> nodeMap,
+									 boolean visible, boolean single){
+		iterateObjects(pref, nodeMap, (node) -> {
 			node.setVisible(visible);
 			((VBox)node).setMinHeight(visible ? ((VBox) node).getChildren().size() * 25 : 0);
 			((VBox)node).setPrefHeight(visible ? ((VBox) node).getChildren().size() * 25 : 0);
 			((VBox)node).setMaxHeight(visible ? ((VBox) node).getChildren().size() * 25 : 0);
+		});
+	}
+	public static void iterateObjects(String pref, Map<String, ? extends Node> nodeMap,
+									  NodeIterateProcessor processor){
+		for(String comboKey: nodeMap.keySet()) {
+			Node node = nodeMap.get(comboKey);
+			if (!comboKey.startsWith(pref)) {
+				if (node instanceof ComboBox) {
+					SelectionModel model = ((ComboBox) node).getSelectionModel();
+					if (model == null) continue;
+					String item = (String)model.getSelectedItem();
+					if (item == null || !textToKey(item).contains(pref)) continue;
+				} else continue;
+			}
+			processor.process(node);
 		}
 	}
 
