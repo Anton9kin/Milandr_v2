@@ -421,6 +421,8 @@ public class MCUPinsController extends BasicController
 			}
 			return true;
 		}
+		if (value1.startsWith("IO") || value1.startsWith("DATA") ||
+				value1.startsWith("ADDR")) return true;
 		return false;
 	}
 
