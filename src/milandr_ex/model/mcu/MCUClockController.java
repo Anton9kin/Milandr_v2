@@ -185,6 +185,7 @@ public class MCUClockController extends BasicController
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+		comboBox.setStyle(cssStyleFromColor(newClr("dbe0b6")));
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		saveSelectedPin(comboKey, value);
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
