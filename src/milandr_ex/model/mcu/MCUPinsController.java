@@ -383,9 +383,7 @@ public class MCUPinsController extends BasicController
 	@SuppressWarnings("unused")
 	private void reFillComboBox(ComboBox comboBox, Label label, Color color) {
 		if (color == null) return;
-		String cssStyle = "-fx-background-color: " + toRGBCode(color) + ";";
-		cssStyle += "-fx-background-radius: 8; -fx-border-color: #393939";
-		cssStyle += "-fx-border-radius: 6";
+		String cssStyle = cssStyleFromColor(color);
 		if (comboBox != null) comboBox.setStyle(cssStyle);
 		if (label != null) label.setStyle(cssStyle);
 //		BackgroundFill fill = new BackgroundFill(color, new CornerRadii(2.0), new Insets(1.4));
@@ -393,6 +391,7 @@ public class MCUPinsController extends BasicController
 //		if (comboBox != null) comboBox.setBackground(back);
 //		if (label != null) label.setBackground(back);
 	}
+
 	private boolean switchLinkedComboboxes(String srcKey, String prev, String value) {
 		boolean result = true;
 		if (prev == null) return result;

@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.ClockModel;
 import milandr_ex.data.Constants;
@@ -21,9 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-import static milandr_ex.data.Constants.clItem;
-import static milandr_ex.data.Constants.clItem2;
-import static milandr_ex.data.Constants.clItem3;
+import static milandr_ex.data.Constants.*;
 import static milandr_ex.utils.GuiUtils.*;
 import static milandr_ex.utils.GuiUtils.textStyleError;
 
@@ -221,9 +220,12 @@ public class MCUClockController extends BasicController
 					textF.setText(makeHzText(pinOut));
 					String restr = clock.getRestr(key, (col / 2) + row * 2);
 					if (!restr.isEmpty() && restr.contains(" ")) {
+						//linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x7c833fff 0.0%, 0x899147ff 100.0%)
+						//linear-gradient(from 0.0px 0.0px to 0.0px 5.0px, 0xc8cca5ff 0.0%, 0xdbe0b6ff 100.0%)
 						boolean isFailed = checkClockRestrictions(restr, pinOut);
+						textF.setStyle(cssStyleFromColor(isFailed ? newClr("dbe0b6") : Color.RED));
 //						textF.setStyle(isFailed ? textStyleDef : textStyleError);
-						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
+//						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
 //						Color backColor = isFailed ? Color.ALICEBLUE : Color.INDIANRED;
 //						textF.setStyle("-fx-background-color: " + Constants.toRGBCode(backColor) + ";");
 					}

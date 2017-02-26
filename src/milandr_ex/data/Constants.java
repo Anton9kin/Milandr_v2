@@ -202,12 +202,32 @@ public class Constants {
         return key;
     }
 
+    public static String cssStyleFromColor(Color color) {
+        String rgbColor = toRGBCode(color);
+        String rgbColor10 = toRGBCode(color, - 50);
+        String cssStyle = "-fx-background-color: " + rgbColor +
+                ", linear-gradient("+rgbColor+" 10%, " + rgbColor10 + " 100%); ";
+//				", linear-gradient("+rgbColor+" 10%, "+rgbColor+" 55%,"+rgbColor10+" 60%, "+rgbColor10+" 100%); ";
+//		cssStyle += ", linear-gradient(#eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);";
+        cssStyle += "-fx-background-radius: 4; -fx-border-color: #747d29;";
+        cssStyle += "-fx-border-radius: 3";
+        return cssStyle;
+    }
+
     public static String toRGBCode( Color color )
     {
-        return String.format( "#%02X%02X%02X",
-                (int)( color.getRed() * 255 ),
-                (int)( color.getGreen() * 255 ),
-                (int)( color.getBlue() * 255 ) );
+        return toRGBCode(color, 0);
+    }
+
+    public static String toRGBCode( Color color, int diff )
+    {
+        int red = (int)( color.getRed() * 255 + diff);
+        if (red < 0) red = 0; if (red > 255) red = 255;
+        int green = (int)( color.getGreen() * 255 + diff);
+        if (green < 0) green = 0; if (green > 255) green = 255;
+        int blue = (int)( color.getBlue() * 255 + diff);
+        if (blue < 0) blue = 0; if (blue > 255) blue = 255;
+        return String.format( "#%02X%02X%02X", red, green, blue);
     }
 
     public static String textToKey(String text) {
