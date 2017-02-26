@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import impl.org.controlsfx.skin.CheckComboBoxSkin;
+import io.swagger.models.auth.In;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
@@ -13,6 +14,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -350,7 +352,8 @@ public class MCUPinsController extends BasicController
 	}
 
 	private void switchLinkedLabel(String comboKey, ComboBox comboBox, SelectionModel model) {
-		Background newBack = backgroundDefault;
+//		Background newBack = backgroundDefault;
+		Color newBack = GuiUtils.bcDef;
 		Label label = labMap.get(comboKey);
 		label.setText(keyToText(comboKey));
 		label.setVisible(true);
@@ -359,22 +362,36 @@ public class MCUPinsController extends BasicController
 				model.clearSelection(0);
 				label.setVisible(false);
 			case 1: break;
-			case 2: case 3: newBack = backgroundIO; break;
-			case 4: case 5: case 6: newBack = backgroundPeriph; break;
+			case 2: case 3: newBack = GuiUtils.bcIO; break;
+			case 4: case 5: case 6: newBack = GuiUtils.bcExt; break;
 		}
 		if (comboKey.startsWith("cb")) {
-			reFillComboBox(comboBox, label, newBack == null ? null :
-					(Color)newBack.getFills().get(0).getFill());
-//			label.setBackground(newBack);
+//			reFillComboBox(comboBox, label, newBack == null ? null :
+//					(Color)newBack.getFills().get(0).getFill());
+//			label.setBackground(newBack == null ? newClr("039ed322"));
+//			label.setBackground(newBack == null ? newClr("039ed322"));
+			reFillComboBox(comboBox, label, newBack);
+//			reFillComboBox(comboBox, label, newClr(newBack == null ?"0x939d46ff" : "0x039ed3ff"));
+//			comboBox.setStyle(newBack == null ? textStyleDef : textStyleError);
+//			label.setStyle(newBack == null ? textStyleDef : textStyleError);
 		}
+		// 0x039ed3ff , 0x039ed322
+		// linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x939d46ff 0.0%, 0x7f8a2fff 100.0%)
+		// linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x859035ff 0.0%, 0x747d29ff 100.0%)
 	}
 
 	@SuppressWarnings("unused")
 	private void reFillComboBox(ComboBox comboBox, Label label, Color color) {
-		if (color == null) color = new Color(210.0 / 255, 160.0/255, 13.0/255, 1.0);
-//		if (color == null) color = new Color(3.0 / 255, 160.0/255, 210.0/255, 1.0);
-//		comboBox.setStyle("-fx-background-color: " + toRGBCode(color) + ";");
-//		label.setStyle("-fx-background-color: " + toRGBCode(color) + ";");
+		if (color == null) return;
+		String cssStyle = "-fx-background-color: " + toRGBCode(color) + ";";
+		cssStyle += "-fx-background-radius: 8; -fx-border-color: #393939";
+		cssStyle += "-fx-border-radius: 6";
+		if (comboBox != null) comboBox.setStyle(cssStyle);
+		if (label != null) label.setStyle(cssStyle);
+//		BackgroundFill fill = new BackgroundFill(color, new CornerRadii(2.0), new Insets(1.4));
+//		Background back = new Background(fill, fill, fill, fill, fill);
+//		if (comboBox != null) comboBox.setBackground(back);
+//		if (label != null) label.setBackground(back);
 	}
 	private boolean switchLinkedComboboxes(String srcKey, String prev, String value) {
 		boolean result = true;

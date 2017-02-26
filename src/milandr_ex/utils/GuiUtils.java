@@ -22,13 +22,28 @@ import static milandr_ex.data.Constants.textToKey;
  * Created by lizard on 20.02.17 at 16:55.
  */
 public class GuiUtils {
-//	public static Color backColorDefault = new Color();
+	public static Color bcDef = newClr("0x859035ff");
+	public static Color bcOk = Color.GREEN;
+	public static Color bcIO = Color.GREENYELLOW;
+	public static Color bcExt = Color.YELLOW;
+	public static Color bcErr = Color.RED;
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundError = new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY));
 	public static String textStyleDef = "-fx-text-fill: black; -fx-font-size: 12; -fx-background-color: white;";
 	public static String textStyleError = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: red;";
+
+	public static Color newClr(String hexColor) {
+		if (hexColor.startsWith("#")) hexColor = hexColor.substring(1);
+		if (hexColor.startsWith("0x")) hexColor = hexColor.substring(2);
+		float r = Integer.parseInt(hexColor.substring(0, 2), 16) / 255f;
+		float g = Integer.parseInt(hexColor.substring(2, 4), 16) / 255f;
+		float b = Integer.parseInt(hexColor.substring(4, 6), 16) / 255f;
+		float a = (float) (hexColor.length() < 8 ? 1.0 :
+				(Integer.parseInt(hexColor.substring(6, 8), 16) / 255f));
+		return new Color(r, g, b, a);
+	}
 
 	public static void makeListener(final String key, Button newBtn, ChangeCallback callback) {
 //		makeListener("b-" + key, newBtn.onMouseEnteredProperty(), callback);
