@@ -222,8 +222,10 @@ public class MCUClockController extends BasicController
 					String restr = clock.getRestr(key, (col / 2) + row * 2);
 					if (!restr.isEmpty() && restr.contains(" ")) {
 						boolean isFailed = checkClockRestrictions(restr, pinOut);
-						textF.setStyle(isFailed ? textStyleDef : textStyleError);
-//						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
+//						textF.setStyle(isFailed ? textStyleDef : textStyleError);
+						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
+//						Color backColor = isFailed ? Color.ALICEBLUE : Color.INDIANRED;
+//						textF.setStyle("-fx-background-color: " + Constants.toRGBCode(backColor) + ";");
 					}
 				}
 //				Label label = findLabelFromGrid(subGr, row, col);

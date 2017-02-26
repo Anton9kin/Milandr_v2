@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import milandr_ex.MilandrEx;
 
 import java.io.*;
@@ -199,6 +200,14 @@ public class Constants {
             return String.format("P%s%d", Device.EPortNames.values()[portGroup], portNumber);
         }
         return key;
+    }
+
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
     }
 
     public static String textToKey(String text) {

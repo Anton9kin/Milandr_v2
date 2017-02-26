@@ -22,6 +22,7 @@ import static milandr_ex.data.Constants.textToKey;
  * Created by lizard on 20.02.17 at 16:55.
  */
 public class GuiUtils {
+//	public static Color backColorDefault = new Color();
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
@@ -96,14 +97,14 @@ public class GuiUtils {
 	}
 
 	public static Label makeLabel(String key) {
-		Label label = new Label("   " + keyToText(key));
-		label.setMinWidth(80.0);
+		Label label = new Label(" " + keyToText(key));
+		label.setMinWidth(60.0);
 		return label;
 	}
 
 	public static ComboBox<String> makeCombo(String pText) {
 		ComboBox<String> newCombo = new ComboBox<>();
-		newCombo.setBackground(backgroundDefault);
+//		newCombo.setBackground(backgroundDefault);
 		newCombo.setPromptText(keyToText(pText));
 		initItem(newCombo, 1);
 		return newCombo;

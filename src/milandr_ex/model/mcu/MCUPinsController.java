@@ -15,10 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
 import milandr_ex.utils.ChangeCallBackImpl;
@@ -365,11 +363,19 @@ public class MCUPinsController extends BasicController
 			case 4: case 5: case 6: newBack = backgroundPeriph; break;
 		}
 		if (comboKey.startsWith("cb")) {
-			comboBox.setBackground(newBack);
-			label.setBackground(newBack);
+			reFillComboBox(comboBox, label, newBack == null ? null :
+					(Color)newBack.getFills().get(0).getFill());
+//			label.setBackground(newBack);
 		}
 	}
 
+	@SuppressWarnings("unused")
+	private void reFillComboBox(ComboBox comboBox, Label label, Color color) {
+		if (color == null) color = new Color(210.0 / 255, 160.0/255, 13.0/255, 1.0);
+//		if (color == null) color = new Color(3.0 / 255, 160.0/255, 210.0/255, 1.0);
+//		comboBox.setStyle("-fx-background-color: " + toRGBCode(color) + ";");
+//		label.setStyle("-fx-background-color: " + toRGBCode(color) + ";");
+	}
 	private boolean switchLinkedComboboxes(String srcKey, String prev, String value) {
 		boolean result = true;
 		if (prev == null) return result;
