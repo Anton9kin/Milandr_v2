@@ -203,8 +203,11 @@ public class Constants {
     }
 
     public static String cssStyleFromColor(Color color) {
+        return cssStyleFromColor(color, false);
+    }
+    public static String cssStyleFromColor(Color color, boolean hover) {
         String rgbColor = toRGBCode(color);
-        String rgbColor10 = toRGBCode(color, - 50);
+        String rgbColor10 = toRGBCode(color, hover ? 50 :  - 50);
         String cssStyle = "-fx-background-color: " + rgbColor +
                 ", linear-gradient("+rgbColor+" 10%, " + rgbColor10 + " 100%); ";
 //				", linear-gradient("+rgbColor+" 10%, "+rgbColor+" 55%,"+rgbColor10+" 60%, "+rgbColor10+" 100%); ";

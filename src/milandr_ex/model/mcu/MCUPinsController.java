@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -340,30 +342,11 @@ public class MCUPinsController extends BasicController
 			case 4: case 5: case 6: newBack = GuiUtils.bcExt; break;
 		}
 		if (comboKey.startsWith("cb")) {
-//			reFillComboBox(comboBox, label, newBack == null ? null :
-//					(Color)newBack.getFills().get(0).getFill());
-//			label.setBackground(newBack == null ? newClr("039ed322"));
-//			label.setBackground(newBack == null ? newClr("039ed322"));
-			reFillComboBox(comboBox, label, newBack);
-//			reFillComboBox(comboBox, label, newClr(newBack == null ?"0x939d46ff" : "0x039ed3ff"));
-//			comboBox.setStyle(newBack == null ? textStyleDef : textStyleError);
-//			label.setStyle(newBack == null ? textStyleDef : textStyleError);
+			setupOnHoverStyle(newBack, comboBox, label);
 		}
 		// 0x039ed3ff , 0x039ed322
 		// linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x939d46ff 0.0%, 0x7f8a2fff 100.0%)
 		// linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x859035ff 0.0%, 0x747d29ff 100.0%)
-	}
-
-	@SuppressWarnings("unused")
-	private void reFillComboBox(ComboBox comboBox, Label label, Color color) {
-		if (color == null) return;
-		String cssStyle = cssStyleFromColor(color);
-		if (comboBox != null) comboBox.setStyle(cssStyle);
-		if (label != null) label.setStyle(cssStyle);
-//		BackgroundFill fill = new BackgroundFill(color, new CornerRadii(2.0), new Insets(1.4));
-//		Background back = new Background(fill, fill, fill, fill, fill);
-//		if (comboBox != null) comboBox.setBackground(back);
-//		if (label != null) label.setBackground(back);
 	}
 
 	private boolean switchLinkedComboboxes(String srcKey, String prev, String value) {

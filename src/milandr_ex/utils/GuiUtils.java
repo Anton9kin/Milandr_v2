@@ -2,7 +2,9 @@ package milandr_ex.utils;
 
 import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static milandr_ex.data.Constants.cssStyleFromColor;
 import static milandr_ex.data.Constants.keyToText;
 import static milandr_ex.data.Constants.textToKey;
 
@@ -44,6 +47,23 @@ public class GuiUtils {
 		float a = (float) (hexColor.length() < 8 ? 1.0 :
 				(Integer.parseInt(hexColor.substring(6, 8), 16) / 255f));
 		return new Color(r, g, b, a);
+	}
+
+	public static void setupOnHoverStyle(Color stdColor, Node... nodes) {
+		for(Node node: nodes) setupOnHoverStyle(node, stdColor);
+	}
+	public static void setupOnHoverStyle(Node node, Color stdColor) {
+		if (stdColor == null) return;
+		setupOnHoverStyle(node, cssStyleFromColor(stdColor),
+				cssStyleFromColor(stdColor, true));
+	}
+	public static void setupOnHoverStyle(Node node, String stdStyle, String hoverStyle) {
+		if (node == null) return;
+		node.styleProperty().unbind();
+		node.styleProperty().bind(Bindings.when(node.hoverProperty())
+				.then(new SimpleStringProperty(hoverStyle))
+				.otherwise(new SimpleStringProperty(stdStyle))
+		);
 	}
 
 	public static void makeListener(final String key, Button newBtn, ChangeCallback callback) {

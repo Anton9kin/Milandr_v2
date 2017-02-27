@@ -185,7 +185,7 @@ public class MCUClockController extends BasicController
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
-		comboBox.setStyle(cssStyleFromColor(newClr("dbe0b6")));
+		setupOnHoverStyle(newClr("dbe0b6"), comboBox);
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		saveSelectedPin(comboKey, value);
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
@@ -223,12 +223,8 @@ public class MCUClockController extends BasicController
 					if (!restr.isEmpty() && restr.contains(" ")) {
 						//linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x7c833fff 0.0%, 0x899147ff 100.0%)
 						//linear-gradient(from 0.0px 0.0px to 0.0px 5.0px, 0xc8cca5ff 0.0%, 0xdbe0b6ff 100.0%)
-						boolean isFailed = checkClockRestrictions(restr, pinOut);
-						textF.setStyle(cssStyleFromColor(isFailed ? newClr("dbe0b6") : Color.RED));
-//						textF.setStyle(isFailed ? textStyleDef : textStyleError);
-//						textF.setBackground(isFailed ? backgroundDefault : backgroundError);
-//						Color backColor = isFailed ? Color.ALICEBLUE : Color.INDIANRED;
-//						textF.setStyle("-fx-background-color: " + Constants.toRGBCode(backColor) + ";");
+						setupOnHoverStyle(checkClockRestrictions(restr, pinOut)
+								? newClr("dbe0b6") : Color.RED, textF);
 					}
 				}
 //				Label label = findLabelFromGrid(subGr, row, col);
