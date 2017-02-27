@@ -97,7 +97,7 @@ public class MCUClockController extends BasicController
 		String exitStr = combostr.split("\\\\")[1];
 		if (!exitStr.equals("Not")) {
 			int splitLen = combostr.split("\\|").length;
-			ComboBox<String> box = new ComboBox<>(splitLen > 5 ? (splitLen > 7 ? clItem3 : clItem) : clItem2);
+			ComboBox<String> box = new ComboBox<>(splitLen > 5 ? (splitLen > 9 ? clItem3 : clItem) : clItem2);
 			box.getSelectionModel().selectFirst();
 //xtodo		makeListener("k-" + caption + "-0", box);
 			GuiUtils.makeListener("k-" + caption + "-0", box, changeCallback);
