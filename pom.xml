@@ -50,6 +50,16 @@
             <version>8.0-r5</version>
         </dependency>
         <dependency>
+            <groupId>com.guigarage</groupId>
+            <artifactId>flatter</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency >
+            <groupId>org.aerofx</groupId>
+            <artifactId>aerofx</artifactId>
+            <version>0.2</version>
+        </dependency >
+        <dependency>
             <groupId>com.aquafx-project</groupId>
             <artifactId>aquafx</artifactId>
             <version>0.2</version>

@@ -17,7 +17,9 @@ import java.util.*;
  */
 public class Constants {
     public static boolean NEW_PAIRS_COMBO_STYLE = Boolean.FALSE;
+    public static boolean USE_AERO_STYLE = Boolean.TRUE;
     public static boolean USE_AQUA_STYLE = Boolean.TRUE;
+    public static boolean USE_FLAT_STYLE = Boolean.TRUE;
     public static boolean USE_HOVERED_STYLE = Boolean.FALSE;
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
