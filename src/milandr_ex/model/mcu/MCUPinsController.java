@@ -3,26 +3,19 @@ package milandr_ex.model.mcu;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import impl.org.controlsfx.skin.CheckComboBoxSkin;
-import io.swagger.models.auth.In;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
-import milandr_ex.utils.ChangeCallBackImpl;
-import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackChecker;
 import milandr_ex.utils.GuiUtils;
 import org.controlsfx.control.CheckComboBox;
@@ -137,6 +130,7 @@ public class MCUPinsController extends BasicController
 		GuiUtils.makeListener(key, tPane, changeCallback);
 	}
 
+	@SuppressWarnings({"unused", "unchecked"})
 	private void callListener(final String key, String value) {
 		if (value.equals("null") || value.equals("RESET")) {
 			Platform.runLater(() -> {
@@ -216,10 +210,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	private VBox makePairs(String key) {
-		return makePairs(key, 1);
-	}
-	private VBox makePairs(String key, int pairCnt) {
-		return makePairs(key, key, pairCnt);
+		return makePairs(key, key, 1);
 	}
 	private VBox makePairs(String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
@@ -233,22 +224,6 @@ public class MCUPinsController extends BasicController
 		if (pairCnt > 0) vboxMap.put(key, vBox);
 		initItem(vBox, pxSize > 1 ? (pairCnt * 2 + 1) : 0);
 		return vBox;
-	}
-
-//	private void changeCombo(){
-//		for(String comboKey: comboMap.keySet()) {
-//			changeCombo(comboKey, "", "");
-//		}
-//	}
-
-	private void changeSets(String[] comboKey, Boolean value){
-		for(String key: comboKey) {
-			switchObjects(key, vboxMap, value, true);
-		}
-	}
-
-	private void changeSet(String comboKey, Boolean value){
-		switchObjects(comboKey, vboxMap, value, true);
 	}
 
 	private void hideItems(Integer... idx){
@@ -267,12 +242,6 @@ public class MCUPinsController extends BasicController
 		if (idx == null) return;
 		switchLabels(idx, false, single);
 		switchCombos(idx, false, single);
-	}
-
-	private void showItems(boolean single, Integer... idx){
-		if (idx == null) return;
-		switchLabels(idx, true, single);
-		switchCombos(idx, true, single);
 	}
 
 	private void switchLabels(Integer[] idx, boolean visible){
