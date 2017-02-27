@@ -13,6 +13,7 @@ import milandr_ex.data.Constants;
 import org.controlsfx.control.CheckComboBox;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.keyToText;
@@ -216,11 +217,45 @@ public class GuiUtils {
 	}
 
 	public static void uncheckObjects(String pref, Map<String, ? extends Node> nodeMap) {
-		iterateObjects(pref, nodeMap, (node) -> ((ComboBox) node).getSelectionModel().select("RESET"));
+		iterateObjects(pref, nodeMap, (key, node) -> ((ComboBox) node).getSelectionModel().select("RESET"));
+	}
+	public static void selectObjects(String pref, Map<String, ? extends Node> nodeMap, boolean inValue) {
+		iterateObjects(pref, nodeMap, new NodeIterateProcessor() {
+			@Override
+			public boolean check(String key, Node node) {
+				String text = keyToText(key);
+				if (text.startsWith("PC")) return false;
+				if (text.startsWith("PD")) return false;
+				return true;
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void process(String key, Node node) {
+				List<String> items =  ((ComboBox) node).getItems();
+				for(String item: items) {
+					if (isaDataOrAddr(item)) {
+						SingleSelectionModel model = ((ComboBox) node).getSelectionModel();
+						String selItem = (String) model.getSelectedItem();
+						if (inValue) {
+							if (selItem == null || selItem.equals("RESET")) {
+								model.select(item);
+							}
+						} else if (isaDataOrAddr(selItem)) {
+							model.select("RESET");
+						}
+					}
+				}
+			}
+
+			private boolean isaDataOrAddr(String item) {
+				return item.startsWith("DATA") || item.startsWith("ADDR");
+			}
+		});
 	}
 	public static void switchObjects(String pref, Map<String, ? extends Node> nodeMap,
 									 boolean visible, boolean single){
-		iterateObjects(pref, nodeMap, (node) -> {
+		iterateObjects(pref, nodeMap, (key, node) -> {
 			node.setVisible(visible);
 			((VBox)node).setMinHeight(visible ? ((VBox) node).getChildren().size() * 25 : 0);
 			((VBox)node).setPrefHeight(visible ? ((VBox) node).getChildren().size() * 25 : 0);
@@ -239,7 +274,8 @@ public class GuiUtils {
 					if (item == null || !textToKey(item).contains(pref)) continue;
 				} else continue;
 			}
-			processor.process(node);
+			if (!processor.check(comboKey, node)) continue;
+			processor.process(comboKey, node);
 		}
 	}
 

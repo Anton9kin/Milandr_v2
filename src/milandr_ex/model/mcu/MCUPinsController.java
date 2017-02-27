@@ -318,7 +318,10 @@ public class MCUPinsController extends BasicController
 			uncheckObjects(subKey, comboMap);
 			return;
 		}
-		if (comboKey.startsWith("c-")) {
+		if (comboKey.equals("c-EBC")) {
+			selectObjects("cb", comboMap, inValue);
+			return;
+		} else if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;
 		}
