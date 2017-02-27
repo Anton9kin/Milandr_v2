@@ -138,10 +138,11 @@ public class GuiUtils {
 		return label;
 	}
 
-	public static ComboBox<String> makeCombo(String pText) {
+	public static ComboBox<String> makeCombo(String pText, boolean newStyle) {
 		ComboBox<String> newCombo = new ComboBox<>();
 //		newCombo.setBackground(backgroundDefault);
 		newCombo.setPromptText(keyToText(pText));
+		if (newStyle) setupOnHoverStyle(bcDef, newCombo);
 		initItem(newCombo, 1);
 		return newCombo;
 	}

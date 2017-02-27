@@ -16,6 +16,7 @@ import java.util.*;
  * Created by lizard on 14.02.17 at 10:31.
  */
 public class Constants {
+    public static boolean NEW_PAIRS_COMBO_STYLE = Boolean.FALSE;
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
             {"CPU-C1", "CPU-C2", "CPU-C3"},

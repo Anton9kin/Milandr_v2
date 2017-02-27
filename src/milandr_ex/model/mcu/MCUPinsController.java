@@ -116,7 +116,7 @@ public class MCUPinsController extends BasicController
 	private void genVboxPair(String key, int pairCnt, List<Node> result) {
 		for(int i = 0; i < pairCnt; i++) {
 			String sKey = pairCnt > 1 ? key + "-" + (i > 9 ? "" : "0") + i : key;
-			ComboBox<String> newCombo = makeCombo(sKey);
+			ComboBox<String> newCombo = makeCombo(sKey, Constants.NEW_PAIRS_COMBO_STYLE);
 			Label newLabel = makeLabel(sKey);
 			result.add(newLabel);
 			result.add(newCombo);
@@ -174,6 +174,7 @@ public class MCUPinsController extends BasicController
 				String pName = pairName + (pairSize > 1 ? "-" + j: "");
 				CheckBox cBox = getCheckBox(pName);
 				Button cBtn = new Button("clear");
+				setupOnHoverStyle(bcDef, cBtn);
 				GuiUtils.makeListener(pName, cBtn, changeCallback);
 				HBox hBox =new HBox(cBox, cBtn);
 				cboxMap.put(pName, cBox);
