@@ -278,7 +278,9 @@ public class MCUPinsController extends BasicController
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
 		if (comboKey == null) return;
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
-			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", refillInProgress, comboKey, prev, value));
+			if (!prev.equals("null") || !(value.startsWith("ADDR") || value.startsWith("DATA"))) {
+				log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", refillInProgress, comboKey, prev, value));
+			}
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");

@@ -241,7 +241,7 @@ public class GuiUtils {
 							if (selItem == null || selItem.equals("RESET")) {
 								model.select(item);
 							}
-						} else if (isaDataOrAddr(selItem)) {
+						} else if (selItem != null && isaDataOrAddr(selItem)) {
 							model.select("RESET");
 						}
 					}
