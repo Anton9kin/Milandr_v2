@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class Constants {
     public static boolean NEW_PAIRS_COMBO_STYLE = Boolean.FALSE;
+    public static boolean USE_AQUA_STYLE = Boolean.TRUE;
+    public static boolean USE_HOVERED_STYLE = Boolean.FALSE;
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
             {"CPU-C1", "CPU-C2", "CPU-C3"},
@@ -209,8 +211,9 @@ public class Constants {
     public static String cssStyleFromColor(Color color, boolean hover) {
         String rgbColor = toRGBCode(color);
         String rgbColor10 = toRGBCode(color, hover ? 50 :  - 50);
-        String cssStyle = "-fx-background-color: " + rgbColor +
-                ", linear-gradient("+rgbColor+" 10%, " + rgbColor10 + " 100%); ";
+        String cssStyle = "-fx-background-color: " + rgbColor;
+        if (!USE_HOVERED_STYLE) return cssStyle;
+        cssStyle +=", linear-gradient("+rgbColor+" 10%, " + rgbColor10 + " 100%); ";
 //				", linear-gradient("+rgbColor+" 10%, "+rgbColor+" 55%,"+rgbColor10+" 60%, "+rgbColor10+" 100%); ";
 //		cssStyle += ", linear-gradient(#eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);";
         cssStyle += "-fx-background-radius: 4; -fx-border-color: #747d29;";

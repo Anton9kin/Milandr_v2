@@ -18,9 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static milandr_ex.data.Constants.cssStyleFromColor;
-import static milandr_ex.data.Constants.keyToText;
-import static milandr_ex.data.Constants.textToKey;
+import static milandr_ex.data.Constants.*;
 
 /**
  * Created by lizard on 20.02.17 at 16:55.
@@ -59,6 +57,10 @@ public class GuiUtils {
 	}
 	public static void setupOnHoverStyle(Node node, String stdStyle, String hoverStyle) {
 		if (node == null) return;
+		if (!USE_HOVERED_STYLE) {
+			node.setStyle(stdStyle);
+			return;
+		}
 		node.styleProperty().unbind();
 		node.styleProperty().bind(Bindings.when(node.hoverProperty())
 				.then(new SimpleStringProperty(hoverStyle))

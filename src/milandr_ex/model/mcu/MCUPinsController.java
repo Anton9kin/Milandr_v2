@@ -174,7 +174,7 @@ public class MCUPinsController extends BasicController
 				String pName = pairName + (pairSize > 1 ? "-" + j: "");
 				CheckBox cBox = getCheckBox(pName);
 				Button cBtn = new Button("clear");
-				setupOnHoverStyle(bcDef, cBtn);
+//				setupOnHoverStyle(bcDef, cBtn);
 				GuiUtils.makeListener(pName, cBtn, changeCallback);
 				HBox hBox =new HBox(cBox, cBtn);
 				cboxMap.put(pName, cBox);
