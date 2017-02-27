@@ -1,7 +1,6 @@
 package milandr_ex;
 
 import com.aquafx_project.AquaFx;
-import com.guigarage.flatterfx.FlatterConfiguration;
 import com.guigarage.flatterfx.FlatterFX;
 import javafx.application.Application;
 import javafx.scene.layout.BorderPane;
@@ -43,10 +42,10 @@ public class MilandrEx extends Application {
 	/**
 	 * Initializes the root layout
 	 * 
-	 * @param stage
+	 * @param stage app current stage
 	 */
 	
-	public BorderPane initRootLayout(Stage stage){
+	private BorderPane initRootLayout(Stage stage){
 		LoaderUtils.initRootLayout(stage);
 		setScene((AppScene) stage.getScene());
 		return getScene().getRootLayout();
@@ -56,16 +55,8 @@ public class MilandrEx extends Application {
 	 * Show recept overview inside root layout
 	 * 
 	 */
-	public void showMain(){
+	private void showMain(){
 		((RootLayoutController) getScene().getRootController()).CloseProject();
-	}
-
-	/**
-	 * 
-	 * Returns the main stage
-	 */
-	public Stage getPrimaryStage(){
-		return scene.getAppStage();
 	}
 
 	@SuppressWarnings("SameParameterValue")
