@@ -121,10 +121,10 @@ public class MCUPinsController extends BasicController
 		for(int i = 0; i < pairCnt; i++) {
 			String sKey = pairCnt > 1 ? key + "-" + (i > 9 ? "" : "0") + i : key;
 			ComboBox<String> newCombo = makeCombo(sKey, Constants.NEW_PAIRS_COMBO_STYLE);
-			Label newLabel = makeLabel(sKey);
-			result.add(newLabel);
+//			Label newLabel = makeLabel(sKey);
+//			result.add(newLabel);
 			result.add(newCombo);
-			labMap.put(sKey, newLabel);
+//			labMap.put(sKey, newLabel);
 			comboMap.put(sKey, newCombo);
 			newCombo.setItems(pxList.get(key));
 			GuiUtils.makeListener(sKey, newCombo, changeCallback);
@@ -327,7 +327,7 @@ public class MCUPinsController extends BasicController
 			comboBox.getSelectionModel().clearSelection();
 			return;
 		}
-		if (!labMap.containsKey(comboKey)) return;
+//		if (!labMap.containsKey(comboKey)) return;
 		switchLinkedLabel(comboKey, comboBox, model);
 	}
 
@@ -342,8 +342,10 @@ public class MCUPinsController extends BasicController
 //		Background newBack = backgroundDefault;
 		Color newBack = GuiUtils.bcDef;
 		Label label = labMap.get(comboKey);
-		label.setText(keyToText(comboKey));
-		label.setVisible(true);
+		if (label != null) {
+			label.setText(keyToText(comboKey));
+			label.setVisible(true);
+		}
 		String cbItem = (String) model.getSelectedItem();
 		for(String pinKey: pinColors.keySet()) {
 			if (cbItem.startsWith(pinKey)) newBack = pinColors.get(pinKey);
@@ -352,7 +354,7 @@ public class MCUPinsController extends BasicController
 		switch(model.getSelectedIndex()) {
 			case 0:
 				model.clearSelection(0);
-				label.setVisible(false);
+				if (label != null) label.setVisible(false);
 			case 1: break;
 			case 2: case 3: newBack = GuiUtils.bcIO; break;
 			case 4: case 5: case 6: newBack = GuiUtils.bcExt; break;
