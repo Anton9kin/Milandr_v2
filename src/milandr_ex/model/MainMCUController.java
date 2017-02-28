@@ -1,6 +1,7 @@
 package milandr_ex.model;
 
 import com.google.common.collect.Maps;
+import com.guigarage.flatterfx.controls.RichTextFlow;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.model.mcu.*;
 import milandr_ex.utils.GuiUtils;
+import milandr_ex.utils.SyntaxHighlighter;
 import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +88,7 @@ public class MainMCUController extends BasicController {
 //			Skinnable skinnable = ccb.getSkin().getSkinnable();
 //			((ComboBoxBase) skinnable).setEditable(true);
 		});
-		tmrPane.getChildren().add(new VBox(ccb));
+		tmrPane.getChildren().add(new VBox(ccb, SyntaxHighlighter.get(getScene())));
 		makeLiteners(cfg_vbox_in.getChildren());
 		makeLiteners(cfg_vbox_ex.getChildren());
 	}
