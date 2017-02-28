@@ -2,13 +2,13 @@
 .root{
     -fx-font-size: 10pt;
     -fx-font-family: "Arial";
-    -fx-base: rgb(132, 145, 47);
-    -fx-background-color: #05ff7a;
+    -fx-base: rgb(57, 57, 57);
+    -fx-background-color: #393939;
     /*-fx-background: rgb(225, 228, 203);*/
 }
 
 .txtFlow {
-    -fx-background-color: #05ff7a;
+    -fx-background-color: #f78218;
     -fx-border-radius: 10;
 }
 
@@ -118,7 +118,7 @@
 }
 
 .vbox-mk {
-    -fx-background-color: #dedede;
+    /*-fx-background-color: #dedede;*/
     -fx-background-radius: 6;
 }
 
@@ -166,8 +166,9 @@ VBox {
     /*!*css code for debug alignment*!*/
     /*-fx-border-color: #f78218;*/
 }
-/*HBox, VBox, AnchorPane, TabPane, GridPane {*/
-    /*-fx-background-color: #393939;*/
+HBox, VBox, AnchorPane, LayoutPane, SplitPane, Tab, TabPane, GridPane, GridCell {
+    -fx-fill: #393939;
+    -fx-background-color: #393939;
     /*-fx-text-fill: #f78218;*/
     /*-fx-font-color: #fff;*/
-/*}*/
+}

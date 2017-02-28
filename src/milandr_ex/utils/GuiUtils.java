@@ -30,7 +30,8 @@ import static milandr_ex.data.Constants.*;
  * Created by lizard on 20.02.17 at 16:55.
  */
 public class GuiUtils {
-	public static Color bcDef = newClr("0xf78218ff");
+	public static Color bcDef = newClr("0x393939ff");
+//	public static Color bcDef = newClr("0xf78218ff");
 //	public static Color bcDef = newClr("0x859035ff");
 	public static Color bcOk = Color.GREEN;
 	public static Color bcIO = Color.GREENYELLOW;
@@ -39,6 +40,7 @@ public class GuiUtils {
 	public static Color bcAddr = Color.ORANGE;
 	public static Color bcAdc = Color.ORCHID;
 	public static Color bcErr = Color.RED;
+	public static Color bcOld = newClr("0xdbe0b6");
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));

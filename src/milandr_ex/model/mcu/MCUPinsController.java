@@ -511,11 +511,13 @@ public class MCUPinsController extends BasicController
 		} else if (key.matches("\\w{4}-\\d-\\d{2}")) {
 			String link = key.substring(0, 8);
 			refillLinkedPairCombos(key, link, value);
-		} else if (value.contains("ADC") || reset && prev.contains("ADC")) {
-			tpaneMap.get("ADC").setExpanded(true);
-			int ind = Integer.parseInt((reset ? prev : value).substring(3,4));
-			switchCCB("ADC-1", reset, ind);
-			switchCCB("ADC-2", reset, ind);
+		} else if (key.startsWith("cb")) {
+			if (value.contains("ADC") || reset && prev.contains("ADC")) {
+				tpaneMap.get("ADC").setExpanded(true);
+				int ind = Integer.parseInt((reset ? prev : value).substring(3,4));
+				switchCCB("ADC-1", reset, ind);
+				switchCCB("ADC-2", reset, ind);
+			}
 		}
 	}
 
