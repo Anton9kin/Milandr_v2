@@ -334,6 +334,11 @@ public class MCUPinsController extends BasicController
 		Label label = labMap.get(comboKey);
 		label.setText(keyToText(comboKey));
 		label.setVisible(true);
+		String cbItem = (String) model.getSelectedItem();
+		for(String pinKey: pinColors.keySet()) {
+			if (cbItem.startsWith(pinKey)) newBack = pinColors.get(pinKey);
+		}
+		if (newBack.equals(bcDef))
 		switch(model.getSelectedIndex()) {
 			case 0:
 				model.clearSelection(0);
@@ -341,6 +346,7 @@ public class MCUPinsController extends BasicController
 			case 1: break;
 			case 2: case 3: newBack = GuiUtils.bcIO; break;
 			case 4: case 5: case 6: newBack = GuiUtils.bcExt; break;
+			case 7: case 8: newBack = GuiUtils.bcErr; break;
 		}
 		if (comboKey.startsWith("cb")) {
 			setupOnHoverStyle(newBack, comboBox, label);

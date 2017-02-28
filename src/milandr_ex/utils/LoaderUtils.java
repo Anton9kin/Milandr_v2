@@ -39,7 +39,7 @@ public class LoaderUtils {
 		stage.setScene(scene);
 		scene.setAppStage(stage);
 		scene.setBundle(bundle);
-		scene.getStylesheets().add("milandr_ex/" + cssName + ".css");
+		scene.getStylesheets().add("milandr_ex/css/" + cssName + ".css");
 		return scene;
 	}
 

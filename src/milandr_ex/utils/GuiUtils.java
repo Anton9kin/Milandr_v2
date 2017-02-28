@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import milandr_ex.data.Constants;
 import org.controlsfx.control.CheckComboBox;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class GuiUtils {
 	public static Color bcOk = Color.GREEN;
 	public static Color bcIO = Color.GREENYELLOW;
 	public static Color bcExt = Color.YELLOW;
+	public static Color bcData = Color.CYAN;
+	public static Color bcAddr = Color.ORANGE;
 	public static Color bcErr = Color.RED;
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
@@ -35,6 +38,11 @@ public class GuiUtils {
 	public static Background backgroundError = new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY));
 	public static String textStyleDef = "-fx-text-fill: black; -fx-font-size: 12; -fx-background-color: white;";
 	public static String textStyleError = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: red;";
+	public static Map<String, Color> pinColors = new HashMap<String, Color>(){{
+		put("ADDR", bcAddr);
+		put("DATA", bcData);
+		put("IO", bcIO);
+	}};
 
 	public static Color newClr(String hexColor) {
 		if (hexColor.startsWith("#")) hexColor = hexColor.substring(1);
