@@ -185,7 +185,7 @@ public class MCUClockController extends BasicController
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
-		setupOnHoverStyle(bcDef, comboBox);
+		setupOnHoverStyle(bcDef, bcTxt, comboBox);
 //		setupOnHoverStyle(newClr("dbe0b6"), comboBox);
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		saveSelectedPin(comboKey, value);
@@ -224,8 +224,9 @@ public class MCUClockController extends BasicController
 					if (!restr.isEmpty() && restr.contains(" ")) {
 						//linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x7c833fff 0.0%, 0x899147ff 100.0%)
 						//linear-gradient(from 0.0px 0.0px to 0.0px 5.0px, 0xc8cca5ff 0.0%, 0xdbe0b6ff 100.0%)
-						setupOnHoverStyle(checkClockRestrictions(restr, pinOut)
-								? newClr("989898") : Color.RED, textF);
+						boolean isDef = checkClockRestrictions(restr, pinOut);
+						setupOnHoverStyle( isDef ? newClr("989898") : Color.RED,
+								isDef ? bcTxt : Color.BLACK, textF);
 					}
 				}
 //				Label label = findLabelFromGrid(subGr, row, col);

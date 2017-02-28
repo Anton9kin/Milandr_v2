@@ -207,10 +207,10 @@ public class Constants {
         return key;
     }
 
-    public static String cssStyleFromColor(Color color) {
-        return cssStyleFromColor(color, false);
+    public static String cssStyleFromColor(Color color, Color text, boolean hover) {
+        return cssStyleFromColor(color, toRGBCode(text), hover);
     }
-    public static String cssStyleFromColor(Color color, boolean hover) {
+    public static String cssStyleFromColor(Color color, String text, boolean hover) {
         String rgbColor = toRGBCode(color);
         String rgbColor10 = toRGBCode(color, hover ? 50 :  - 50);
         String cssStyle = "-fx-background-color: " + rgbColor;
@@ -219,7 +219,7 @@ public class Constants {
 //				", linear-gradient("+rgbColor+" 10%, "+rgbColor+" 55%,"+rgbColor10+" 60%, "+rgbColor10+" 100%); ";
 //		cssStyle += ", linear-gradient(#eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);";
         cssStyle += "-fx-background-radius: 4; -fx-border-color: #747d29;";
-        cssStyle += "-fx-border-radius: 3";
+        cssStyle += "-fx-border-radius: 3;-fx-text-fill: " + text;
         return cssStyle;
     }
 

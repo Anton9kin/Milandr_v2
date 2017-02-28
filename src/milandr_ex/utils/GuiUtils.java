@@ -41,6 +41,7 @@ public class GuiUtils {
 	public static Color bcAdc = Color.ORCHID;
 	public static Color bcErr = Color.RED;
 	public static Color bcOld = newClr("0xdbe0b6");
+	public static Color bcTxt = newClr("0xf78218ff");
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background backgroundPeriph = new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY));
@@ -65,13 +66,13 @@ public class GuiUtils {
 		return new Color(r, g, b, a);
 	}
 
-	public static void setupOnHoverStyle(Color stdColor, Node... nodes) {
-		for(Node node: nodes) setupOnHoverStyle(node, stdColor);
+	public static void setupOnHoverStyle(Color stdColor, Color txtColor, Node... nodes) {
+		for(Node node: nodes) setupOnHoverStyle(node, stdColor, txtColor);
 	}
-	public static void setupOnHoverStyle(Node node, Color stdColor) {
+	public static void setupOnHoverStyle(Node node, Color stdColor, Color txtColor) {
 		if (stdColor == null) return;
-		setupOnHoverStyle(node, cssStyleFromColor(stdColor),
-				cssStyleFromColor(stdColor, true));
+		setupOnHoverStyle(node, cssStyleFromColor(stdColor, txtColor, false),
+				cssStyleFromColor(stdColor, txtColor, true));
 	}
 	public static void setupOnHoverStyle(Node node, String stdStyle, String hoverStyle) {
 		if (node == null) return;
@@ -174,7 +175,7 @@ public class GuiUtils {
 		ComboBox<String> newCombo = new ComboBox<>();
 //		newCombo.setBackground(backgroundDefault);
 		newCombo.setPromptText(keyToText(pText));
-		if (newStyle) setupOnHoverStyle(bcDef, newCombo);
+		if (newStyle) setupOnHoverStyle(bcDef, bcTxt, newCombo);
 		initItem(newCombo, 1);
 		return newCombo;
 	}

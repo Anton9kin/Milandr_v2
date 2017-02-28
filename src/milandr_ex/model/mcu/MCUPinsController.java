@@ -359,7 +359,7 @@ public class MCUPinsController extends BasicController
 			case 7: case 8: newBack = GuiUtils.bcErr; break;
 		}
 		if (comboKey.startsWith("cb")) {
-			setupOnHoverStyle(newBack, comboBox, label);
+			setupOnHoverStyle(newBack, newBack.equals(bcDef) ? bcTxt : Color.BLACK, comboBox, label);
 		}
 		// 0x039ed3ff , 0x039ed322
 		// linear-gradient(from 0.0% 0.0% to 0.0% 100.0%, 0x939d46ff 0.0%, 0x7f8a2fff 100.0%)
