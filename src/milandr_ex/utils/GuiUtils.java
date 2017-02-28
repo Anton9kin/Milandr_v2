@@ -1,10 +1,15 @@
 package milandr_ex.utils;
 
+import com.google.common.collect.Lists;
 import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,6 +36,7 @@ public class GuiUtils {
 	public static Color bcExt = Color.YELLOW;
 	public static Color bcData = Color.CYAN;
 	public static Color bcAddr = Color.ORANGE;
+	public static Color bcAdc = Color.ORCHID;
 	public static Color bcErr = Color.RED;
 	public static Background backgroundDefault = null;
 	public static Background backgroundIO = new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY));
@@ -39,6 +45,7 @@ public class GuiUtils {
 	public static String textStyleDef = "-fx-text-fill: black; -fx-font-size: 12; -fx-background-color: white;";
 	public static String textStyleError = "-fx-text-fill: white; -fx-font-size: 12; -fx-background-color: red;";
 	public static Map<String, Color> pinColors = new HashMap<String, Color>(){{
+		put("ADC", bcAdc);
 		put("ADDR", bcAddr);
 		put("DATA", bcData);
 		put("IO", bcIO);
@@ -98,20 +105,32 @@ public class GuiUtils {
 		if (skin == null) return;
 		ComboBox combo = (ComboBox)skin.getChildren().get(0);
 		makeListener(key, combo.valueProperty(), callback);
+		makeListener(key, newCombo.getCheckModel().getCheckedItems(), callback);
 	}
-	public static void makeListener(final String key, ReadOnlyProperty property, ChangeCallback callback) {
-		property.addListener((ov, t, t1) -> {
-			Map<String, ? extends Node> map = callback.nodeMap();
-			String kkey = callback.listenChange(key, map);
-			if (kkey == null) return;
-			callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
-			Platform.runLater(() -> {
-				if (map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
-				callback.callGuiListener(kkey, String.valueOf(t), String.valueOf(t1));
+
+	@SuppressWarnings("unchecked")
+	public static void makeListener(final String key, Observable property, ChangeCallback callback) {
+		if (property instanceof ObservableValue) {
+			((ObservableValue)property).addListener((ov, t, t1) -> {
+				listenerBody(key, callback, t, t1);
 			});
-		});
+		} else if (property instanceof ObservableList) {
+			((ObservableList)property).addListener((ListChangeListener) c -> {
+					while(c.next()) listenerBody(key, callback, "check", c.getList());});
+		}
 		callback.callListener(key, "null", "RESET");
 		Platform.runLater(() -> callback.callGuiListener(key, "null", "RESET"));
+	}
+
+	private static void listenerBody(String key, ChangeCallback callback, Object t, Object t1) {
+		Map<String, ? extends Node> map = callback.nodeMap();
+		String kkey = callback.listenChange(key, map);
+		if (kkey == null) return;
+		callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
+		Platform.runLater(() -> {
+			if (map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
+			callback.callGuiListener(kkey, String.valueOf(t), String.valueOf(t1));
+		});
 	}
 
 	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map) {
@@ -250,14 +269,33 @@ public class GuiUtils {
 	public static void uncheckObjects(String pref, Map<String, ? extends Node> nodeMap) {
 		iterateObjects(pref, nodeMap, (key, node) -> ((ComboBox) node).getSelectionModel().select("RESET"));
 	}
+	public static void selectAdcObjects(String pref, Map<String, ? extends Node> nodeMap, String inValue) {
+		List<String> checks = Lists.newArrayList(inValue.replaceAll("[\\s\\[\\]]","").split(","));
+		selectObjects(pref, nodeMap, key -> true,
+				(key, node) -> key != null && key.startsWith("ADC"),
+				(key, node) -> key != null && checks.contains(key.substring(3,4)));
+	}
 	public static void selectObjects(String pref, Map<String, ? extends Node> nodeMap, boolean inValue) {
+		selectObjects(pref, nodeMap, null, null, inValue);
+	}
+	public static void selectObjects(String pref, Map<String, ? extends Node> nodeMap, NodeIterateKeyChecker keyChecker,
+									 NodeIterateItemChecker itemChecker, boolean inValue) {
+		selectObjects(pref, nodeMap, keyChecker, itemChecker, (k, n) -> inValue);
+	}
+	public static void selectObjects(String pref, Map<String, ? extends Node> nodeMap, NodeIterateKeyChecker keyChecker,
+									 NodeIterateItemChecker itemChecker, final NodeIterateItemChecker valueChecker) {
+		if (keyChecker == null) keyChecker = key -> {
+			String text = keyToText(key);
+			return !text.startsWith("PC") && !text.startsWith("PD");
+		};
+		if (itemChecker == null) itemChecker = (key, node) -> key != null &&
+				(key.startsWith("DATA") || key.startsWith("ADDR"));
+		final NodeIterateKeyChecker cheker = keyChecker;
+		final NodeIterateItemChecker checker = itemChecker;
 		iterateObjects(pref, nodeMap, new NodeIterateProcessor() {
 			@Override
 			public boolean check(String key, Node node) {
-				String text = keyToText(key);
-				if (text.startsWith("PC")) return false;
-				if (text.startsWith("PD")) return false;
-				return true;
+				return cheker.check(key);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -265,22 +303,18 @@ public class GuiUtils {
 			public void process(String key, Node node) {
 				List<String> items =  ((ComboBox) node).getItems();
 				for(String item: items) {
-					if (isaDataOrAddr(item)) {
+					if (checker.check(item, node)) {
 						SingleSelectionModel model = ((ComboBox) node).getSelectionModel();
 						String selItem = (String) model.getSelectedItem();
-						if (inValue) {
+						if (valueChecker.check(item, node)) {
 							if (selItem == null || selItem.equals("RESET")) {
 								model.select(item);
 							}
-						} else if (selItem != null && isaDataOrAddr(selItem)) {
+						} else if (checker.check(selItem, node)) {
 							model.select("RESET");
 						}
 					}
 				}
-			}
-
-			private boolean isaDataOrAddr(String item) {
-				return item.startsWith("DATA") || item.startsWith("ADDR");
 			}
 		});
 	}

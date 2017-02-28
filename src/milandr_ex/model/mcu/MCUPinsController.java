@@ -20,6 +20,7 @@ import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
 import milandr_ex.utils.ChangeCallbackChecker;
 import milandr_ex.utils.GuiUtils;
+import milandr_ex.utils.NodeIterateItemChecker;
 import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class MCUPinsController extends BasicController
 	private Map<String, CheckBox> cboxMap = Maps.newHashMap();
 	private Map<String, TitledPane> tpaneMap = Maps.newHashMap();
 	private Map<String, Button> tbtnMap = Maps.newHashMap();
+	private Map<String, CheckComboBox> ccbMap = Maps.newHashMap();
 
 	public MCUPinsController() {
 		log.debug("mcuPins Controller initialized");
@@ -108,7 +110,8 @@ public class MCUPinsController extends BasicController
 				if (ccb.getSkin() == null) ccb.setSkin(new ComboBox().getSkin());
 				GuiUtils.makeListener(key, ccb, changeCallback);
 			});
-//			ccb.focusedProperty().addListener((observable, oldValue, newValue) -> System.out.println("CheckComboBox focused: "+newValue));
+			ccbMap.put(key, ccb);
+			//			ccb.focusedProperty().addListener((observable, oldValue, newValue) -> System.out.println("CheckComboBox focused: "+newValue));
 			result.add(ccb);
 		}
 	}
@@ -152,6 +155,7 @@ public class MCUPinsController extends BasicController
 		String[] texts  = Constants.comboTexts[i * 16 + j];
 		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET",
 				texts[0], "IO out", "IO in", texts[1], texts[2], texts[3]);
+		if (texts.length > 5) pxItem.add(texts[4]);
 //		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET","-","IO out","IO in",
 //				"DATA" + i, "CAN"+j+"_TX","UART"+j+"_RXD");
 		pxList.put(key, pxItem);
@@ -295,6 +299,11 @@ public class MCUPinsController extends BasicController
 		if (comboKey.equals("c-EBC")) {
 			selectObjects("cb", comboMap, inValue);
 			return;
+		} else if (comboKey.startsWith("ADC")) {
+			String val = String.valueOf(ccbMap.get("ADC-1").getCheckModel().getCheckedItems()) +
+					"," + String.valueOf(ccbMap.get("ADC-2").getCheckModel().getCheckedItems());
+			selectAdcObjects("cb", comboMap, val);
+			return;
 		} else if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;
@@ -402,6 +411,7 @@ public class MCUPinsController extends BasicController
 			return true;
 		}
 		if (value1.startsWith("IO") || value1.startsWith("DATA") ||
+				value1.startsWith("EXT") || value1.startsWith("ADC") ||
 				value1.startsWith("ADDR")) return true;
 		return false;
 	}
