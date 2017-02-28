@@ -1,23 +1,21 @@
 package milandr_ex.model;
 
 import com.google.common.collect.Maps;
-import com.guigarage.flatterfx.controls.RichTextFlow;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.model.mcu.*;
+import milandr_ex.model.mcu.ext.MCUCanController;
+import milandr_ex.model.mcu.ext.MCUI2CController;
+import milandr_ex.model.mcu.ext.MCUSpiController;
+import milandr_ex.model.mcu.ext.MCUUartController;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
-import org.controlsfx.control.CheckComboBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +51,18 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private MCUCanController mcuCanController;
 	@FXML
+	private Parent mcuI2C;
+	@FXML
+	private MCUI2CController mcuI2CController;
+	@FXML
+	private Parent mcuSpi;
+	@FXML
+	private MCUSpiController mcuSpiController;
+	@FXML
+	private Parent mcuUart;
+	@FXML
+	private MCUUartController mcuUartController;
+	@FXML
 	private Parent mcuIWdg;
 	@FXML
 	private MCUIwdgController mcuIwdgController;
@@ -66,6 +76,8 @@ public class MainMCUController extends BasicController {
 	private VBox cfg_vbox_in;
 	@FXML
 	private VBox cfg_vbox_ex;
+	@FXML
+	private VBox cfg_vbox_ad;
 	private Map<String, TitledPane> cfgMap = Maps.newHashMap();
 
 	public MainMCUController() {
@@ -76,21 +88,13 @@ public class MainMCUController extends BasicController {
 	protected void postInit(AppScene scene) {
 		mcuClockController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
-				mcuClockController,
+				mcuClockController, //mcuI2CController, mcuSpiController, mcuUartController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
-		log.debug("#postInit - initialized");
-		ObservableList<String> observableList = getScene().getSetsGenerator().genObsList("ADC", true);
-		CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
-//		((Control) ccb.getSkin().getSkinnable()).setEd
-		Platform.runLater(() -> {
-			ccb.setSkin(new ComboBox<>().getSkin());
-//			Skinnable skinnable = ccb.getSkin().getSkinnable();
-//			((ComboBoxBase) skinnable).setEditable(true);
-		});
-		tmrPane.getChildren().add(new VBox(ccb, SyntaxHighlighter.get(getScene())));
 		makeLiteners(cfg_vbox_in.getChildren());
 		makeLiteners(cfg_vbox_ex.getChildren());
+		cfg_vbox_ad.getChildren().add(new VBox(SyntaxHighlighter.get(getScene())));
+		log.debug("#postInit - initialized");
 	}
 
 	private void makeLiteners(List<Node> cfg_vbox) {

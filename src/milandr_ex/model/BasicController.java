@@ -2,12 +2,19 @@ package milandr_ex.model;
 
 import com.google.common.collect.Lists;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Constants;
+import milandr_ex.data.Device;
 import milandr_ex.data.PinoutsModel;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackOwner;
+import milandr_ex.utils.ControllerIteration;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -20,6 +27,7 @@ import java.util.ResourceBundle;
 public abstract class BasicController implements ChangeCallbackOwner {
 	private AppScene scene;
 	private ResourceBundle messages;
+	private Device.EPairNames devicePair = Device.EPairNames.NON;
 
 	public AppScene getScene() {
 		return scene;
@@ -58,9 +66,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		getScene().stopSetupProcess();
 		return (T) this;
 	}
+	protected BasicController parentController;
+	public void setParentController(BasicController parentController) { this.parentController = parentController; }
 	protected BasicController getParentController() {
-		return null;
+		return parentController;
 	}
+	protected Parent getGPIOControl() { return null; }
 	protected void addChildController(BasicController child) {
 		subControllers.add(child);
 	}
@@ -74,9 +85,43 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		initSubControllers(subControllers);
 	}
 	protected void initSubControllers(List<BasicController> controllers) {
-		for(BasicController controller: controllers) {
-			controller.setScene(scene);
-			controller.postInit();
+		iterateSubs(controllers, (c) -> initSubController(c));
+	}
+	protected void initSubController(BasicController subController) {
+		subController.setParentController(this);
+		subController.setScene(scene);
+		subController.postInit();
+		Device.EPairNames pair = subController.getDevicePair();
+		if (pair.ordinal() > 0) {
+			pair.model().setController(subController);
+		}
+	}
+
+	protected void iterateSubs(ControllerIteration iteration) {
+		iterateSubs(subControllers, iteration);
+	}
+
+	protected void iterateSubs(List<BasicController> subControllers, ControllerIteration iteration) {
+		for(BasicController controller: subControllers) {
+			iteration.process(controller);
+		}
+	}
+
+	public void fillAllGpio() {
+		iterateSubs(BasicController::fillGpio);
+	}
+
+	protected void fillGpio() {
+		if (getGPIOControl() != null) {
+			ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();
+			children.clear();
+			List<String> pinList = getPinList();
+			for(String pin: pinList) {
+				Label label = new Label(Constants.keyToText(pin));
+				label.setMinSize(120.0, 20.0);
+				children.add(label);
+				GridPane.setRowIndex(label, pinList.indexOf(pin));
+			}
 		}
 	}
 
@@ -114,7 +159,24 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected void saveSelectedPin(String comboKey, String value) {
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
-		if (value != null && !value.equals("null") && pinoutsModel != null) pinoutsModel.setSelectedPin(comboKey, value);
+		if (value != null && !value.equals("null") && pinoutsModel != null) {
+			pinoutsModel.setSelectedPin(comboKey, value);
+			if (getParentController() != null) {
+				getParentController().fillAllGpio();
+			}
+		}
 	}
 
+	protected void setDevicePair(Device.EPairNames devicePair) {
+		this.devicePair = devicePair;
+	}
+
+	public Device.EPairNames getDevicePair() {
+		return devicePair;
+	}
+
+	protected boolean isExtPair() { return false; }
+	protected List<String> getPinList() {
+		return getScene().getPinoutsModel().getBlockModel(getDevicePair().name()).getPinsList();
+	}
 }

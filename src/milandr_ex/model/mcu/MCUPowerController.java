@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
 
 public class MCUPowerController extends BasicController {
@@ -22,6 +23,7 @@ public class MCUPowerController extends BasicController {
 	
 	@Override
 	protected void postInit(AppScene scene) {
+		setDevicePair(Device.EPairNames.PWR);
 		ucc.setItems(uccList);
 		bucc.setItems(buccList);
 	}

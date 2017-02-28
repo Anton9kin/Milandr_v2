@@ -24,7 +24,6 @@ import java.util.Map;
 
 import static milandr_ex.data.Constants.*;
 import static milandr_ex.utils.GuiUtils.*;
-import static milandr_ex.utils.GuiUtils.textStyleError;
 
 /**
  * Created by lizard2k1 on 24.02.2017.

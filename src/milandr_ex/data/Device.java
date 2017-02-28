@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class Device {
     public enum EPairNames {
+        NON(0),
         ADC(1) {
             @Override
             public void set(Device device, int val) {
@@ -48,6 +49,11 @@ public class Device {
         public void set(Device device, int val) {
             device.addPair(this, val, true);
         }
+		private McuBlockModel model;
+        public McuBlockModel model() {
+        	if (model == null) model = new McuBlockModel(this);
+        	return model;
+		}
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
@@ -99,6 +105,7 @@ public class Device {
         d2props.put("vcc", this::setVcc);
         Device that = this;
         for(EPairNames pair: EPairNames.values()) {
+            if (pair.equals(EPairNames.NON)) continue;
             iprops.put(pair.name().toLowerCase(), value -> pair.set(that, value));
         }
     }
@@ -261,7 +268,7 @@ public class Device {
      */
     public Device addPairs(int... pairCounts) {
         EPairNames[] pairNames = EPairNames.values();
-        for(int i = 0; i < pairCounts.length && i < pairNames.length; i++) {
+        for(int i = 1; i < pairCounts.length && i < pairNames.length; i++) {
             EPairNames pair = pairNames[i];
             pair.set(this, pairCounts[i]);
         }

@@ -15,6 +15,7 @@ import java.util.Map;
 public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
+	private Map<Device.EPairNames, McuBlockModel> mcuBlocks = Maps.newHashMap();
 	private boolean hasUnsavedChanges = Boolean.FALSE;
 	private ClockModel clockModel;
 	public interface Observer extends ModelObserver {
@@ -36,6 +37,15 @@ public class PinoutsModel {
 
 	public PinoutsModel setClockModel(ClockModel clockModel) {
 		this.clockModel = clockModel;
+		return this;
+	}
+
+	public McuBlockModel getBlockModel(String name) {
+		return mcuBlocks.get(Device.EPairNames.valueOf(name.toUpperCase()));
+	}
+
+	public PinoutsModel setBlockModel(McuBlockModel mcuBlockModel) {
+		this.mcuBlocks.put(mcuBlockModel.getPair(), mcuBlockModel);
 		return this;
 	}
 

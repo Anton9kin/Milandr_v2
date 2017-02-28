@@ -8,6 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
 
 public class MCUWwdgController extends BasicController {
@@ -35,6 +36,6 @@ public class MCUWwdgController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
-
+		setDevicePair(Device.EPairNames.WWDG);
 	}
 }

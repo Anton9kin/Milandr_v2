@@ -1,16 +1,16 @@
-package milandr_ex.model.mcu;
+package milandr_ex.model.mcu.ext;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import milandr_ex.data.AppScene;
-import milandr_ex.model.BasicController;
+import milandr_ex.data.Device;
 
-public class MCUCanController extends BasicController {
+public class MCUCanController extends MCUExtPairController {
 
 	@FXML
 	private ComboBox<String> div;
@@ -38,7 +38,9 @@ public class MCUCanController extends BasicController {
 	private TextField realSpeed;
 	@FXML
 	private TextField errSpeed;
-	
+	@FXML
+	private GridPane can_gpio;
+
 	@FXML
 	private void initialize(){
 
@@ -46,6 +48,7 @@ public class MCUCanController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
+		setDevicePair(Device.EPairNames.CAN);
 		div.setItems(divList);
 		speed.setItems(speedList);
 	}
@@ -55,5 +58,10 @@ public class MCUCanController extends BasicController {
 		super.initLater(scene);
 		div.getSelectionModel().select(0);
 		speed.getSelectionModel().select(0);
+	}
+
+	@Override
+	protected Parent getGPIOControl() {
+		return can_gpio;
 	}
 }

@@ -78,7 +78,7 @@ public class MCUPinsController extends BasicController
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
-		setupPinCombos(device);
+		setupPinCombos(device, null);
 		mainMCUStart(pack);
 		setupPairsCombos(device);
 		log.debug("#postInit - initialized");
@@ -103,7 +103,7 @@ public class MCUPinsController extends BasicController
 		return cBox;
 	}
 
-	private void genCustPair(String key, List<Node> result) {
+	private void genCustPair(McuBlockModel blockModel, String key, List<Node> result) {
 		if (key.startsWith("ADC")) {
 			ObservableList<String> observableList = getScene().getSetsGenerator().genObsList(key, true);
 			CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
@@ -117,7 +117,7 @@ public class MCUPinsController extends BasicController
 		}
 	}
 
-	private void genVboxPair(String key, int pairCnt, List<Node> result) {
+	private void genVboxPair(McuBlockModel blockModel, String key, int pairCnt, List<Node> result) {
 		for(int i = 0; i < pairCnt; i++) {
 			String sKey = pairCnt > 1 ? key + "-" + (i > 9 ? "" : "0") + i : key;
 			ComboBox<String> newCombo = makeCombo(sKey, Constants.NEW_PAIRS_COMBO_STYLE);
@@ -125,7 +125,7 @@ public class MCUPinsController extends BasicController
 				Label newLabel = makeLabel(sKey);
 				result.add(newLabel);
 				labMap.put(sKey, newLabel);
-			}
+			} else blockModel.addComboBox(newCombo);
 			result.add(newCombo);
 			comboMap.put(sKey, newCombo);
 			newCombo.setItems(pxList.get(key));
@@ -169,7 +169,7 @@ public class MCUPinsController extends BasicController
 		getScene().setSetsGenerator(new SetsGenerator(portKeys));
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
 		Integer[] pairs = device.getPairCountsArr();
-		for(int i = 0; i < ePairs.length; i++) {
+		for(int i = 1; i < ePairs.length; i++) {
 			Device.EPairNames ePair = ePairs[i];
 			String pairName = ePair.name();
 			int pairSize = pairs[i];
@@ -177,6 +177,7 @@ public class MCUPinsController extends BasicController
 			VBox vvBox = new VBox();
 			TitledPane tPane = new TitledPane(pairName, vvBox);
 			tPane.setExpanded(false);
+			McuBlockModel blockModel = ePair.model().setParent(vvBox);
 			for(int j = 1; j <= pairSize; j++) {
 				String pName = pairName + (pairSize > 1 ? "-" + j: "");
 				CheckBox cBox = getCheckBox(pName);
@@ -185,7 +186,8 @@ public class MCUPinsController extends BasicController
 				GuiUtils.makeListener(pName, cBtn, changeCallback);
 				HBox hBox =new HBox(cBox, cBtn);
 				cboxMap.put(pName, cBox);
-				VBox vBox = makePairs(pairName + (j), pName, ePair.getSize());
+				blockModel.addCheckBox(cBox);
+				VBox vBox = makePairs(blockModel, pairName + (j), pName, ePair.getSize());
 				vvBox.getChildren().add(hBox);
 				vvBox.getChildren().add(vBox);
 //				GridPane.setColumnIndex(tPane, l);
@@ -194,6 +196,7 @@ public class MCUPinsController extends BasicController
 //			if (k >= 4) { k = 0; l++; }
 			makeListener(pairName, tPane);
 			(ePair.ext() ? lcContEx  : lcContIn).getChildren().add(tPane);
+			getScene().getPinoutsModel().setBlockModel(blockModel);
 		}
 	}
 
@@ -207,29 +210,29 @@ public class MCUPinsController extends BasicController
 		return portKeys;
 	}
 
-	private void setupPinCombos(Device device) {
+	private void setupPinCombos(Device device, McuBlockModel blockModel) {
 		int maxPort = device.getMaxPortSizes();
 		for(int i = 0; i < 6; i++) { for(int j = 0; j < maxPort; j++) {
 			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
 			makePxItem(i, j, key);
-			VBox vBox = makePairs(key);
+			VBox vBox = makePairs(blockModel, key);
 			boxCont.getChildren().add(vBox);
 			if ( i > 0) GridPane.setColumnIndex(vBox, i);
 			GridPane.setRowIndex(vBox, j + 1);
 		}}
 	}
 
-	private VBox makePairs(String key) {
-		return makePairs(key, key, 1);
+	private VBox makePairs(McuBlockModel blockModel, String key) {
+		return makePairs(blockModel, key, key, 1);
 	}
-	private VBox makePairs(String sub, String key, int pairCnt) {
+	private VBox makePairs(McuBlockModel blockModel, String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
 			pxList.put(key, getScene().getSetsGenerator().genObsList(sub));
 		}
 		List<Node> result = Lists.newArrayList();
 		Integer pxSize = pxList.get(key).size();
-		if (pxSize > 1) genVboxPair(key, pairCnt, result);
-		else genCustPair(key, result);
+		if (pxSize > 1) genVboxPair(blockModel, key, pairCnt, result);
+		else genCustPair(blockModel, key, result);
 		VBox vBox = new VBox((Node[]) result.toArray(new Node[]{}));
 		if (pairCnt > 0) vboxMap.put(key, vBox);
 		initItem(vBox, pxSize > 1 ? (pairCnt * 2 + 1) : 0);
@@ -520,7 +523,7 @@ public class MCUPinsController extends BasicController
 				tpaneMap.get("ADC").setExpanded(true);
 				int ind = Integer.parseInt((reset ? prev : value).substring(3,4));
 				switchCCB("ADC-1", reset, ind);
-				switchCCB("ADC-2", reset, ind);
+//				switchCCB("ADC-2", reset, ind);
 			}
 		}
 	}

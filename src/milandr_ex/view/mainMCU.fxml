@@ -49,6 +49,9 @@
 						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
 						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
 						<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_i2c" text="%config.i2c_setup" expanded="false"><fx:include fx:id="mcuI2C" source="mcu/MCUI2C.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_spi" text="%config.spi_setup" expanded="false"><fx:include fx:id="mcuSpi" source="mcu/MCUSpi.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_uart" text="%config.uart_setup" expanded="false"><fx:include fx:id="mcuUart" source="mcu/MCUUart.fxml" /></TitledPane>
 					</VBox>
 					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ad" GridPane.columnIndex="2"
 						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
