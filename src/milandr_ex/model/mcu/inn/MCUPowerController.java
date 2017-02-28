@@ -1,4 +1,4 @@
-package milandr_ex.model.mcu;
+package milandr_ex.model.mcu.inn;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

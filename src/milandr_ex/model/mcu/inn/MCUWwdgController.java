@@ -1,4 +1,4 @@
-package milandr_ex.model.mcu;
+package milandr_ex.model.mcu.inn;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,32 +11,31 @@ import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
 
-public class MCUIwdgController extends BasicController {
+public class MCUWwdgController extends BasicController {
 
 	@FXML
 	private ComboBox<String> div;
 	ObservableList<String> divList = FXCollections.
-			observableArrayList("/4", "/8", "/16", "/32", "/64", "/128", "/256", "/512");
+			observableArrayList("/1", "/2", "/4", "/8");
 	
 	@FXML
-	private TextField val;
+	private CheckBox enInt;
 	
 	@FXML
-	private ComboBox<String> unit;
-	ObservableList<String> unitList = FXCollections.
-			observableArrayList("с", "мс", "мкс", "Гц", "кГц", "МГц");
+	private TextField valCount;
+	
+	@FXML
+	private TextField valWin;
+	
 	
 	@FXML
 	private void initialize(){
 		div.setItems(divList);
 		div.getSelectionModel().select(0);
-		
-		unit.setItems(unitList);
-		unit.getSelectionModel().select(0);
 	}
 
 	@Override
 	protected void postInit(AppScene scene) {
-		setDevicePair(Device.EPairNames.IWDG);
+		setDevicePair(Device.EPairNames.WWDG);
 	}
 }

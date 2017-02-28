@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class Device {
     public enum EPairNames {
-        NON(0),
+        NON(0), GPIO(0),
         ADC(1) {
             @Override
             public void set(Device device, int val) {
@@ -42,6 +42,9 @@ public class Device {
             for(EPairNames pair: extPairs)
                 if (pair.equals(this)) return true;
             return false;
+        }
+        public boolean real() {
+            return ordinal() >= ADC.ordinal();
         }
         public int getSize() {
             return size;
@@ -105,7 +108,7 @@ public class Device {
         d2props.put("vcc", this::setVcc);
         Device that = this;
         for(EPairNames pair: EPairNames.values()) {
-            if (pair.equals(EPairNames.NON)) continue;
+            if (!pair.real()) continue;
             iprops.put(pair.name().toLowerCase(), value -> pair.set(that, value));
         }
     }
@@ -268,8 +271,9 @@ public class Device {
      */
     public Device addPairs(int... pairCounts) {
         EPairNames[] pairNames = EPairNames.values();
-        for(int i = 1; i < pairCounts.length && i < pairNames.length; i++) {
+        for(int i = 0; i < pairCounts.length && i < pairNames.length; i++) {
             EPairNames pair = pairNames[i];
+            if (!pair.real()) continue;
             pair.set(this, pairCounts[i]);
         }
         return this;

@@ -14,6 +14,7 @@ import milandr_ex.model.mcu.ext.MCUCanController;
 import milandr_ex.model.mcu.ext.MCUI2CController;
 import milandr_ex.model.mcu.ext.MCUSpiController;
 import milandr_ex.model.mcu.ext.MCUUartController;
+import milandr_ex.model.mcu.inn.*;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
 import org.slf4j.Logger;
@@ -63,11 +64,11 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private MCUUartController mcuUartController;
 	@FXML
-	private Parent mcuIWdg;
+	private Parent mcuIwdg;
 	@FXML
 	private MCUIwdgController mcuIwdgController;
 	@FXML
-	private Parent mcuWWdg;
+	private Parent mcuWwdg;
 	@FXML
 	private MCUWwdgController mcuWwdgController;
 	private MCUClockController mcuClockController;

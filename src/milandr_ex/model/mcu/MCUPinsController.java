@@ -169,8 +169,9 @@ public class MCUPinsController extends BasicController
 		getScene().setSetsGenerator(new SetsGenerator(portKeys));
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
 		Integer[] pairs = device.getPairCountsArr();
-		for(int i = 1; i < ePairs.length; i++) {
+		for(int i = 0; i < ePairs.length; i++) {
 			Device.EPairNames ePair = ePairs[i];
+			if (!ePair.real()) continue;
 			String pairName = ePair.name();
 			int pairSize = pairs[i];
 			if (pairSize < 1) continue;
@@ -414,6 +415,7 @@ public class MCUPinsController extends BasicController
 					refillLinkedPairCombos(cKey, "", selItem, false);
 				}
 				selMod.select(selItem);
+				saveSelectedPin(cKey, selItem);
 				switchLinkedLabel(cKey, target, selMod);
 			}
 			return true;
