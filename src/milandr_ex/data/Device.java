@@ -273,7 +273,10 @@ public class Device {
         EPairNames[] pairNames = EPairNames.values();
         for(int i = 0; i < pairCounts.length && i < pairNames.length; i++) {
             EPairNames pair = pairNames[i];
-            if (!pair.real()) continue;
+            if (!pair.real()) {
+				this.pairCounts.add(0);
+            	continue;
+			}
             pair.set(this, pairCounts[i]);
         }
         return this;

@@ -61,7 +61,7 @@ public class DeviceFactory {
         device.setVcc(vcc[0], vcc[1]);
         device.setTemp(temp[0], temp[1]);
         device.setFreq(freq);
-        device.addPairs(2, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2);
+        device.addPairs(0, 0, 2, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2);
         device.addPair(Device.EPairNames.TMR, 3);
         device.addPorts(16, 16, 16, 16, 16, 16);
         device.setUsbType("PHY");

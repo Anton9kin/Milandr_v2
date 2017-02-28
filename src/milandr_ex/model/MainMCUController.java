@@ -10,10 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.model.mcu.*;
-import milandr_ex.model.mcu.ext.MCUCanController;
-import milandr_ex.model.mcu.ext.MCUI2CController;
-import milandr_ex.model.mcu.ext.MCUSpiController;
-import milandr_ex.model.mcu.ext.MCUUartController;
+import milandr_ex.model.mcu.ext.*;
 import milandr_ex.model.mcu.inn.*;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
@@ -64,6 +61,10 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private MCUUartController mcuUartController;
 	@FXML
+	private Parent mcuGpio;
+	@FXML
+	private MCUGpioController mcuGpioController;
+	@FXML
 	private Parent mcuIwdg;
 	@FXML
 	private MCUIwdgController mcuIwdgController;
@@ -90,6 +91,7 @@ public class MainMCUController extends BasicController {
 		mcuClockController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
 				mcuClockController, //mcuI2CController, mcuSpiController, mcuUartController,
+				mcuGpioController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
 		makeLiteners(cfg_vbox_in.getChildren());

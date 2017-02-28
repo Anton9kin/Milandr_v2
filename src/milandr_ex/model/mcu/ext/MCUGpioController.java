@@ -19,4 +19,10 @@ public class MCUGpioController extends MCUExtPairController {
 	protected Parent getGPIOControl() {
 		return gpio_gpio;
 	}
+
+	@Override
+	public boolean filterGpio(String key, String item) {
+		return key != null && key.startsWith("cb")
+				&& item != null && !item.equals("RESET");
+	}
 }

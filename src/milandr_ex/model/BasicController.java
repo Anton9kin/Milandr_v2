@@ -111,6 +111,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		iterateSubs(BasicController::fillGpio);
 	}
 
+	public boolean filterGpio(String key, String item) {
+		return item != null && item.contains(" ");
+	}
+
 	protected void fillGpio() {
 		if (getGPIOControl() != null) {
 			ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();

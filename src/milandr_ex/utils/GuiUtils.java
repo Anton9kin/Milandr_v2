@@ -173,6 +173,7 @@ public class GuiUtils {
 
 	public static ComboBox<String> makeCombo(String pText, boolean newStyle) {
 		ComboBox<String> newCombo = new ComboBox<>();
+		newCombo.setId(pText);
 //		newCombo.setBackground(backgroundDefault);
 		newCombo.setPromptText(keyToText(pText));
 		if (pText.startsWith("cb")) makeListCell(newCombo);

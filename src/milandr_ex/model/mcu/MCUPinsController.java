@@ -78,7 +78,7 @@ public class MCUPinsController extends BasicController
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
 		Device device = DeviceFactory.getDevice(pack);
-		setupPinCombos(device, null);
+		setupPinCombos(device, Device.EPairNames.GPIO.model());
 		mainMCUStart(pack);
 		setupPairsCombos(device);
 		log.debug("#postInit - initialized");
@@ -125,7 +125,8 @@ public class MCUPinsController extends BasicController
 				Label newLabel = makeLabel(sKey);
 				result.add(newLabel);
 				labMap.put(sKey, newLabel);
-			} else blockModel.addComboBox(newCombo);
+			}
+			blockModel.addComboBox(newCombo);
 			result.add(newCombo);
 			comboMap.put(sKey, newCombo);
 			newCombo.setItems(pxList.get(key));
@@ -213,6 +214,7 @@ public class MCUPinsController extends BasicController
 
 	private void setupPinCombos(Device device, McuBlockModel blockModel) {
 		int maxPort = device.getMaxPortSizes();
+		blockModel.setParent(boxCont);
 		for(int i = 0; i < 6; i++) { for(int j = 0; j < maxPort; j++) {
 			final String key = "cb" + (i) + (j < 10 ? "0" : "") + j;
 			makePxItem(i, j, key);
@@ -221,6 +223,7 @@ public class MCUPinsController extends BasicController
 			if ( i > 0) GridPane.setColumnIndex(vBox, i);
 			GridPane.setRowIndex(vBox, j + 1);
 		}}
+		getScene().getPinoutsModel().setBlockModel(blockModel);
 	}
 
 	private VBox makePairs(McuBlockModel blockModel, String key) {
