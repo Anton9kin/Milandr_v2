@@ -30,7 +30,8 @@ import static milandr_ex.data.Constants.*;
  * Created by lizard on 20.02.17 at 16:55.
  */
 public class GuiUtils {
-	public static Color bcDef = newClr("0x859035ff");
+	public static Color bcDef = newClr("0xf78218ff");
+//	public static Color bcDef = newClr("0x859035ff");
 	public static Color bcOk = Color.GREEN;
 	public static Color bcIO = Color.GREENYELLOW;
 	public static Color bcExt = Color.YELLOW;

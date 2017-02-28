@@ -22,6 +22,7 @@ import milandr_ex.utils.ChangeCallbackChecker;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.NodeIterateItemChecker;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.IndexedCheckModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -371,7 +372,7 @@ public class MCUPinsController extends BasicController
 		if (refillInProgress > 0) return result;
 		if (value != null && !value.equals("null")) {
 			refillInProgress++;
-			refillLinkedPairCombos(srcKey, value);
+			refillLinkedPairCombos(srcKey, prev, value, value.equals("RESET"));
 			changeTargetCBoxAndLabel(srcKey, prev, "RESET");
 			result = changeTargetCBoxAndLabel(srcKey, value, value);
 			refillInProgress--;
@@ -403,7 +404,7 @@ public class MCUPinsController extends BasicController
 				String selItem = value1.split("\\s")[0];
 				if (srcKey.startsWith("cb")) {
 					selItem += " " + keyToText(srcKey);
-					refillLinkedPairCombos(cKey, selItem);
+					refillLinkedPairCombos(cKey, "", selItem, false);
 				}
 				selMod.select(selItem);
 				switchLinkedLabel(cKey, target, selMod);
@@ -503,15 +504,29 @@ public class MCUPinsController extends BasicController
 	}
 
 	private int refillInProgress = 0;
-	private void refillLinkedPairCombos(String key, String value) {
+	private void refillLinkedPairCombos(String key, String prev, String value, boolean reset) {
 		if (key.matches("\\w{3}-\\d-\\d{2}")) {
 			String link = key.substring(0, 7);
 			refillLinkedPairCombos(key, link, value);
 		} else if (key.matches("\\w{4}-\\d-\\d{2}")) {
 			String link = key.substring(0, 8);
 			refillLinkedPairCombos(key, link, value);
+		} else if (value.contains("ADC") || reset && prev.contains("ADC")) {
+			tpaneMap.get("ADC").setExpanded(true);
+			int ind = Integer.parseInt((reset ? prev : value).substring(3,4));
+			switchCCB("ADC-1", reset, ind);
+			switchCCB("ADC-2", reset, ind);
 		}
 	}
+
+	private void switchCCB(String key, boolean reset, int ind) {
+		cboxMap.get(key).setSelected(true);
+		IndexedCheckModel icm = ccbMap.get(key).getCheckModel();
+		if (reset) {
+			icm.clearCheck(ind);
+		} else icm.check(ind);
+	}
+
 	private void refillLinkedPairCombos(String key, String link, String value) {
 		List<ComboBox> tempCb = Lists.newArrayList();
 		List<String> tempVals = Lists.newArrayList();
