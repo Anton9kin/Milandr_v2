@@ -153,9 +153,10 @@
     -fx-background-color: #393939;
     -fx-text-fill: #f78218;
 }
-.label, .tab .tab-label {
+.label, .tab, .tab .tab-label {
     -fx-alignment: CENTER;
     -fx-text-fill: #f78218;
+    -fx-background-color: #393939;
 }
 
 .combo-box-base, .cell, .indexed-cell, .list-cell, .list-view, .arrow, .arrow-button{

@@ -175,9 +175,27 @@ public class GuiUtils {
 		ComboBox<String> newCombo = new ComboBox<>();
 //		newCombo.setBackground(backgroundDefault);
 		newCombo.setPromptText(keyToText(pText));
+		if (pText.startsWith("cb")) makeListCell(newCombo);
 		if (newStyle) setupOnHoverStyle(bcDef, bcTxt, newCombo);
 		initItem(newCombo, 1);
 		return newCombo;
+	}
+
+	private static void makeListCell(ComboBox newCombo) {
+		newCombo.setButtonCell(new ListCell(){
+			@Override
+			protected void updateItem(Object item, boolean empty) {
+				super.updateItem(item, empty);
+				if(empty || item==null){
+					// styled like -fx-prompt-text-fill:
+//					setStyle("-fx-text-fill: derive(-fx-control-inner-background,-30%)");
+					setStyle("-fx-text-fill: " + toRGBCode(bcTxt));
+				} else {
+					setStyle("-fx-text-fill: -fx-text-inner-color");
+					setText(item.toString());
+				}
+			}
+		});
 	}
 
 	public static TextField findTextFromGrid(GridPane grid, int row, int col) {
