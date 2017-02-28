@@ -14,6 +14,7 @@ import java.util.Set;
 public class ClockModel {
 	private static Map<String, String> pinAliases = new HashMap<String, String>(){{
 		put("ADC-CLK", "ADC-C2");put("CPU-CLK", "CPU-C3");put("USB-CLK", "USB-C2");
+		put("HCLK", "CPU-C3");
 	}};
 	public static class InOut {
 		private String alias;
@@ -123,7 +124,9 @@ public class ClockModel {
 			String exitStr = body.split("\\\\")[1];
 			String[] combos = body.split("\\|");
 			for(int i = 0; i < (combos.length - 1); i = i + 2) {
-				addInp(InOut.get(name + "-" + i, combos[i + 1], combos[i]));
+				boolean isInOut = name.contains("PUT");
+				addInp(InOut.get(isInOut ? combos[i] : name + "-" + (i/2),
+						combos[i + 1], combos[i]));
 			}
 			setOut(InOut.get("out", exitStr, name));
 			return this;
@@ -132,8 +135,7 @@ public class ClockModel {
 		public Block addInp(InOut input) {
 			if (inputs == null) inputs = Maps.newLinkedHashMap();
 			if (selected == null) setSelected(input);
-			boolean isInOut = name.contains("PUT");
-			inputs.put(isInOut ? input.from : input.name, input);
+			inputs.put(input.name, input);
 			return this;
 		}
 		public Block setOut(InOut output) {

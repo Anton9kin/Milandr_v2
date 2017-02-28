@@ -121,10 +121,12 @@ public class MCUPinsController extends BasicController
 		for(int i = 0; i < pairCnt; i++) {
 			String sKey = pairCnt > 1 ? key + "-" + (i > 9 ? "" : "0") + i : key;
 			ComboBox<String> newCombo = makeCombo(sKey, Constants.NEW_PAIRS_COMBO_STYLE);
-//			Label newLabel = makeLabel(sKey);
-//			result.add(newLabel);
+			if (sKey.startsWith("cb")) {
+				Label newLabel = makeLabel(sKey);
+				result.add(newLabel);
+				labMap.put(sKey, newLabel);
+			}
 			result.add(newCombo);
-//			labMap.put(sKey, newLabel);
 			comboMap.put(sKey, newCombo);
 			newCombo.setItems(pxList.get(key));
 			GuiUtils.makeListener(sKey, newCombo, changeCallback);

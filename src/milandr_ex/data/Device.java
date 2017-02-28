@@ -22,7 +22,7 @@ public class Device {
             public void set(Device device, int val) {
                 device.setAdc(val);
             }
-        }, COMP(1){
+        }, COMP(2){
             @Override
             public void set(Device device, int val) {
                 device.setComporator(val);

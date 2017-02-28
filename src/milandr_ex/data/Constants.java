@@ -29,7 +29,7 @@ public class Constants {
             {
                     "HSI|8Mhz|HSE|8 Mhz|LSE|32 Khz|LSI|40 Khz|\\Not",
                     "",
-                    "F-CLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSI|/ 256|HSE|/ 256|\\Not",
+                    "HCLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSE|/ 256|\\Not",
                     "HSI|8Mhz|HSI|/ 2|HSE|MHz|HSE|/ 2|\\Sim",
                     "CPU-C1|Sim|CPU-C1|* 16|\\Sim",
                     "HSI|8 Mhz|CPU-C2|/ 256|LSE|32 Khz|LSI|40 Khz|\\Out",

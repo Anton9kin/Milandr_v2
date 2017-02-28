@@ -75,9 +75,10 @@ public class MCUClockController extends BasicController
 		ClockModel clock = ClockModel.get(model.getSelectedBody(), blocks);
 		model.setClockModel(clock);
 		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
-		clock.addRestriction("USB-C2", "= 48000000");
-		clock.addRestriction("ADC-C2", "< 14000000");
-		clock.addRestriction("CPU-C3", "< 80000000");
+		clock.addRestriction("USB-CLK", "= 48000000");
+		clock.addRestriction("ADC-CLK", "< 14000000");
+		clock.addRestriction("HCLK", "< 80000000");
+		clock.addRestriction("CPU-CLK", "< 80000000");
 		// make usb 48 MHz
 		selectCBox("k-USB-C2-0", "IN-2");
 		selectCBox("k-USB-C2-9", "/ 1");
