@@ -1,41 +1,31 @@
 package milandr_ex.model.mcu.inn;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
+import milandr_ex.data.McuBlockProperty;
 import milandr_ex.model.BasicController;
+import static milandr_ex.data.McuBlockProperty.*;
 
 public class MCUWwdgController extends BasicController {
 
 	@FXML
-	private ComboBox<String> div;
-	ObservableList<String> divList = FXCollections.
-			observableArrayList("/1", "/2", "/4", "/8");
-	
-	@FXML
-	private CheckBox enInt;
-	
-	@FXML
-	private TextField valCount;
-	
-	@FXML
-	private TextField valWin;
-	
-	
-	@FXML
-	private void initialize(){
-		div.setItems(divList);
-		div.getSelectionModel().select(0);
+	private GridPane wwdg_grid;
+
+	@Override
+	protected Pane getPropControl() {
+		return wwdg_grid;
 	}
 
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.WWDG);
+		getDevicePair().model().setBundle(getMessages());
+		getDevicePair().model().addModelProp(McuBlockProperty.getF("freq_div", div8List, null), "f_div.freq_div");
+		getDevicePair().model().addModelProp(McuBlockProperty.get("cnt_val", 1));
+		getDevicePair().model().addModelProp(McuBlockProperty.get("win_val", 1));
+		getDevicePair().model().addModelProp(McuBlockProperty.get("early_int", true));
 	}
 }

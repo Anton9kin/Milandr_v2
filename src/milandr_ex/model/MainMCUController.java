@@ -45,6 +45,10 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private MCUAdcController mcuAdcController;
 	@FXML
+	private Parent mcuDac;
+	@FXML
+	private MCUDacController mcuDacController;
+	@FXML
 	private Parent mcuCan;
 	@FXML
 	private MCUCanController mcuCanController;
@@ -91,7 +95,7 @@ public class MainMCUController extends BasicController {
 		mcuClockController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
 				mcuClockController, mcuI2CController, mcuSpiController, mcuUartController,
-				mcuGpioController,
+				mcuGpioController, mcuDacController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
 		makeLiteners(cfg_vbox_in.getChildren());

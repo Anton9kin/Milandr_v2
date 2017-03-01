@@ -8,10 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
-import milandr_ex.data.AppScene;
-import milandr_ex.data.Constants;
-import milandr_ex.data.Device;
-import milandr_ex.data.PinoutsModel;
+import javafx.scene.layout.Pane;
+import milandr_ex.data.*;
 import milandr_ex.utils.ChangeCallBackImpl;
 import milandr_ex.utils.ChangeCallback;
 import milandr_ex.utils.ChangeCallbackOwner;
@@ -64,6 +62,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		getScene().startSetupProcess();
 		postInit(getScene());
 		Platform.runLater(()->initLater(getScene()));
+		initProps(getDevicePair());
 		getScene().stopSetupProcess();
 		return (T) this;
 	}
@@ -73,6 +72,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return parentController;
 	}
 	protected Parent getGPIOControl() { return null; }
+	protected Pane getPropControl() { return null; }
 	protected void addChildController(BasicController child) {
 		subControllers.add(child);
 	}
@@ -95,6 +95,23 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		Device.EPairNames pair = subController.getDevicePair();
 		if (pair.ordinal() > 0) {
 			pair.model().setController(subController);
+		}
+	}
+
+	private void initProps(Device.EPairNames pair) {
+		if (pair == null) return;
+		if (getPropControl() != null) {
+			McuBlockModel model = pair.model();
+			model.setPropsPane(getPropControl());
+			Pane propsPane = getPropControl();
+			propsPane.getChildren().clear();
+			int ind = 0;
+			List<McuBlockProperty> props = pair.model().getProps();
+			if (propsPane != null && props != null) {
+				for(McuBlockProperty prop: props) {
+					prop.makeUI(propsPane, ind++);
+				}
+			}
 		}
 	}
 

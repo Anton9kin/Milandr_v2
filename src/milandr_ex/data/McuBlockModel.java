@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import milandr_ex.model.BasicController;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static milandr_ex.data.Constants.textToKey;
 
@@ -21,13 +22,17 @@ public class McuBlockModel {
 	private final List<CheckBox> ckBoxes;
 	private final List<ComboBox> cmBoxes;
 	private final List<String> cbKeys;
+	private final List<McuBlockProperty> props;
+	private Pane propsPane;
 	private BasicController controller;
+	private ResourceBundle bundle;
 
 	public McuBlockModel(Device.EPairNames pair) {
 		this.pair = pair;
 		ckBoxes = Lists.newArrayList();
 		cmBoxes = Lists.newArrayList();
 		cbKeys = Lists.newArrayList();
+		props = Lists.newArrayList();
 	}
 
 	public Device.EPairNames getPair() {
@@ -49,12 +54,41 @@ public class McuBlockModel {
 		return this;
 	}
 
+	public McuBlockModel addModelProp(McuBlockProperty prop) {
+		return addModelProp(prop, prop.getName());
+	}
+	public McuBlockModel addModelProp(McuBlockProperty prop, String... msgKeys) {
+		this.props.add(prop);
+		if (bundle != null && msgKeys != null) {
+			for(String msgKey: msgKeys) {
+				String[] propPath = msgKey.split("\\.");
+				String propKey = propPath[0];
+				String propKeyMsg = propPath[propPath.length - 1];
+				prop.setMsgKey(propKey, propKeyMsg);
+				String fullMsgKey = "mcu_prop." + propKeyMsg;
+				if (bundle.containsKey(fullMsgKey)) {
+					prop.setMsgTxt(propKey, bundle.getString(fullMsgKey));
+				}
+			}
+		}
+		return this;
+	}
+
+	public McuBlockModel setPropsPane(Pane propsPane) {
+		this.propsPane = propsPane;
+		return this;
+	}
+
 	public BasicController getController() {
 		return controller;
 	}
 
 	public void setController(BasicController controller) {
 		this.controller = controller;
+	}
+
+	public List<McuBlockProperty> getProps() {
+		return props;
 	}
 
 	public List<String> getPinsList() {
@@ -71,5 +105,9 @@ public class McuBlockModel {
 			}
 		}
 		return keys;
+	}
+
+	public void setBundle(ResourceBundle bundle) {
+		this.bundle = bundle;
 	}
 }
