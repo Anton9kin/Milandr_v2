@@ -24,10 +24,10 @@ public class MCUSystickController extends BasicController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.SYST);
 		getDevicePair().model().setBundle(getMessages());
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("sign_src", istList.sorted()));
+		getDevicePair().model().addModelProp(McuBlockProperty.getC("sign_src", istList));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("intrp", true));
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("wrk_kind", modeList.sorted()));
+		getDevicePair().model().addModelProp(McuBlockProperty.getC("wrk_kind", modeList));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("time_freq", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("tf_units", unitList.sorted()));
+		getDevicePair().model().addModelProp(McuBlockProperty.getC("tf_units", unitList));
 	}
 }

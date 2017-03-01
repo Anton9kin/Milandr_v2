@@ -25,6 +25,8 @@ public class McuBlockProperty {
 	public static ObservableList<String> unitList = FXCollections.observableArrayList("с", "мс", "мкс", "Гц", "кГц", "МГц");
 	public static ObservableList<String> istList = FXCollections.observableArrayList("LSI", "HCLK");
 	public static ObservableList<String> modeList = FXCollections.observableArrayList("Таймер", "Задержка");
+	public static ObservableList<String> div128List = FXCollections.observableArrayList("/1", "/2", "/4", "/8", "/16", "/32", "/64", "/128");
+	public static ObservableList<String> speedList = FXCollections.observableArrayList("10 000", "20 000", "50 000", "100 000", "125 000", "250 000", "500 000", "1000 000");
 
 	public enum PropKind {
 		NONE,
@@ -86,6 +88,7 @@ public class McuBlockProperty {
 	}
 
 	public String getMsgTxt() {
+		if (name.equals("-")) return "";
 		return msgTxt == null ? name + "-" + msgKey : msgTxt;
 	}
 
@@ -147,12 +150,14 @@ public class McuBlockProperty {
 			Label nodeLbl = new Label(getMsgTxt());
 			pane.getChildren().add(nodeLbl);
 			GridPane.setRowIndex(nodeLbl, gridIndex);
-			if (node instanceof ComboBox) {
-				((ComboBox)node).getSelectionModel().selectFirst();
+			if (!name.equals("-")) {
+				if (node instanceof ComboBox) {
+					((ComboBox) node).getSelectionModel().selectFirst();
+				}
+				pane.getChildren().add(node);
+				GridPane.setRowIndex(node, gridIndex);
+				GridPane.setColumnIndex(node, 1);
 			}
-			pane.getChildren().add(node);
-			GridPane.setRowIndex(node, gridIndex);
-			GridPane.setColumnIndex(node, 1);
 		}
 		return this;
 	}

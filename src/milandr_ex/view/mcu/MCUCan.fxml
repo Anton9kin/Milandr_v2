@@ -7,40 +7,11 @@
       <TabPane layoutY="35.0" prefHeight="391.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
           <Tab text="Настройка">
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <GridPane layoutX="14.0" layoutY="14.0" prefHeight="253.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                        <GridPane fx:id="can_grid" layoutX="14.0" layoutY="14.0" prefHeight="253.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                              <ComboBox fx:id="fix_npe" visible="false"/>
-                              <Label text="Предделитель" />
-                              <ComboBox fx:id="div" prefHeight="22.0" prefWidth="215.0" GridPane.columnIndex="1" />
-                              <Label text="Скорость" GridPane.rowIndex="1" />
-                              <Label text="Кванты" GridPane.rowIndex="3" />
-                              <ComboBox fx:id="speed" prefHeight="22.0" prefWidth="216.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label text="SEG1" GridPane.rowIndex="4" />
-                              <TextField fx:id="seg1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="tq" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="SEG2" GridPane.rowIndex="5" />
-                              <TextField fx:id="seg2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label text="PSEG" GridPane.rowIndex="6" />
-                              <TextField fx:id="pseg" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <Label text="Реальная скорость" GridPane.rowIndex="8" />
-                              <Label text="Ошибка" GridPane.rowIndex="9" />
-                              <TextField fx:id="realSpeed" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                              <TextField fx:id="errSpeed" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                         </GridPane>
                   </AnchorPane>
           </Tab>
