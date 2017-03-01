@@ -6,6 +6,8 @@ import javafx.scene.layout.GridPane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 
+import static milandr_ex.data.Constants.textToKey;
+
 public class MCUGpioController extends MCUExtPairController {
 	@FXML
 	private GridPane gpio_gpio;
@@ -22,6 +24,10 @@ public class MCUGpioController extends MCUExtPairController {
 
 	@Override
 	public boolean filterGpio(String key, String item) {
+		if (item != null && !item.contains(" ")) {
+			if (Device.extPairNames().contains(textToKey(item).substring(0, 3)) ||
+					Device.extPairNames().contains(textToKey(item).substring(0, 4))) return false;
+		}
 		return key != null && key.startsWith("cb")
 				&& item != null && !item.equals("RESET");
 	}

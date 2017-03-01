@@ -90,7 +90,7 @@ public class MainMCUController extends BasicController {
 	protected void postInit(AppScene scene) {
 		mcuClockController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
-				mcuClockController, //mcuI2CController, mcuSpiController, mcuUartController,
+				mcuClockController, mcuI2CController, mcuSpiController, mcuUartController,
 				mcuGpioController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 

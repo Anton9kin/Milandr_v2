@@ -60,6 +60,14 @@ public class Device {
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
+    private static List<String> extPairNames;
+    public static List<String> extPairNames() {
+        if (extPairNames == null) {
+            extPairNames = Lists.newArrayList();
+            for(EPairNames pair: extPairs) extPairNames.add(pair.name());
+        }
+        return extPairNames;
+    }
     public enum EPortNames {
         A, B, C, D, E, F
     }

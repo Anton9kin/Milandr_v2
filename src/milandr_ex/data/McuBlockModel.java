@@ -9,6 +9,9 @@ import javafx.scene.layout.VBox;
 import milandr_ex.model.BasicController;
 
 import java.util.List;
+
+import static milandr_ex.data.Constants.textToKey;
+
 /**
  * Created by lizard2k1 on 28.02.2017.
  */
@@ -62,7 +65,8 @@ public class McuBlockModel {
 			if (model != null && model.getSelectedIndex() >= 0) {
 				String item = (String) model.getSelectedItem();
 				if (!controller.filterGpio(key, item)) continue;
-				keys.add(item.contains(" ") ? item //Constants.textToKey(item.split("\\s")[1])
+				boolean hasSpace = item.contains(" ");
+				keys.add(hasSpace ? item //Constants.textToKey(item.split("\\s")[1])
 						:  Constants.keyToText(key) + " " + item);
 			}
 		}
