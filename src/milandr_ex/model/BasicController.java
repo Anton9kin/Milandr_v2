@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Constants;
@@ -121,8 +122,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			children.clear();
 			List<String> pinList = getPinList();
 			for(String pin: pinList) {
-				Label label = new Label(Constants.keyToText(pin));
-				label.setMinSize(120.0, 20.0);
+				TitledPane label = new TitledPane(Constants.keyToText(pin), new Label());
+				label.setMinSize(160.0, 20.0);
+				label.setExpanded(false);
 				children.add(label);
 				GridPane.setRowIndex(label, pinList.indexOf(pin));
 			}

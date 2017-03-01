@@ -62,9 +62,8 @@ public class McuBlockModel {
 			if (model != null && model.getSelectedIndex() >= 0) {
 				String item = (String) model.getSelectedItem();
 				if (!controller.filterGpio(key, item)) continue;
-				keys.add(Constants.keyToText(key));
-//				item = item.split("\\s")[1];
-//				keys.add(Constants.textToKey(item));
+				keys.add(item.contains(" ") ? item //Constants.textToKey(item.split("\\s")[1])
+						:  Constants.keyToText(key) + " " + item);
 			}
 		}
 		return keys;
