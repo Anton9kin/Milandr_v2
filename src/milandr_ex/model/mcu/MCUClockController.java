@@ -57,7 +57,7 @@ public class MCUClockController extends BasicController
 	}
 
 	private void fillClockGrid() {
-		clckCont.setStyle("-fx-background-color: white; -fx-grid-lines-visible: true");
+		clckCont.setStyle("-fx-background-color: " + toRGBCode(bcDef) + "; -fx-grid-lines-visible: true");
 		makePaddings(clckCont);
 		String[][] combostrs = Constants.combostrs;
 		List<ClockModel.Block> blocks = Lists.newArrayList();
