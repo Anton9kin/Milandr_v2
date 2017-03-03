@@ -4,27 +4,10 @@
 <?import javafx.scene.layout.*?>
 
 <VBox prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.mcu.inn.MCUTimerController">
- <GridPane layoutX="14.0" layoutY="47.0" prefHeight="120.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0">
+ <GridPane fx:id="tmr_grid" layoutX="14.0" layoutY="47.0" prefHeight="120.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0">
    <columnConstraints>
      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
    </columnConstraints>
-   <rowConstraints>
-     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-   </rowConstraints>
-          <Label text="Предделитель" />
-          <ComboBox fx:id="div" prefHeight="22.0" prefWidth="188.0" GridPane.columnIndex="1" />
-          <Label text="Делитель основного счета" GridPane.rowIndex="1" />
-          <Label text="Желаемое время/частота" GridPane.rowIndex="3" />
-          <TextField fx:id="value" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-          <Label text="Выберите единицы" GridPane.rowIndex="4" />
-          <ComboBox fx:id="unit" prefHeight="22.0" prefWidth="195.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-    <Label text="TIM_CLK" GridPane.rowIndex="2" />
-    <TextField fx:id="timCLK" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-    <TextField fx:id="mainDiv" GridPane.columnIndex="1" GridPane.rowIndex="1" />
  </GridPane>
 </VBox>
