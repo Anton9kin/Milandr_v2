@@ -6,7 +6,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
-import milandr_ex.data.McuBlockProperty;
 
 import static milandr_ex.data.McuBlockProperty.*;
 
@@ -26,17 +25,8 @@ public class MCUCanController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.CAN);
-		getDevicePair().model().setBundle(getMessages());
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("pre_div", div128List));
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("speed", speedList));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("-", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("quants", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("seg1", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("seg2", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("pseg", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("-", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("r_speed", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("error", ""));
+		addModelProps(new String[]{"pre_div", "speed"}, div128List, speedList);
+		addModelProps("-", "quants", "seg1", "seg2", "pseg", "-", "r_speed", "error");
 	}
 
 	@Override

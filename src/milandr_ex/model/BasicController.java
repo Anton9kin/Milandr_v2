@@ -148,6 +148,19 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+	 protected void addModelProps(String[] props, List<String>... lists){
+		int ind = 0;
+		for(String prop: props) {
+			getDevicePair().model().addModelProp(McuBlockProperty.getC(prop, lists[ind++]));
+		}
+	 }
+
+	 protected void addModelProps(String... props){
+		for(String prop: props) {
+			getDevicePair().model().addModelProp(McuBlockProperty.get(prop, ""));
+		}
+	 }
+
 	@Override
 	public boolean check() {
 		return false;
@@ -192,6 +205,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected void setDevicePair(Device.EPairNames devicePair) {
 		this.devicePair = devicePair;
+		devicePair.model().setBundle(getMessages());
 	}
 
 	public Device.EPairNames getDevicePair() {
