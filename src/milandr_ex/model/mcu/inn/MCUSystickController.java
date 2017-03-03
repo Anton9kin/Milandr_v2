@@ -23,7 +23,6 @@ public class MCUSystickController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.SYST);
-		getDevicePair().model().setBundle(getMessages());
 		getDevicePair().model().addModelProp(McuBlockProperty.getC("sign_src", istList));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("intrp", true));
 		getDevicePair().model().addModelProp(McuBlockProperty.getC("wrk_kind", modeList));

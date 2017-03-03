@@ -22,7 +22,6 @@ public class MCUWwdgController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.WWDG);
-		getDevicePair().model().setBundle(getMessages());
 		getDevicePair().model().addModelProp(McuBlockProperty.getF("freq_div", div8List, null), "f_div.freq_div");
 		getDevicePair().model().addModelProp(McuBlockProperty.get("cnt_val", 1));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("win_val", 1));

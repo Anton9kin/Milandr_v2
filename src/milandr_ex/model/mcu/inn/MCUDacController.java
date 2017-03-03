@@ -21,9 +21,7 @@ public class MCUDacController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.DAC);
-		getDevicePair().model().setBundle(getMessages());
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("base_power", opUList));
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("start_kind", typeStartList));
+		addModelProps(new String[]{"base_power", "start_kind"}, opUList, typeStartList);
 		getDevicePair().model().addModelProp(McuBlockProperty.get("sw_chn", true));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("temp_sens", true));
 		getDevicePair().model().addModelProp(McuBlockProperty.get("lst_chn", ""));
