@@ -5,20 +5,20 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.*;
-import milandr_ex.utils.ChangeCallBackImpl;
-import milandr_ex.utils.ChangeCallback;
-import milandr_ex.utils.ChangeCallbackOwner;
-import milandr_ex.utils.ControllerIteration;
+import milandr_ex.utils.*;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import static milandr_ex.utils.GuiUtils.bcDef;
+import static milandr_ex.utils.GuiUtils.bcTxt;
 
 /**
  * Created by lizard on 20.02.17 at 12:40.
@@ -103,16 +103,45 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getPropControl() != null) {
 			McuBlockModel model = pair.model();
 			model.setPropsPane(getPropControl());
-			Pane propsPane = getPropControl();
-			propsPane.getChildren().clear();
-			int ind = 0;
-			List<McuBlockProperty> props = pair.model().getProps();
-			if (propsPane != null && props != null) {
-				for(McuBlockProperty prop: props) {
-					prop.makeUI(propsPane, ind++);
-				}
+			makeUI(pair);
+		}
+	}
+
+	private void makeUI(Device.EPairNames pair) {
+		Pane propsPane = getPropControl();
+		propsPane.getChildren().clear();
+		String body = getScene().getPinoutsModel().getSelectedBody();
+		int pairCnt = DeviceFactory.getDevice(body).getPairCounts().get(pair.ordinal());
+		int ind = 0;
+		if (pairCnt > 1) {
+			HBox hBox = makeToggleGroup(pair, propsPane, pairCnt);
+			GridPane.setRowIndex(hBox, ind++);
+			GridPane.setColumnSpan(hBox, 2);
+		}
+		List<McuBlockProperty> props = pair.model().getProps();
+		if (propsPane != null && props != null) {
+			for(McuBlockProperty prop: props) {
+				prop.makeUI(propsPane, ind++);
 			}
 		}
+	}
+
+	private HBox makeToggleGroup(Device.EPairNames pair, Pane propsPane, int pairCnt) {
+		HBox hBox = new HBox();
+		ToggleGroup group = new ToggleGroup();
+		for(int i = 0; i < pairCnt; i++) {
+//				RadioButton rBtn = new RadioButton(pair.name() + "-" + i);
+			ToggleButton rBtn = new ToggleButton(pair.name() + "-" + (i + 1));
+			GuiUtils.setupOnHoverStyle(rBtn, bcDef, bcTxt);
+			rBtn.setToggleGroup(group);
+			rBtn.setMinWidth(80.0);
+			hBox.getChildren().add(rBtn);
+			if (i == 0) rBtn.setSelected(true);
+			final int ind = i;
+			rBtn.selectedProperty().addListener((e, o, n) -> { if (n) pair.model().togglePropValues(ind);});
+		}
+		propsPane.getChildren().add(hBox);
+		return hBox;
 	}
 
 	protected void iterateSubs(ControllerIteration iteration) {

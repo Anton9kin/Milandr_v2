@@ -110,4 +110,11 @@ public class McuBlockModel {
 	public void setBundle(ResourceBundle bundle) {
 		this.bundle = bundle;
 	}
+
+	public boolean togglePropValues(final int index) {
+		for(McuBlockProperty prop: props) {
+			prop.setValueInd(index);
+		}
+		return true;
+	}
 }

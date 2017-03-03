@@ -45,6 +45,11 @@ public class McuBlockProperty {
 		private int intValue;
 		private String strValue;
 
+		public PropValue(int intValue, String strValue) {
+			this.intValue = intValue;
+			this.strValue = strValue;
+		}
+
 		public int getIntValue() {
 			return intValue;
 		}
@@ -128,21 +133,30 @@ public class McuBlockProperty {
 	private void checkValues() {
 		if (valueInd < 0) throw new IllegalArgumentException("illegal value index");
 		if (values == null) values = Lists.newArrayList();
-		while (values.size() <= valueInd) values.add(new PropValue());
+		while (values.size() <= valueInd) values.add(new PropValue(intDefValue, strDefValue));
 	}
 
 	public void setValueInd(int valueInd) {
 		this.valueInd = valueInd;
-		checkValues();
+		switch (kind) {
+			case INT: setIntValue(getIntValue()); break;
+			default: setStrValue(getStrValue()); break;
+		}
+		if (subProps == null || subProps.isEmpty()) return;
+		for(McuBlockProperty sProp: subProps) {
+			sProp.setValueInd(valueInd);
+		}
 	}
 
 	public McuBlockProperty setIntDefValue(int intDefValue) {
 		this.intDefValue = intDefValue;
+		setIntValue(intDefValue);
 		return this;
 	}
 
 	public McuBlockProperty setStrDefValue(String strDefValue) {
 		this.strDefValue = strDefValue;
+		setStrValue(strDefValue);
 		return this;
 	}
 
@@ -157,9 +171,14 @@ public class McuBlockProperty {
 	}
 
 	private void updateObservable(String obsValue) {
+		if (this.obsValue == null) return;
+		if (obsValue == null || obsValue.equals("null")) return;
 		if (this.obsValue instanceof StringProperty) {
 			((StringProperty) this.obsValue).setValue(obsValue + "");
 		} else if (this.obsValue instanceof BooleanProperty) {
+			if (!obsValue.matches("\\d+")) {
+				obsValue = obsValue.equals("true") ? "1" : "0";
+			}
 			((BooleanProperty) this.obsValue).setValue(Integer.parseInt(obsValue) > 0);
 		} else if (this.obsValue instanceof ObjectProperty) {
 			((ObjectProperty) this.obsValue).setValue(obsValue + "");
@@ -171,9 +190,19 @@ public class McuBlockProperty {
 	}
 	public McuBlockProperty setStrValue(String strValue, boolean inner) {
 		checkValues();
-		this.values.get(valueInd).strValue = strValue;
-		if (!inner) updateObservable(strValue);
+		String newValue = getNewStrValueWithDef(strValue);
+		this.values.get(valueInd).strValue = newValue;
+		if (!inner) updateObservable(newValue);
 		return this;
+	}
+
+	private String getNewStrValueWithDef(String strValue) {
+		String newValue = strValue == null ? strDefValue : strValue;
+		if (newValue == null) newValue = "";
+		if (newValue.isEmpty() && subItems != null && !subItems.isEmpty()) {
+			newValue = subItems.get(0);
+		}
+		return newValue;
 	}
 
 	public int getIntValue() {
@@ -203,6 +232,7 @@ public class McuBlockProperty {
 	public void makeListener(Node node, ObservableValue property) {
 		if (property == null) return;
 		obsNode = node;
+		obsValue = property;
 		property.addListener((e, t1, t2) -> {
 			log_debug(String.format("#listen(%s) %s -> %s", getMsgTxt(), t1, t2));
 			String t2s = String.valueOf(t2);
@@ -235,6 +265,9 @@ public class McuBlockProperty {
 			Label nodeLbl = new Label(getMsgTxt());
 			pane.getChildren().add(nodeLbl);
 			GridPane.setRowIndex(nodeLbl, gridIndex);
+			if (subItems != null && !subItems.isEmpty()) {
+				setStrValue(subItems.get(0));
+			}
 			if (!name.equals("-")) {
 				if (node instanceof ComboBox) {
 					((ComboBox) node).getSelectionModel().selectFirst();

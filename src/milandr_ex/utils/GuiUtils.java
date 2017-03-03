@@ -5,6 +5,9 @@ import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -70,21 +73,22 @@ public class GuiUtils {
 		for(Node node: nodes) setupOnHoverStyle(node, stdColor, txtColor);
 	}
 	public static void setupOnHoverStyle(Node node, Color stdColor, Color txtColor) {
-		if (stdColor == null) return;
-		setupOnHoverStyle(node, cssStyleFromColor(stdColor, txtColor, false),
-				cssStyleFromColor(stdColor, txtColor, true));
-	}
-	public static void setupOnHoverStyle(Node node, String stdStyle, String hoverStyle) {
-		if (node == null) return;
+		if (stdColor == null || node == null) return;
+		String stdStyle = cssStyleFromColor(stdColor, txtColor, false);
 		if (!USE_HOVERED_STYLE) {
 			node.setStyle(stdStyle);
 			return;
 		}
-		node.styleProperty().unbind();
-		node.styleProperty().bind(Bindings.when(node.hoverProperty())
-				.then(new SimpleStringProperty(hoverStyle))
-				.otherwise(new SimpleStringProperty(stdStyle))
-		);
+		String hoverStyle = cssStyleFromColor(stdColor, txtColor, true);
+		String selectStyle1 = cssStyleFromColor(stdColor, txtColor, false, true);
+		String selectStyle2 = cssStyleFromColor(stdColor, txtColor, true, true);
+		String[] styles = new String[]{stdStyle, selectStyle1, hoverStyle, selectStyle2};
+		BooleanProperty sp =  node instanceof ToggleButton ?
+				((ToggleButton)node).selectedProperty() : node.visibleProperty();
+		ReadOnlyBooleanProperty hp = node.hoverProperty();
+		node.styleProperty().bind(Bindings.when(hp)
+				.then(Bindings.when(sp).then(styles[0]).otherwise(styles[2]))
+				.otherwise(Bindings.when(sp).then(styles[1]).otherwise(styles[3])));
 	}
 
 	public static void makeListener(final String key, Button newBtn, ChangeCallback callback) {

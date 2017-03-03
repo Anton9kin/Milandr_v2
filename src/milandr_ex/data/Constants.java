@@ -208,11 +208,14 @@ public class Constants {
     }
 
     public static String cssStyleFromColor(Color color, Color text, boolean hover) {
-        return cssStyleFromColor(color, toRGBCode(text), hover);
+        return cssStyleFromColor(color, toRGBCode(text), hover, false);
     }
-    public static String cssStyleFromColor(Color color, String text, boolean hover) {
+    public static String cssStyleFromColor(Color color, Color text, boolean hover, boolean selected) {
+        return cssStyleFromColor(color, toRGBCode(text), hover, selected);
+    }
+    public static String cssStyleFromColor(Color color, String text, boolean hover, boolean selected) {
         String rgbColor = toRGBCode(color);
-        String rgbColor10 = toRGBCode(color, hover ? 50 :  - 50);
+        String rgbColor10 = selected ? selectRGBCode(color, hover) : hoverRGBCode(color, hover);
         String cssStyle = "-fx-background-color: " + rgbColor;
         if (!USE_HOVERED_STYLE) return cssStyle;
         cssStyle +=", linear-gradient("+rgbColor+" 10%, " + rgbColor10 + " 100%); ";
@@ -226,6 +229,14 @@ public class Constants {
     public static String toRGBCode( Color color )
     {
         return toRGBCode(color, 0);
+    }
+    public static String hoverRGBCode( Color color , boolean second)
+    {
+        return toRGBCode(color, second ? 50 : -50);
+    }
+    public static String selectRGBCode( Color color , boolean second)
+    {
+        return toRGBCode(color, second ? 100 : -100);
     }
 
     public static String toRGBCode( Color color, int diff )
