@@ -44,6 +44,7 @@
 						<TitledPane fx:id="cfg_dac" text="%config.dac_setup" expanded="false"><fx:include fx:id="mcuDac" source="mcu/MCUDac.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_iwd" text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_tmr" text="%config.tmr_setup" expanded="false"><fx:include fx:id="mcuTimer" source="mcu/MCUTimer.fxml" /></TitledPane>
 					</VBox>
 					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ex" GridPane.columnIndex="1"
 						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
