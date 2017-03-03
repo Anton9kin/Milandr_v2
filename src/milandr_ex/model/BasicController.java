@@ -183,7 +183,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected void log_debug(Logger log, String logText) {
 		if (log != null) log.debug(logText);
-		System.out.println(logText);
+		else System.out.println(logText);
 	}
 
 	protected String makeHzText(int pinOut) {

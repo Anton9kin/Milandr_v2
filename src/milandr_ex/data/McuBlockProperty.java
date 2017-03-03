@@ -1,6 +1,10 @@
 package milandr_ex.data;
 
 import com.google.common.collect.Lists;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -11,6 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import jfxtras.scene.control.ListView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +24,7 @@ import java.util.List;
  * Created by lizard on 01.03.17 at 12:37.
  */
 public class McuBlockProperty {
+	private static final Logger log	= LoggerFactory.getLogger(McuBlockProperty.class);
 	public static ObservableList<String> opUList = FXCollections.observableArrayList("Внутренее", "Внешнее");
 	public static ObservableList<String> typeStartList = FXCollections.observableArrayList("Одиночное", "Последовательное");
 	public static ObservableList<String> div8List = FXCollections.observableArrayList("/1", "/2", "/4", "/8");
@@ -33,6 +40,20 @@ public class McuBlockProperty {
 		INT, STR, CHK, CMB, LST, CMP,
 		ERROR;
 	}
+
+	private static class PropValue {
+		private int intValue;
+		private String strValue;
+
+		public int getIntValue() {
+			return intValue;
+		}
+
+		public String getStrValue() {
+			return strValue;
+		}
+	}
+
 	private String alias;
 	private final String name;
 	private String msgKey;
@@ -40,12 +61,14 @@ public class McuBlockProperty {
 	private final PropKind kind;
 	private List<McuBlockProperty> subProps;
 	private ObservableList<String> subItems;
-	private int intValue;
 	private int intDefValue;
-	private String strValue;
 	private String strDefValue;
 	private int minValue;
 	private int maxValue;
+	private List<PropValue> values;
+	private int valueInd;
+	private Node obsNode;
+	private ObservableValue obsValue;
 
 	private McuBlockProperty(String name, PropKind kind) {
 		this.name = name;
@@ -102,9 +125,15 @@ public class McuBlockProperty {
 		return this;
 	}
 
-	public McuBlockProperty setIntValue(int intValue) {
-		this.intValue = intValue;
-		return this;
+	private void checkValues() {
+		if (valueInd < 0) throw new IllegalArgumentException("illegal value index");
+		if (values == null) values = Lists.newArrayList();
+		while (values.size() <= valueInd) values.add(new PropValue());
+	}
+
+	public void setValueInd(int valueInd) {
+		this.valueInd = valueInd;
+		checkValues();
 	}
 
 	public McuBlockProperty setIntDefValue(int intDefValue) {
@@ -112,14 +141,49 @@ public class McuBlockProperty {
 		return this;
 	}
 
-	public McuBlockProperty setStrValue(String strValue) {
-		this.strValue = strValue;
-		return this;
-	}
-
 	public McuBlockProperty setStrDefValue(String strDefValue) {
 		this.strDefValue = strDefValue;
 		return this;
+	}
+
+	public McuBlockProperty setIntValue(int intValue) {
+		return setIntValue(intValue, false);
+	}
+	public McuBlockProperty setIntValue(int intValue, boolean inner) {
+		checkValues();
+		this.values.get(valueInd).intValue = intValue;
+		if (!inner) updateObservable(intValue + "");
+		return this;
+	}
+
+	private void updateObservable(String obsValue) {
+		if (this.obsValue instanceof StringProperty) {
+			((StringProperty) this.obsValue).setValue(obsValue + "");
+		} else if (this.obsValue instanceof BooleanProperty) {
+			((BooleanProperty) this.obsValue).setValue(Integer.parseInt(obsValue) > 0);
+		} else if (this.obsValue instanceof ObjectProperty) {
+			((ObjectProperty) this.obsValue).setValue(obsValue + "");
+		}
+	}
+
+	public McuBlockProperty setStrValue(String strValue) {
+		return setStrValue(strValue, false);
+	}
+	public McuBlockProperty setStrValue(String strValue, boolean inner) {
+		checkValues();
+		this.values.get(valueInd).strValue = strValue;
+		if (!inner) updateObservable(strValue);
+		return this;
+	}
+
+	public int getIntValue() {
+		checkValues();
+		return this.values.get(valueInd).getIntValue();
+	}
+
+	public String getStrValue() {
+		checkValues();
+		return this.values.get(valueInd).getStrValue();
 	}
 
 	public void setSubItems(List<String> subItems) {
@@ -136,15 +200,36 @@ public class McuBlockProperty {
 	public McuBlockProperty makeUI(Pane pane) {
 		return makeUI(pane, 0);
 	}
+	public void makeListener(Node node, ObservableValue property) {
+		if (property == null) return;
+		obsNode = node;
+		property.addListener((e, t1, t2) -> {
+			log_debug(String.format("#listen(%s) %s -> %s", getMsgTxt(), t1, t2));
+			String t2s = String.valueOf(t2);
+			if (t2s.equals("null")) t2s = "";
+			if (kind.equals(PropKind.INT) && t2s.matches("\\d+")) {
+				setIntValue(Integer.parseInt(t2s), true);
+			} else setStrValue(t2s, true);
+		});
+	}
+	private static void log_debug(String text) {
+		log.debug(text);
+//		System.out.println(text);
+	}
 	public McuBlockProperty makeUI(Pane pane, int gridIndex) {
 		Node node = null;
 		switch (kind) {
 			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(pane, gridIndex++); break;
-			case CHK: node = new CheckBox(""); break;
-			case STR: node = new TextField(strDefValue); break;
-			case INT: node = new TextField(intDefValue + ""); break;
-			case LST: node = new ListView(subItems); break;
-			case CMB: node = new ComboBox(subItems); break;
+			case CHK: node = new CheckBox("");
+						makeListener(node, ((CheckBox) node).selectedProperty()); break;
+			case STR: node = new TextField(strDefValue);
+						makeListener(node, ((TextField) node).textProperty()); break;
+			case INT: node = new TextField(intDefValue + "");
+						makeListener(node, ((TextField) node).textProperty()); break;
+			case LST: node = new ListView<>(subItems);
+						makeListener(node, ((ListView) node).selectedItemProperty()); break;
+			case CMB: node = new ComboBox<>(subItems);
+						makeListener(node, ((ComboBox) node).valueProperty()); break;
 		}
 		if (node != null) {
 			Label nodeLbl = new Label(getMsgTxt());
