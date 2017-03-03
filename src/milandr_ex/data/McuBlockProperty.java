@@ -34,6 +34,10 @@ public class McuBlockProperty {
 	public static ObservableList<String> modeList = FXCollections.observableArrayList("Таймер", "Задержка");
 	public static ObservableList<String> div128List = FXCollections.observableArrayList("/1", "/2", "/4", "/8", "/16", "/32", "/64", "/128");
 	public static ObservableList<String> speedList = FXCollections.observableArrayList("10 000", "20 000", "50 000", "100 000", "125 000", "250 000", "500 000", "1000 000");
+	public static ObservableList<String> uartList = FXCollections.observableArrayList("2 400 бит/с", "4 800 бит/с", "9 600 бит/с",
+					"14 400 бит/с","19 200 бит/с","28 800 бит/с","38 400 бит/с",
+					"57 600 бит/с","76 800 бит/с","115 200 бит/с","230 400 бит/с",
+					"460 800 бит/с","921 600 бит/с");
 
 	public enum PropKind {
 		NONE,

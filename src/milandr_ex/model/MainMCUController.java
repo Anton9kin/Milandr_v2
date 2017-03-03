@@ -9,6 +9,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Device;
+import milandr_ex.data.DeviceFactory;
 import milandr_ex.model.mcu.*;
 import milandr_ex.model.mcu.ext.*;
 import milandr_ex.model.mcu.inn.*;
@@ -102,13 +104,13 @@ public class MainMCUController extends BasicController {
 				mcuGpioController, mcuDacController, mcuTimerController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
-		makeLiteners(cfg_vbox_in.getChildren());
-		makeLiteners(cfg_vbox_ex.getChildren());
+		makeListeners(cfg_vbox_in.getChildren());
+		makeListeners(cfg_vbox_ex.getChildren());
 		cfg_vbox_ad.getChildren().add(new VBox(SyntaxHighlighter.get(getScene())));
 		log.debug("#postInit - initialized");
 	}
 
-	private void makeLiteners(List<Node> cfg_vbox) {
+	private void makeListeners(List<Node> cfg_vbox) {
 		for(Node node: cfg_vbox) {
 			String key = node.getId();
 			if (node instanceof TitledPane) {
@@ -142,6 +144,18 @@ public class MainMCUController extends BasicController {
 		for (Node node : children) {
 			if (node instanceof TitledPane && !node.getId().equals(subKey)) {
 				((TitledPane) node).setExpanded(false);
+			}
+		}
+	}
+
+	protected void hideChildPane(Device.EPairNames pair) {
+		Boolean pairBlockVisibility = DeviceFactory.getDevice(getScene()
+				.getPinoutsModel().getSelectedBody())
+				.getPairCountsArr()[pair.ordinal()] > 0;
+		VBox cfg_vbox = pair.ext() ? cfg_vbox_ex : cfg_vbox_in;
+		for(Node node: cfg_vbox.getChildren()) {
+			if (node.getId().equals("cfg_" + pair.name().toLowerCase())) {
+				node.setVisible(pairBlockVisibility);
 			}
 		}
 	}

@@ -166,7 +166,6 @@ public class Device {
         if (getMcu() != null) return;
         if (name == null || name.trim().isEmpty()) return;
         if (body == null || body.trim().isEmpty()) return;
-        if (body == null || body.trim().isEmpty()) return;
         setMcu(new McuType(name, body));
     }
 
@@ -248,6 +247,7 @@ public class Device {
     }
 
     public Device setExtWire(Integer extWire) {
+        addPair(EPairNames.EBC, extWire);
         PropsFactory.Basic.ext.set(mcu, extWire > 0 ? extWire + " разрядов" : "нет");
         return this;
     }
