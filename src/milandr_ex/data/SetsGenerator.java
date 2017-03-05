@@ -100,6 +100,7 @@ public class SetsGenerator {
 					break;
 				}
 			}
+			if (idx < 0 || str.isEmpty() || str.equals("-")) continue;
 			boolean skipIt = false;
 			for(String skp: skips) skipIt |= str.equals(skp);
 			if (skipIt) continue;

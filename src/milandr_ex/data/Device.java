@@ -314,6 +314,17 @@ public class Device {
         }
         return this;
     }
+    public Integer getPairCount(String pairName) {
+        try {
+            EPairNames pair = EPairNames.valueOf(pairName);
+            return getPairCount(pair);
+        } catch (IllegalArgumentException iae) {
+            return -1;
+        }
+    }
+    public Integer getPairCount(EPairNames pair) {
+        return pairCounts.get(pair.ordinal());
+    }
     public List<Integer> getExludedPorts() {
         return exludedPorts;
     }

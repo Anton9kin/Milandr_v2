@@ -106,6 +106,11 @@ public class AppScene extends Scene {
 		return pinoutsModel;
 	}
 
+	public Device getDevice() {
+		if (pinoutsModel == null) return null;
+		return DeviceFactory.getDevice(pinoutsModel.getSelectedBody());
+	}
+
 	public BorderPane getRootLayout() {
 		if (rootLayout == null) {
 			return (BorderPane) getRoot();

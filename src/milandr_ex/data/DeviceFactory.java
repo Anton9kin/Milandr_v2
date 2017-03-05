@@ -51,7 +51,7 @@ public class DeviceFactory {
     }
     public static Device createDevice(String name, String body, String core, int flash, int ram, int io,
                                       double[] vcc, int[] temp, int freq) {
-        return createDevice(name, body, core, flash, ram, io, vcc, temp, freq, 8);
+        return createDevice(name, body, core, flash, ram, io, vcc, temp, freq, 1);
     }
     public static Device createDevice(String name, String body, String core, int flash, int ram, int io,
                                       double[] vcc, int[] temp, int freq, int ext) {

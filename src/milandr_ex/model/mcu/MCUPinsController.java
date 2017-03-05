@@ -3,6 +3,7 @@ package milandr_ex.model.mcu;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.swagger.models.auth.In;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -154,8 +155,27 @@ public class MCUPinsController extends BasicController
 	private void makePxItem(int i, int j, String key) {
 		//"RESET","-","IO out","IO in","DATA1","TMR1_CH1","TMR2_CH1"
 		String[] texts  = Constants.comboTexts[i * 16 + j];
-		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET",
-				texts[0], "IO out", "IO in", texts[1], texts[2], texts[3]);
+		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET", "IO out", "IO in");
+		for(String text: texts) {
+			if (text.isEmpty() || text.equals("-")) continue;
+			boolean match3 = text.matches("\\w{3}\\d") || text.matches("\\w{3}\\d.+");
+			boolean match4 = text.matches("\\w{4}\\d") || text.matches("\\w{4}\\d.+");
+			if (match3 || match4) {
+				String pairName = text.substring(0, match3 ? 3 : 4);
+				boolean hasMaxCount = true;
+				if (pairName.startsWith("ADD")) { pairName = "EBC"; hasMaxCount = false; }
+				if (pairName.startsWith("DAT")) { pairName = "EBC"; hasMaxCount = false; }
+				if (pairName.equals("ADC")) { hasMaxCount = false; }
+				if (pairName.equals("SSP")) pairName = "SPI";
+				if (pairName.equals("SCL")) pairName = "I2C";
+				if (pairName.equals("SDA")) pairName = "I2C";
+				int pCnt = getScene().getDevice().getPairCount(pairName);
+				if (pCnt == 0) continue;
+				int cnt = Integer.parseInt(text.substring(match3 ? 3 : 4, match3 ? 4 : 5));
+				if (hasMaxCount && pCnt < cnt) continue;
+			}
+			pxItem.add(text);
+		}
 		if (texts.length > 5) pxItem.add(texts[4]);
 //		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET","-","IO out","IO in",
 //				"DATA" + i, "CAN"+j+"_TX","UART"+j+"_RXD");
@@ -362,7 +382,7 @@ public class MCUPinsController extends BasicController
 				model.clearSelection(0);
 				if (label != null) label.setVisible(false);
 			case 1: break;
-			case 2: case 3: newBack = GuiUtils.bcIO; break;
+			case 2: case 3: //newBack = GuiUtils.bcIO; break;
 			case 4: case 5: case 6: newBack = GuiUtils.bcExt; break;
 			case 7: case 8: newBack = GuiUtils.bcErr; break;
 		}
