@@ -33,6 +33,7 @@ public class MCUClockController extends BasicController
 	private static final Logger log	= LoggerFactory.getLogger(MCUClockController.class);
 
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
+	private Map<String, Label> cllMap = Maps.newHashMap();
 	private Map<String, GridPane> clkBlocks = Maps.newLinkedHashMap();
 	private GridPane clckCont;
 
@@ -168,9 +169,17 @@ public class MCUClockController extends BasicController
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		if (clock == null) return;
-		if (subInd == 0) clock.setSelected(subKey, Integer.parseInt(value.split("-")[1]) - 1);
-		else if (subInd == 9) clock.setFactor(subKey, "out", value);
-		else clock.setFactor(subKey, factors.indexOf(subInd), value);
+		switch (subInd) {
+			case 0 :
+				clock.setSelected(subKey, Integer.parseInt(value.split("-")[1]) - 1);
+				break;
+			case 9 :
+				clock.setFactor(subKey, "out", value);
+				break;
+			default:
+				clock.setFactor(subKey, factors.indexOf(subInd), value);
+				break;
+		}
 		log_debug(log, clock.calc().toStr(subKey));
 	}
 
@@ -181,13 +190,20 @@ public class MCUClockController extends BasicController
 			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		}
 		ComboBox comboBox = clkMap.get(comboKey);
-		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
+		String preKey = comboKey.substring(0, comboKey.lastIndexOf("-"));
+		String subKey = preKey.substring(2);
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
+		if (subInd != 0 && subInd != 9) {
+			ComboBox zeroCBox = clkMap.get(preKey + "-0");
+//			if (zeroCBox != null) {
+//				zeroCBox.getItems().set(factors.indexOf(subInd), value);
+//			}
+		}
 		setupOnHoverStyle(bcDef, bcTxt, comboBox);
 //		setupOnHoverStyle(newClr("dbe0b6"), comboBox);
-		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		saveSelectedPin(comboKey, value);
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		log_debug(log, String.format("#switchComboIndex[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
