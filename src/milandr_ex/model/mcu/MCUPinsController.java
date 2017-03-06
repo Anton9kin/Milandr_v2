@@ -185,6 +185,7 @@ public class MCUPinsController extends BasicController
 	private void setupPairsCombos(Device device) {
 		Set<String> portKeys = filterPortKeys();
 		getScene().setSetsGenerator(new SetsGenerator(portKeys));
+		getScene().setCodeGenerator(CodeGenerator.instance());
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
 		Integer[] pairs = device.getPairCountsArr();
 		for(int i = 0; i < ePairs.length; i++) {

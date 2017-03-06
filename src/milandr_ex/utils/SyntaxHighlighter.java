@@ -2,6 +2,7 @@ package milandr_ex.utils;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,8 +86,22 @@ public class SyntaxHighlighter {
 		if (coder == null) coder = newCoder(scene);
 		return coder;
 	}
+	private CodeArea codeArea;
+
+	public CodeArea getCodeArea() {
+		return codeArea;
+	}
+
+	public SyntaxHighlighter setCode(List<String> codeBlock) {
+		codeArea.clear();
+		String codeStr = String.join("\n",(codeBlock.toArray(new String[]{})));
+//		String codeStr = String.valueOf(codeBlock).replaceAll("[\\[\\]\\,]", "");
+		codeArea.replaceText(0, 0, codeStr);
+		return this;
+	}
+
 	private Parent newCoder(Scene scene) {
-		CodeArea codeArea = new CodeArea();
+		codeArea = new CodeArea();
 		codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
 		codeArea.richChanges()
@@ -129,5 +144,10 @@ public class SyntaxHighlighter {
 	public static Parent get(Scene scene) {
 		if (instance == null) instance = new SyntaxHighlighter();
 		return instance.getCoder(scene);
+	}
+
+	public static SyntaxHighlighter set(Scene scene, List<String> code) {
+		get(scene);
+		return instance.setCode(code);
 	}
 }

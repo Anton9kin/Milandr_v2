@@ -22,7 +22,7 @@ public class MCUIwdgController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.IWDG);
-		getDevicePair().model().addModelProp(McuBlockProperty.getF("freq_div", div512List, unitList),
+		getDevicePair().model().addModelProp(McuBlockProperty.getF(getDevicePair(), "freq_div", div512List, unitList),
 				"f_div.freq_div", "f_time.time_freq", "f_units.tf_units");
 	}
 }

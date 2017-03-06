@@ -127,7 +127,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		List<McuBlockProperty> props = pair.model().getProps();
 		if (propsPane != null && props != null) {
 			for(McuBlockProperty prop: props) {
-				prop.makeUI(propsPane, ind++);
+				prop.makeUI(getScene(), propsPane, ind++);
 			}
 		}
 	}
@@ -186,31 +186,33 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 protected void addModelProps(String[] props, List<String>... lists){
 		int ind = 0;
 		for(String prop: props) {
-			getDevicePair().model().addModelProp(McuBlockProperty.getC(prop, lists[ind++]));
+			getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), prop, lists[ind++]));
 		}
 	 }
 
 	 protected void addModelProps(String[] props, String types, Object... args){
 		int ind = 0;
+		Device.EPairNames pair = getDevicePair();
 		McuBlockProperty mprop;
 		for(String prop: props) {
 			String cls = types.charAt(ind++) + "";
 			Object arg = args == null ? null : (args.length > ind ? args[ind - 1] : null);
 			switch (cls) {
-				case "B": if (arg == null) arg = true; mprop = McuBlockProperty.get(prop, (boolean)arg); break;
-				case "I": if (arg == null) arg = 0; mprop = McuBlockProperty.get(prop, (int)arg); break;
-				case "C": mprop = McuBlockProperty.getC(prop, (List<String>) arg); break;
-				case "L": mprop = McuBlockProperty.getL(prop, (List<String>) arg); break;
+				case "B": if (arg == null) arg = true; mprop = McuBlockProperty.get(pair, prop, (boolean)arg); break;
+				case "I": if (arg == null) arg = 0; mprop = McuBlockProperty.get(pair, prop, (int)arg); break;
+				case "C": mprop = McuBlockProperty.getC(pair, prop, (List<String>) arg); break;
+				case "L": mprop = McuBlockProperty.getL(pair, prop, (List<String>) arg); break;
 				case "S": default: if (arg == null) arg = "";
-					mprop = McuBlockProperty.get(prop, String.valueOf(arg)); break;
+					mprop = McuBlockProperty.get(pair, prop, String.valueOf(arg)); break;
 			}
 			getDevicePair().model().addModelProp(mprop);
 		}
 	 }
 
 	 protected void addModelProps(String... props){
+		 Device.EPairNames pair = getDevicePair();
 		for(String prop: props) {
-			getDevicePair().model().addModelProp(McuBlockProperty.get(prop, ""));
+			getDevicePair().model().addModelProp(McuBlockProperty.get(pair, prop, ""));
 		}
 	 }
 

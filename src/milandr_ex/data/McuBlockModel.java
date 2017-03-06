@@ -26,6 +26,7 @@ public class McuBlockModel {
 	private Pane propsPane;
 	private BasicController controller;
 	private ResourceBundle bundle;
+	private final List<String> codeList;
 
 	public McuBlockModel(Device.EPairNames pair) {
 		this.pair = pair;
@@ -33,6 +34,7 @@ public class McuBlockModel {
 		cmBoxes = Lists.newArrayList();
 		cbKeys = Lists.newArrayList();
 		props = Lists.newArrayList();
+		codeList = Lists.newArrayList();
 	}
 
 	public Device.EPairNames getPair() {
@@ -58,7 +60,7 @@ public class McuBlockModel {
 		return addModelProp(prop, prop.getName());
 	}
 	public McuBlockModel addModelProp(McuBlockProperty prop, String... msgKeys) {
-		this.props.add(prop);
+		this.props.add(prop.setPair(pair));
 		if (bundle != null && msgKeys != null) {
 			for(String msgKey: msgKeys) {
 				String[] propPath = msgKey.split("\\.");
@@ -117,5 +119,15 @@ public class McuBlockModel {
 			prop.setValueInd(index);
 		}
 		return true;
+	}
+
+	public McuBlockModel setCodeList(List<String> codeList) {
+		this.codeList.clear();
+		this.codeList.addAll(codeList);
+		return this;
+	}
+
+	public List<String> getCodeList() {
+		return codeList;
 	}
 }

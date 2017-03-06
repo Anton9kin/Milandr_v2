@@ -25,9 +25,9 @@ public class MCUTimerController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.TMR);
-		getDevicePair().model().addModelProp(McuBlockProperty.getC("pre_div", div128List));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("tim_clk", ""));
-		getDevicePair().model().addModelProp(McuBlockProperty.getF("freq_div", div512List, unitList),
+		getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), "pre_div", div128List));
+		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "tim_clk", ""));
+		getDevicePair().model().addModelProp(McuBlockProperty.getF(getDevicePair(), "freq_div", div512List, unitList),
 				"f_div.main_div", "f_time.time_freq", "f_units.tf_units");
 	}
 }

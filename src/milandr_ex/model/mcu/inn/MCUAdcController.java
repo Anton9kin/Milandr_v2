@@ -23,8 +23,8 @@ public class MCUAdcController extends BasicController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.ADC);
 		addModelProps(new String[]{"base_power", "start_kind"}, opUList, typeStartList);
-		getDevicePair().model().addModelProp(McuBlockProperty.get("sw_chn", true));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("temp_sens", true));
-		getDevicePair().model().addModelProp(McuBlockProperty.get("lst_chn", ""));
+		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "sw_chn", true));
+		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "temp_sens", true));
+		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "lst_chn", ""));
 	}
 }

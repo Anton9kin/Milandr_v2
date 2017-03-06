@@ -41,12 +41,25 @@ public class PinoutsModel {
 	}
 
 	public McuBlockModel getBlockModel(String name) {
-		return mcuBlocks.get(Device.EPairNames.valueOf(name.toUpperCase()));
+		return mcuBlocks.get(getBlockKey(name));
 	}
 
 	public PinoutsModel setBlockModel(McuBlockModel mcuBlockModel) {
 		this.mcuBlocks.put(mcuBlockModel.getPair(), mcuBlockModel);
 		return this;
+	}
+
+	public List<String> getBlockCode(String name) {
+		return getBlockModel(name).getCodeList();
+	}
+
+	public PinoutsModel setBlockCode(String name, List<String> codeList) {
+		getBlockModel(name).setCodeList(codeList);
+		return this;
+	}
+
+	private Device.EPairNames getBlockKey(String name) {
+		return Device.EPairNames.valueOf(name.toUpperCase());
 	}
 
 	public Map<String, String> getSelectedPins() {

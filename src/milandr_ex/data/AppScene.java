@@ -35,6 +35,7 @@ public class AppScene extends Scene {
 	private Map<String, List<ModelObserver>> observers = Maps.newHashMap();
 	private BasicController rootController;
 	private SetsGenerator setsGenerator;
+	private CodeGenerator codeGenerator;
 	private boolean setupInProcess = false;
 
 	public void addObserver(String key, ModelObserver observer) {
@@ -144,5 +145,13 @@ public class AppScene extends Scene {
 
 	public void setSetsGenerator(SetsGenerator setsGenerator) {
 		this.setsGenerator = setsGenerator;
+	}
+
+	public CodeGenerator getCodeGenerator() {
+		return codeGenerator;
+	}
+
+	public void setCodeGenerator(CodeGenerator codeGenerator) {
+		this.codeGenerator = codeGenerator;
 	}
 }

@@ -78,10 +78,21 @@ public class McuBlockProperty {
 	private int valueInd;
 	private Node obsNode;
 	private ObservableValue obsValue;
+	private Device.EPairNames pair;
 
 	private McuBlockProperty(String name, PropKind kind) {
 		this.name = name;
 		this.kind = kind;
+	}
+
+	public Device.EPairNames getPair() {
+		return pair;
+	}
+
+	public McuBlockProperty setPair(Device.EPairNames pair) {
+		if (pair == null) throw new NullPointerException("invalid pair for model property");
+		this.pair = pair;
+		return this;
 	}
 
 	public String getName() {
@@ -231,9 +242,9 @@ public class McuBlockProperty {
 	}
 
 	public McuBlockProperty makeUI(Pane pane) {
-		return makeUI(pane, 0);
+		return makeUI(null, pane, 0);
 	}
-	public void makeListener(Node node, ObservableValue property) {
+	public void makeListener(AppScene scene, Node node, ObservableValue property) {
 		if (property == null) return;
 		obsNode = node;
 		obsValue = property;
@@ -244,26 +255,27 @@ public class McuBlockProperty {
 			if (kind.equals(PropKind.INT) && t2s.matches("\\d+")) {
 				setIntValue(Integer.parseInt(t2s), true);
 			} else setStrValue(t2s, true);
+			scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getPair(), scene.getPinoutsModel());
 		});
 	}
 	private static void log_debug(String text) {
 		log.debug(text);
 //		System.out.println(text);
 	}
-	public McuBlockProperty makeUI(Pane pane, int gridIndex) {
+	public McuBlockProperty makeUI(AppScene scene, Pane pane, int gridIndex) {
 		Node node = null;
 		switch (kind) {
-			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(pane, gridIndex++); break;
+			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(scene, pane, gridIndex++); break;
 			case CHK: node = new CheckBox("");
-						makeListener(node, ((CheckBox) node).selectedProperty()); break;
+						makeListener(scene, node, ((CheckBox) node).selectedProperty()); break;
 			case STR: node = new TextField(strDefValue);
-						makeListener(node, ((TextField) node).textProperty()); break;
+						makeListener(scene, node, ((TextField) node).textProperty()); break;
 			case INT: node = new TextField(intDefValue + "");
-						makeListener(node, ((TextField) node).textProperty()); break;
+						makeListener(scene, node, ((TextField) node).textProperty()); break;
 			case LST: node = new ListView<>(subItems);
-						makeListener(node, ((ListView) node).selectedItemProperty()); break;
+						makeListener(scene, node, ((ListView) node).selectedItemProperty()); break;
 			case CMB: node = new ComboBox<>(subItems);
-						makeListener(node, ((ComboBox) node).valueProperty()); break;
+						makeListener(scene, node, ((ComboBox) node).valueProperty()); break;
 		}
 		if (node != null) {
 			Label nodeLbl = new Label(getMsgTxt());
@@ -351,35 +363,35 @@ public class McuBlockProperty {
 		}
 	}
 
-	public static McuBlockProperty get(String name, boolean value) {
-		return new McuBlockProperty.BoolProp(name).setIntValue(value ? 1 : 0);
+	public static McuBlockProperty get(Device.EPairNames pair, String name, boolean value) {
+		return new McuBlockProperty.BoolProp(name).setIntValue(value ? 1 : 0).setPair(pair);
 	}
 
-	public static McuBlockProperty get(String name, int value) {
-		return new McuBlockProperty.IntProp(name).setIntValue(value);
+	public static McuBlockProperty get(Device.EPairNames pair, String name, int value) {
+		return new McuBlockProperty.IntProp(name).setIntValue(value).setPair(pair);
 	}
 
-	public static McuBlockProperty get(String name, int max, int value) {
-		return new McuBlockProperty.IntProp(name, max).setIntValue(value);
+	public static McuBlockProperty get(Device.EPairNames pair, String name, int max, int value) {
+		return new McuBlockProperty.IntProp(name, max).setIntValue(value).setPair(pair);
 	}
 
-	public static McuBlockProperty get(String name, int min, int max, int value) {
-		return new McuBlockProperty.IntProp(name, min, max).setIntValue(value);
+	public static McuBlockProperty get(Device.EPairNames pair, String name, int min, int max, int value) {
+		return new McuBlockProperty.IntProp(name, min, max).setIntValue(value).setPair(pair);
 	}
 
-	public static McuBlockProperty get(String name, String value) {
-		return new McuBlockProperty.TextProp(name, value);
+	public static McuBlockProperty get(Device.EPairNames pair, String name, String value) {
+		return new McuBlockProperty.TextProp(name, value).setPair(pair);
 	}
 
-	public static McuBlockProperty getF(String name, List<String> divs, List<String> units) {
-		return new McuBlockProperty.FreqDividor(name, divs, units);
+	public static McuBlockProperty getF(Device.EPairNames pair, String name, List<String> divs, List<String> units) {
+		return new McuBlockProperty.FreqDividor(name, divs, units).setPair(pair);
 	}
 
-	public static McuBlockProperty getL(String name, List<String> values) {
-		return new McuBlockProperty.ListProp(name, values);
+	public static McuBlockProperty getL(Device.EPairNames pair, String name, List<String> values) {
+		return new McuBlockProperty.ListProp(name, values).setPair(pair);
 	}
 
-	public static McuBlockProperty getC(String name, List<String> values) {
-		return new McuBlockProperty.ComboProp(name, values);
+	public static McuBlockProperty getC(Device.EPairNames pair, String name, List<String> values) {
+		return new McuBlockProperty.ComboProp(name, values).setPair(pair);
 	}
 }
