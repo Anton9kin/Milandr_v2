@@ -97,7 +97,7 @@ public class McuBlockModel {
 		for(McuBlockProperty prop: props) {
 			if (prop.getName().equals(name)) return prop;
 		}
-		return McuBlockProperty.get(getPair(), name, 0);
+		return McuBlockProperty.get(getPair(), name, "0");
 	}
 
 	public List<String> getPinsList() {

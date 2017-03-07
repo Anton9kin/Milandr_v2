@@ -248,7 +248,9 @@ public class McuBlockProperty {
 
 	public String getStrValue() {
 		checkValues();
-		return this.values.get(valueInd).getStrValue();
+		PropValue propValue = this.values.get(valueInd);
+		return "" + (kind.equals(PropKind.INT) ? propValue.getIntValue()
+				: propValue.getStrValue());
 	}
 
 	public void setSubItems(List<String> subItems) {
@@ -259,6 +261,14 @@ public class McuBlockProperty {
 	public McuBlockProperty addProp(McuBlockProperty property) {
 		if (subProps == null) subProps = Lists.newArrayList();
 		subProps.add(property);
+		return this;
+	}
+
+	public McuBlockProperty getProp(String name) {
+		if (subProps == null) return this;
+		for(McuBlockProperty prop: subProps) {
+			if (prop.getName().equals(name)) return prop;
+		}
 		return this;
 	}
 

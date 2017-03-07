@@ -138,6 +138,7 @@ public class MainMCUController extends BasicController {
 			if (!inValue) return;
 			collapseChildren(subKey, cfg_vbox_in.getChildren());
 			collapseChildren(subKey, cfg_vbox_ex.getChildren());
+			updateCodeGenerator(getPairForComboKey(comboKey));
 		}
 	}
 

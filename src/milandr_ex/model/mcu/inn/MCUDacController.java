@@ -1,12 +1,17 @@
 package milandr_ex.model.mcu.inn;
 
+import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 import milandr_ex.data.McuBlockProperty;
+import milandr_ex.data.PinoutsModel;
 import milandr_ex.model.BasicController;
+
+import java.util.List;
+
 import static milandr_ex.data.McuBlockProperty.*;
 
 public class MCUDacController extends BasicController {
@@ -26,5 +31,13 @@ public class MCUDacController extends BasicController {
 		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "temp_sens", true));
 		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "lst_chn", ""));
 //		getDevicePair().model().addModelProp(McuBlockProperty.getF("freq"));
+	}
+
+	@Override
+	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
+									 PinoutsModel model, List<String> oldCode) {
+		oldCode = Lists.newArrayList();
+		log.debug(String.format("#generateDACCode(%s, %s, %s)", device, pairBlock, model));
+		return super.generateCode(device, pairBlock, model, oldCode);
 	}
 }

@@ -12,7 +12,9 @@ import javafx.scene.layout.Pane;
 import milandr_ex.data.*;
 import milandr_ex.utils.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -24,6 +26,7 @@ import static milandr_ex.utils.GuiUtils.bcTxt;
  * Created by lizard on 20.02.17 at 12:40.
  */
 public abstract class BasicController implements ChangeCallbackOwner {
+	protected static final Logger log	= LoggerFactory.getLogger(BasicController.class);
 	private AppScene scene;
 	private ResourceBundle messages;
 	private Device.EPairNames devicePair = Device.EPairNames.NON;
@@ -234,19 +237,42 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	public void callGuiListener(String key, String prev, String value) {
 		//do nothing by default
 		getScene().setMainController(this);
-		updateCodeGenerator(key);
+		Boolean inValue = value != null && value.equals("true");
+		if (inValue || !key.startsWith("t-")) updateCodeGenerator(key);
 	}
 
-	public void updateCodeGenerator(String comboKey) {
+	protected String getPairForComboKey(String comboKey) {
 		String pairKey = comboKey.substring(comboKey.lastIndexOf("_") + 1).toUpperCase();
 		if (pairKey.endsWith("WD")) pairKey += "G";
+		return pairKey;
+	}
+
+	public void updateCodeGenerator(String pairKey) {
+	 	if (pairKey.startsWith("cb")) return;
+//		String pairKey = getPairForComboKey(comboKey);
+//		if (!Device.pairExists(pairKey)) pairKey = comboKey;
 		if (Device.pairExists(pairKey)) {
 			Device.EPairNames pair = Device.EPairNames.valueOf(pairKey);
+//			regenerateCode(pair);
 			List<String> code = pair.model().getCodeList();
 			SyntaxHighlighter.set(getScene(), code);
 		}
 	}
 
+	private void regenerateCode(Device.EPairNames pair) {
+		pair.model().getController().generateCode(getScene().getDevice(), pair,
+				getScene().getPinoutsModel(), new ArrayList<>());
+	}
+
+	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
+										 PinoutsModel model, List<String> oldCode) {
+	 	if (pairBlock == null || !pairBlock.equals(getDevicePair())) return Lists.newArrayList();
+		oldCode.add(0, String.format("// code block for %s module", pairBlock.name()));
+		oldCode.add(String.format("// end of code block for %s module", pairBlock.name()));
+	 	return oldCode;
+	}
+
+	protected CodeGenerator g() { return getScene().getCodeGenerator(); }
 	public ResourceBundle getMessages() {
 		return messages;
 	}
@@ -276,6 +302,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected void setDevicePair(Device.EPairNames devicePair) {
 		this.devicePair = devicePair;
 		devicePair.model().setBundle(getMessages());
+		devicePair.model().setController(this);
 	}
 
 	public Device.EPairNames getDevicePair() {
