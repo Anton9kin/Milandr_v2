@@ -47,7 +47,7 @@ public class MCUIwdgController extends BasicController {
 		g().addCodeStr(oldCode,"//ждем обновления частоты сторожевого таймера");
 		g().addCodeStr(oldCode,"while ((MDR_IWDG->SR &= (1 << 0)) != 0);\n");
 		g().addCodeStr(oldCode,"MDR_IWDG->KR =  0x5555; //разрешение записи в регистры PR и RLR");
-		g().addCodeStr(oldCode,"MDR_IWDG->PR =  " + div + "; //частота IWDG = LSI(40kHz)" + div + " = " + freq+ "n");
+		g().addCodeStr(oldCode,"MDR_IWDG->PR =  " + div + "; //частота IWDG = LSI(40kHz)" + div + " = " + freq+ "");
 		g().addCodeStr(oldCode,"MDR_IWDG->RLR = 0x" + Integer.toHexString(irlr) + "; //значение перегрузки IWDG");
 		g().addCodeStr(oldCode,"MDR_IWDG->KR =  0xCCCC; //запускаем IWDG");
 		g().addCodeStr(oldCode,"}//void IWDG_Init");

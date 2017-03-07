@@ -44,13 +44,12 @@ public class MCUWwdgController extends BasicController {
 		log.debug(String.format("#generateWWDGCode(%s, %s, %s)", device, pairBlock, model));
 		g().addCodeStr(oldCode,"void  WWDG_Init( void ){");
 		g().addCodeStr(oldCode,"MDR_RST_CLK->PER_CLOCK |= ( 1 << 12 ); //разрешение тактирование WWDG");
-		g().addCodeStr(oldCode,"MDR_WWDG->CR  = (( 1 << 7 ) //сторожевой таймер включен\r\n");
-		g().addCodeStr(oldCode,"| 0x" + Integer.toHexString(Integer.parseInt(cnt)) + "); //значение счетчика\r\n");
-		g().addCodeStr(oldCode,"MDR_WWDG->CFR = (( " + wint + " << 9 ) //ранее предупреждающее прерывание " + g().strWWDGINT[wint] + "\r\n");
-		g().addCodeStr(oldCode,"| ( " + div + " << 7) //частота = HCLK(" + (double)hclk/1000 + " kHz)/4096" + div + " = " + freq + "\r\n");
-		g().addCodeStr(oldCode,"|   0x" + Integer.toHexString(Integer.parseInt(win)) + "); //значение окна\r\n");
-		g().addCodeStr(oldCode,"}");
-		g().addCodeStr(oldCode,"//void WWDG_Init");
+		g().addCodeStr(oldCode,"MDR_WWDG->CR  = (( 1 << 7 ) //сторожевой таймер включен");
+		g().addCodeStr(oldCode,"| 0x" + Integer.toHexString(Integer.parseInt(cnt)) + "); //значение счетчика");
+		g().addCodeStr(oldCode,"MDR_WWDG->CFR = (( " + wint + " << 9 ) //ранее предупреждающее прерывание " + g().strWWDGINT[wint] + "");
+		g().addCodeStr(oldCode,"| ( " + div + " << 7) //частота = HCLK(" + (double)hclk/1000 + " kHz)/4096" + div + " = " + freq + "");
+		g().addCodeStr(oldCode,"|   0x" + Integer.toHexString(Integer.parseInt(win)) + "); //значение окна");
+		g().addCodeStr(oldCode,"}//void WWDG_Init");
 		return super.generateCode(device, pairBlock, model, oldCode);
 	}
 }

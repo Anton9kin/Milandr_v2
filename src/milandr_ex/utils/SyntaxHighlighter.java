@@ -27,7 +27,7 @@ public class SyntaxHighlighter {
 	}
 	private static SyntaxHighlighter instance;
 	private static final String[] KEYWORDS = new String[] {
-			"out", "err",
+			"out", "err", "define",
 			"abstract", "assert", "boolean", "break", "byte",
 			"case", "catch", "char", "class", "const",
 			"continue", "default", "do", "double", "else",
