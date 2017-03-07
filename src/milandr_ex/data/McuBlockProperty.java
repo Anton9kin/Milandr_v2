@@ -61,6 +61,14 @@ public class McuBlockProperty {
 		public String getStrValue() {
 			return strValue;
 		}
+
+		@Override
+		public String toString() {
+			return "PropValue{" +
+					"intValue=" + intValue +
+					", strValue='" + strValue + '\'' +
+					'}';
+		}
 	}
 
 	private String alias;
@@ -207,6 +215,7 @@ public class McuBlockProperty {
 		checkValues();
 		String newValue = getNewStrValueWithDef(strValue);
 		this.values.get(valueInd).strValue = newValue;
+		this.values.get(valueInd).intValue = getNewIntValue(newValue);
 		if (!inner) updateObservable(newValue);
 		return this;
 	}
@@ -217,6 +226,14 @@ public class McuBlockProperty {
 		if (newValue.isEmpty() && subItems != null && !subItems.isEmpty()) {
 			newValue = subItems.get(0);
 		}
+		return newValue;
+	}
+
+	private Integer getNewIntValue(String strValue) {
+		Integer newValue = intDefValue;
+		if (newValue == 0 && subItems != null && !subItems.isEmpty()) {
+			newValue = subItems.indexOf(strValue);
+		} else if (strValue.equals("true")) newValue = 1;
 		return newValue;
 	}
 
@@ -256,12 +273,37 @@ public class McuBlockProperty {
 				setIntValue(Integer.parseInt(t2s), true);
 			} else setStrValue(t2s, true);
 			scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getPair(), scene.getPinoutsModel());
+			if (scene.getMainController() != null && getPair() != null) {
+				scene.getMainController().updateCodeGenerator(getPair().name());
+			}
 		});
 	}
 	private static void log_debug(String text) {
 		log.debug(text);
 //		System.out.println(text);
 	}
+
+	@Override
+	public String toString() {
+		return "McuBlockProperty{" +
+				"alias='" + alias + '\'' +
+				", name='" + name + '\'' +
+				", msgKey='" + msgKey + '\'' +
+				", msgTxt='" + msgTxt + '\'' +
+				", kind=" + kind +
+				", subProps=" + subProps +
+				", subItems=" + subItems +
+				", intDefValue=" + intDefValue +
+				", strDefValue='" + strDefValue + '\'' +
+				", minValue=" + minValue +
+				", maxValue=" + maxValue +
+				", values=" + values +
+				", valueInd=" + valueInd +
+				", obsValue=" + obsValue +
+				", pair=" + pair +
+				'}';
+	}
+
 	public McuBlockProperty makeUI(AppScene scene, Pane pane, int gridIndex) {
 		Node node = null;
 		switch (kind) {

@@ -34,6 +34,7 @@ public class AppScene extends Scene {
 	private ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
 	private Map<String, List<ModelObserver>> observers = Maps.newHashMap();
 	private BasicController rootController;
+	private BasicController mainController;
 	private SetsGenerator setsGenerator;
 	private CodeGenerator codeGenerator;
 	private boolean setupInProcess = false;
@@ -137,6 +138,14 @@ public class AppScene extends Scene {
 
 	public void setRootController(BasicController rootController) {
 		this.rootController = rootController;
+	}
+
+	public BasicController getMainController() {
+		return mainController;
+	}
+
+	public void setMainController(BasicController mainController) {
+		this.mainController = mainController;
 	}
 
 	public SetsGenerator getSetsGenerator() {

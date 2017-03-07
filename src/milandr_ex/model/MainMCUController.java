@@ -128,6 +128,7 @@ public class MainMCUController extends BasicController {
 	@Override
 	public void callGuiListener(String comboKey, String prev, String value) {
 		if (comboKey == null) return;
+		super.callGuiListener(comboKey, prev, value);
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(log, String.format("#callGuiListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		}
@@ -137,11 +138,6 @@ public class MainMCUController extends BasicController {
 			if (!inValue) return;
 			collapseChildren(subKey, cfg_vbox_in.getChildren());
 			collapseChildren(subKey, cfg_vbox_ex.getChildren());
-			String pairKey = comboKey.substring(comboKey.lastIndexOf("_") + 1).toUpperCase();
-			if (pairKey.endsWith("WD")) pairKey += "G";
-			Device.EPairNames pair = Device.EPairNames.valueOf(pairKey);
-			List<String> code = pair.model().getCodeList();
-			SyntaxHighlighter.set(getScene(), code);
 		}
 	}
 

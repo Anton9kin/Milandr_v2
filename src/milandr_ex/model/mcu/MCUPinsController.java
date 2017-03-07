@@ -307,11 +307,12 @@ public class MCUPinsController extends BasicController
 
 	@Override
 	public void callGuiListener(String comboKey, String prev, String value) {
+		if (comboKey == null) return;
+		super.callGuiListener(comboKey, prev, value);
 		switchComboIndex(comboKey, comboMap.get(comboKey), prev, value);
 	}
 
 	private void switchComboIndex(String comboKey, ComboBox comboBox, String prev, String value) {
-		if (comboKey == null) return;
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			if (!prev.equals("null") || !(value.startsWith("ADDR") || value.startsWith("DATA"))) {
 				log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", refillInProgress, comboKey, prev, value));

@@ -93,6 +93,13 @@ public class McuBlockModel {
 		return props;
 	}
 
+	public McuBlockProperty getProp(String name) {
+		for(McuBlockProperty prop: props) {
+			if (prop.getName().equals(name)) return prop;
+		}
+		return McuBlockProperty.get(getPair(), name, 0);
+	}
+
 	public List<String> getPinsList() {
 		List<String> keys = Lists.newArrayList();
 		for(ComboBox comboBox: cmBoxes) {
@@ -129,5 +136,16 @@ public class McuBlockModel {
 
 	public List<String> getCodeList() {
 		return codeList;
+	}
+
+	@Override
+	public String toString() {
+		return "McuBlockModel{" +
+				"pair=" + pair +
+				", parent=" + parent +
+				", cbKeys=" + cbKeys +
+				", props=" + props +
+				", codeList=" + codeList +
+				'}';
 	}
 }

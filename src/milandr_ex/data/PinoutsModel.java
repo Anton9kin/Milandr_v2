@@ -109,6 +109,17 @@ public class PinoutsModel {
 		return pinoutsModel;
 	}
 
+	@Override
+	public String toString() {
+		return "PinoutsModel{" +
+				"selectedBody='" + selectedBody + '\'' +
+				", selectedPins=" + selectedPins +
+				", mcuBlocks=" + mcuBlocks +
+				", hasUnsavedChanges=" + hasUnsavedChanges +
+				", clockModel=" + clockModel +
+				'}';
+	}
+
 	public static PinoutsModel get(McuType mcuType) {
 		return get(mcuType.getProp("pack"));
 	}

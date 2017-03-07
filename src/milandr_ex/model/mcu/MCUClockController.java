@@ -163,6 +163,7 @@ public class MCUClockController extends BasicController
 		if (comboKey == null || value == null) return;
 		if (comboKey.startsWith("t-")) return;
 		if (value.equals("null") || value.equals("RESET")) return;
+		super.callListener(comboKey, prev, value);
 		log_debug(log, String.format("#callListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
@@ -177,6 +178,7 @@ public class MCUClockController extends BasicController
 	@Override
 	public void callGuiListener(String comboKey, String prev, String value) {
 		if (comboKey == null) return;
+		super.callGuiListener(comboKey, prev, value);
 		if (value != null && !value.equals("null") && !value.equals("RESET")) {
 			log_debug(log, String.format("#switchComboIndex[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		}

@@ -1,5 +1,6 @@
 package milandr_ex.data;
 
+import com.google.common.collect.Sets;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import io.swagger.models.auth.In;
 import javafx.beans.property.StringProperty;
@@ -8,9 +9,12 @@ import milandr_ex.McuType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.awt.*;
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lizard on 14.02.17 at 16:25.
@@ -67,6 +71,16 @@ public class Device {
             for(EPairNames pair: extPairs) extPairNames.add(pair.name());
         }
         return extPairNames;
+    }
+    private static List<EPairNames> pairValues = Lists.newArrayList(EPairNames.values());
+    private static Set<String> pairsSet = Sets.newHashSet();
+    public static boolean pairExists(String name) {
+        if (pairsSet.isEmpty()) {
+            for (EPairNames c : EPairNames.values()) {
+                pairsSet.add(c.name());
+            }
+        }
+        return pairsSet.contains(name);
     }
     public enum EPortNames {
         A, B, C, D, E, F

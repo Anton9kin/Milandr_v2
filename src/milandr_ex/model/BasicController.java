@@ -228,10 +228,25 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	public void callListener(String key, String prev, String value) {
 		//do nothing by default
+		getScene().setMainController(this);
+		updateCodeGenerator(key);
 	}
 	public void callGuiListener(String key, String prev, String value) {
 		//do nothing by default
+		getScene().setMainController(this);
+		updateCodeGenerator(key);
 	}
+
+	public void updateCodeGenerator(String comboKey) {
+		String pairKey = comboKey.substring(comboKey.lastIndexOf("_") + 1).toUpperCase();
+		if (pairKey.endsWith("WD")) pairKey += "G";
+		if (Device.pairExists(pairKey)) {
+			Device.EPairNames pair = Device.EPairNames.valueOf(pairKey);
+			List<String> code = pair.model().getCodeList();
+			SyntaxHighlighter.set(getScene(), code);
+		}
+	}
+
 	public ResourceBundle getMessages() {
 		return messages;
 	}
