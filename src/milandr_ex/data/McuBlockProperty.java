@@ -100,6 +100,10 @@ public class McuBlockProperty {
 	public McuBlockProperty setPair(Device.EPairNames pair) {
 		if (pair == null) throw new NullPointerException("invalid pair for model property");
 		this.pair = pair;
+		if (subProps == null) return this;
+		for(McuBlockProperty sprop: subProps) {
+			sprop.setPair(pair);
+		}
 		return this;
 	}
 
