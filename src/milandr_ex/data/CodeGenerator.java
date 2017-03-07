@@ -58,7 +58,14 @@ public class CodeGenerator {
 		addCodeStr(codeList, format, args);
 	}
 	public void addCodeStr(List<String> codeList, String format, Object... args) {
-		for(int i = indent; i >0; i--) format = "\t" + format;
+		String braces = format.trim();
+		if (braces.contains("//")) {
+			braces = braces.substring(0, format.lastIndexOf("//")).trim();
+			format = format.replaceFirst("//", "\t//");
+		}
+		if (braces.endsWith("}")) indent--;
+		for(int i = indent; i >0; i--) format = "\t" + format.trim();
 		codeList.add(String.format(format, args));
+		if (braces.endsWith("{")) indent++;
 	}
 }

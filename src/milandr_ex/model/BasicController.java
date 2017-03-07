@@ -268,7 +268,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 										 PinoutsModel model, List<String> oldCode) {
 	 	if (pairBlock == null || !pairBlock.equals(getDevicePair())) return Lists.newArrayList();
 		oldCode.add(0, String.format("// code block for %s module", pairBlock.name()));
-		oldCode.add(String.format("// end of code block for %s module", pairBlock.name()));
+		g().addCodeStr(oldCode, "// end of code block for %s module", pairBlock.name());
 	 	return oldCode;
 	}
 

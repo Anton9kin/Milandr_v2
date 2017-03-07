@@ -49,19 +49,19 @@ public class MCUSystickController extends BasicController {
 				reloadReg, interrupt, source, mode));
 		g().addCodeStr(oldCode, "void SysTick_Init(void){");
 
-		g().addCodeStrR(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
+		g().addCodeStr(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
 		g().addCodeStr(oldCode, "//стартовое значение загружаемое в регистр VAL");
 		g().addCodeStr(oldCode, "SysTick->VAL = 0x00;");
 		g().addCodeStr(oldCode, "SysTick->CTRL = ((1 << 0)");
 
-		g().addCodeStrR2(oldCode, "//включение таймера");
+		g().addCodeStr(oldCode, "//включение таймера");
 		g().addCodeStr(oldCode, "| ((" + interrupt + " << 1)");
 		g().addCodeStr(oldCode, "//" + g().EN_INT[interrupt] + " прерывания");
 		g().addCodeStr(oldCode, "| ((" + source + " << 2));");
 
-		g().addCodeStrL2(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
+		g().addCodeStr(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
 
-		g().addCodeStrL(oldCode, "}\t//void SysTick_Init");
+		g().addCodeStr(oldCode, "}//void SysTick_Init");
 		return super.generateCode(device, pairBlock, model, oldCode);
 	}
 }
