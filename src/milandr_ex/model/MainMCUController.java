@@ -82,7 +82,10 @@ public class MainMCUController extends BasicController {
 	private Parent mcuWwdg;
 	@FXML
 	private MCUWwdgController mcuWwdgController;
-	private MCUClockController mcuClockController;
+	@FXML
+	private Parent mcuCpu;
+	@FXML
+	private MCUClockController mcuCpuController;
 
 	@FXML
 	private VBox cfg_vbox_in;
@@ -93,14 +96,14 @@ public class MainMCUController extends BasicController {
 	private Map<String, TitledPane> cfgMap = Maps.newHashMap();
 
 	public MainMCUController() {
-		mcuClockController = new MCUClockController();
+//		mcuClockController = new MCUClockController();
 	}
 
 	@Override
 	protected void postInit(AppScene scene) {
-		mcuClockController.setClckCont(clckCont);
+		mcuCpuController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
-				mcuClockController, mcuI2CController, mcuSpiController, mcuUartController,
+				mcuCpuController, mcuI2CController, mcuSpiController, mcuUartController,
 				mcuGpioController, mcuDacController, mcuTimerController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
@@ -151,13 +154,14 @@ public class MainMCUController extends BasicController {
 	}
 
 	protected void hideChildPane(Device.EPairNames pair) {
-		Boolean pairBlockVisibility = DeviceFactory.getDevice(getScene()
+		Boolean pairBlockVisibility = !pair.real() || DeviceFactory.getDevice(getScene()
 				.getPinoutsModel().getSelectedBody())
 				.getPairCountsArr()[pair.ordinal()] > 0;
 		VBox cfg_vbox = pair.ext() ? cfg_vbox_ex : cfg_vbox_in;
 		for(Node node: cfg_vbox.getChildren()) {
 			if (node.getId().equals("cfg_" + pair.name().toLowerCase())) {
 				node.setVisible(pairBlockVisibility);
+				break;
 			}
 		}
 	}

@@ -57,12 +57,22 @@ public class MCUClockController extends MCUExtPairController
 		this.clckCont = clckCont;
 	}
 
+	private static final String[] cpuProps = {"hsi", "hse", "lsi", "lse", "-", "adc_clk", "cpu_clk", "usb_clk", "hclk"};
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.CPU);
-		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
+		addModelProps(cpuProps, true);
+//		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
+		fillCpuConfProperties();
+	}
+
+	private void fillCpuConfProperties() {
+		for(String cpuProp: cpuProps) {
+			McuBlockProperty mcuProp = getDevicePair().model().getProp(cpuProp);
+			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
+		}
 	}
 
 	@Override
@@ -73,6 +83,7 @@ public class MCUClockController extends MCUExtPairController
 	}
 
 	private void fillClockGrid() {
+		if (clckCont == null) return;
 		clckCont.setStyle("-fx-background-color: " + toRGBCode(bcDef) + "; -fx-grid-lines-visible: true");
 		makePaddings(clckCont);
 		String[][] combostrs = Constants.combostrs;
