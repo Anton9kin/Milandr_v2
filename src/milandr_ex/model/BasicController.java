@@ -214,9 +214,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 }
 
 	 protected void addModelProps(String... props){
+	 	addModelProps(props, false);
+	 }
+	 protected void addModelProps(String[] props, boolean ro){
 		 Device.EPairNames pair = getDevicePair();
 		for(String prop: props) {
-			getDevicePair().model().addModelProp(McuBlockProperty.get(pair, prop, ""));
+			getDevicePair().model().addModelProp(McuBlockProperty.get(pair, prop, "", ro));
 		}
 	 }
 
@@ -288,9 +291,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
 	 	if (clock == null) return 0;
-	 	Integer outp = clock.getOutVal(name);
-	 	if (outp != null && outp > 1 ) return outp;
-		return clock.getInpVal(name);
+	 	if (clock.hasPinIn(name)) return clock.getInpVal(name);
+	 	if (clock.hasPinOut(name)) return clock.getOutVal(name);
+		return -1;
 	}
 
 	protected Integer getConfPropInt(String name) {
