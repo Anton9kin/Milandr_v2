@@ -95,6 +95,7 @@ public class McuBlockProperty {
 	private Node obsNode;
 	private ObservableValue obsValue;
 	private Device.EPairNames pair;
+	private boolean readOnly;
 
 	private McuBlockProperty(String name, PropKind kind) {
 		this.name = name;
@@ -192,6 +193,11 @@ public class McuBlockProperty {
 	public McuBlockProperty setStrDefValue(String strDefValue) {
 		this.strDefValue = strDefValue;
 		setStrValue(strDefValue);
+		return this;
+	}
+
+	public McuBlockProperty setRO(boolean readOnly) {
+		this.readOnly = readOnly;
 		return this;
 	}
 
@@ -356,6 +362,8 @@ public class McuBlockProperty {
 				GridPane.setRowIndex(node, gridIndex);
 				GridPane.setColumnIndex(node, 1);
 			}
+			node.setDisable(readOnly);
+			setValueInd(0);
 		}
 		return this;
 	}
@@ -445,6 +453,10 @@ public class McuBlockProperty {
 
 	public static McuBlockProperty get(Device.EPairNames pair, String name, String value) {
 		return new McuBlockProperty.TextProp(name, value).setPair(pair);
+	}
+
+	public static McuBlockProperty get(Device.EPairNames pair, String name, String value, boolean ro) {
+		return new McuBlockProperty.TextProp(name, value).setPair(pair).setRO(ro);
 	}
 
 	public static McuBlockProperty getF(Device.EPairNames pair, String name, List<String> divs, List<String> units) {
