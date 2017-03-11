@@ -254,6 +254,7 @@ public class MCUClockController extends MCUExtPairController
 			}
 //			blockInd++;
 		}
+		fillCpuConfProperties();
 	}
 
 	private void fillBlocksInputs(String subKey, Integer subInd, ClockModel clock, String key) {
