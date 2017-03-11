@@ -17,7 +17,6 @@ import javafx.scene.layout.Pane;
 import jfxtras.scene.control.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -39,6 +38,8 @@ public class McuBlockProperty {
 					"14 400 бит/с","19 200 бит/с","28 800 бит/с","38 400 бит/с",
 					"57 600 бит/с","76 800 бит/с","115 200 бит/с","230 400 бит/с",
 					"460 800 бит/с","921 600 бит/с");
+	public static ObservableList<String> uccList = FXCollections.observableArrayList("2.0 B", "2.2 B", "2.4 B", "2.6 B", "2.8 B", "3.0 B", "3.2 B", "3.4 B");
+	public static ObservableList<String> buccList = FXCollections.observableArrayList("1.8 B", "2.2 B", "2.6 B", "3.0 B");
 
 	public enum PropKind {
 		NONE,

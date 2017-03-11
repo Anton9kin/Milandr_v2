@@ -1,37 +1,51 @@
 package milandr_ex.model.mcu.inn;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
 
+import static milandr_ex.data.McuBlockProperty.*;
+
+import java.util.List;
+
 public class MCUPowerController extends BasicController {
 
 	@FXML
-	private ComboBox<String> ucc;
-	ObservableList<String> uccList = FXCollections.
-			observableArrayList("2.0 B", "2.2 B", "2.4 B", "2.6 B", "2.8 B", "3.0 B", "3.2 B", "3.4 B");
-	
-	@FXML
-	private ComboBox<String> bucc;
-	ObservableList<String> buccList = FXCollections.
-			observableArrayList("1.8 B", "2.2 B", "2.6 B", "3.0 B");
-	
+	private GridPane pwr_grid;
+
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.PWR);
-		ucc.setItems(uccList);
-		bucc.setItems(buccList);
+		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 	}
 
 	@Override
-	protected void initLater(AppScene scene) {
-		super.initLater(scene);
-		ucc.getSelectionModel().select(0);
-		bucc.getSelectionModel().select(0);
+	protected Pane getPropControl() {
+		return pwr_grid;
+	}
+
+	@Override
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		int ucc = getConfPropInt("bp_ucc");
+		int bucc = getConfPropInt("bp_bucc");
+		oldCode = Lists.newArrayList();
+
+		g().addCodeStr(oldCode, "void Power_Init( void ){");
+
+		g().addCodeStr(oldCode, "//разрешение тактирования Power");
+		g().addCodeStr(oldCode, "    MDR_RST_CLK->PER_CLOCK |= 1 << 11;");
+
+		g().addCodeStr(oldCode, " //сравнение с Ucc ( " + uccList.get(ucc) + " )");
+		g().addCodeStr(oldCode, "    MDR_POWER->PVDCS = ((" + ucc + " << 3)");
+
+		g().addCodeStr(oldCode, " //равнение с BUcc ( " + buccList.get(bucc) + " ));");
+		g().addCodeStr(oldCode, "                     | (" + bucc + " << 1);");
+
+		g().addCodeStr(oldCode, "} //void Power_Init");
+		return super.generateCode(device, oldCode);
 	}
 }
