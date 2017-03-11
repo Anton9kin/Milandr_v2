@@ -293,7 +293,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	if (clock == null) return 0;
 	 	if (clock.hasPinIn(name)) return clock.getInpVal(name);
 	 	if (clock.hasPinOut(name)) return clock.getOutVal(name);
-		return -1;
+	 	if (!name.contains(".")) return -1;
+	 	String[] names = name.split("\\.");
+	 	if (names[1].equals("S")) return clock.getSel(names[0]);
+	 	return clock.getOut(names[0], names[1]);
 	}
 
 	protected Integer getConfPropInt(String name) {
