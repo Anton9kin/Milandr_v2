@@ -259,14 +259,32 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
-	private void regenerateCode(Device.EPairNames pair) {
-		pair.model().getController().generateCode(getScene().getDevice(), pair,
-				getScene().getPinoutsModel(), new ArrayList<>());
+	protected Integer getClockProp(String name) {
+	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
+	 	Integer outp = clock.getOutVal(name);
+	 	if (outp != null && outp > 1 ) return outp;
+		return clock.getInpVal(name);
 	}
 
-	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
-										 PinoutsModel model, List<String> oldCode) {
-	 	if (pairBlock == null || !pairBlock.equals(getDevicePair())) return Lists.newArrayList();
+	protected Integer getConfPropInt(String name) {
+	 	return getDevicePair().model().getProp(name).getIntValue();
+	}
+
+	protected String getConfPropStr(String name) {
+	 	return getDevicePair().model().getProp(name).getStrValue();
+	}
+
+	protected String getConfPropStr(String name, String sName) {
+	 	return getDevicePair().model().getProp(name).getProp(sName).getStrValue();
+	}
+
+	protected Integer getConfPropInt(String name, String sName) {
+	 	return getDevicePair().model().getProp(name).getProp(sName).getIntValue();
+	}
+
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		Device.EPairNames pairBlock = getDevicePair();
+	 	if (pairBlock == null) return Lists.newArrayList();
 		oldCode.add(0, String.format("// code block for %s module", pairBlock.name()));
 		g().addCodeStr(oldCode, "// end of code block for %s module", pairBlock.name());
 	 	return oldCode;

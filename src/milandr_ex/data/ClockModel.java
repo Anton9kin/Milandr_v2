@@ -442,6 +442,16 @@ public class ClockModel {
 		return outputs.getPin(name);
 	}
 
+	public Integer getInpVal(String name) {
+		checkFullSetup();
+		return inputs.getPin(name);
+	}
+
+	public Integer getOutVal(String name) {
+		checkFullSetup();
+		return outputs.getPin(name);
+	}
+
 	private ClockModel checkFullSetup() {
 		if (inputs == null) throw new NullPointerException("Inputs not set");
 		if (outputs == null) throw new NullPointerException("Outputs not set");

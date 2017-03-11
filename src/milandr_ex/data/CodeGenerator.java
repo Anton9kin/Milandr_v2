@@ -1,6 +1,5 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,7 @@ public class CodeGenerator {
 		if (pairBlock.model() == null) return;
 		if (pairBlock.model().getController() == null) return;
 		codeList = pairBlock.model().getController()
-				.generateCode(device, pairBlock, model, codeList);
+				.generateCode(device, codeList);
 		model.setBlockCode(pairBlock.name(), codeList);
 	}
 

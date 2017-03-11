@@ -31,10 +31,9 @@ public class MCUAdcController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
-										 PinoutsModel model, List<String> oldCode) {
+	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateADCCode(%s, %s, %s)", device, pairBlock, model));
-		return super.generateCode(device, pairBlock, model, oldCode);
+		log.debug(String.format("#generateADCCode(%s)", device));
+		return super.generateCode(device, oldCode);
 	}
 }

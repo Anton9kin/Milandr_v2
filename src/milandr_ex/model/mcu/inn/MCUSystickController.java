@@ -33,20 +33,17 @@ public class MCUSystickController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
-									 PinoutsModel model, List<String> oldCode) {
-		log.debug(String.format("#generateDACCode(%s, %s, %s)", device, pairBlock, model));
-		McuBlockModel blockModel = pairBlock.model();
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		log.debug(String.format("#generateDACCode(%s)", device));
 		//handling incoming parameters
-		Integer reloadReg = blockModel.getProp("sign_src").getIntValue();
-		int interrupt = blockModel.getProp("intrp").getIntValue();
-		int source = blockModel.getProp("sign_src").getIntValue();
-		int mode = blockModel.getProp("wrk_kind").getIntValue();
+		Integer reloadReg = getConfPropInt("sign_src");
+		int interrupt = getConfPropInt("intrp");
+		int source = getConfPropInt("sign_src");
+		int mode = getConfPropInt("wrk_kind");
 
 		//code block generation
 		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateSystCode(%s, %s, %s) %d, %d, %d, %d", device, pairBlock, model,
-				reloadReg, interrupt, source, mode));
+		log.debug(String.format("#generateSystCode(%s) %d, %d, %d, %d", device, reloadReg, interrupt, source, mode));
 		g().addCodeStr(oldCode, "void SysTick_Init(void){");
 
 		g().addCodeStr(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
@@ -62,6 +59,6 @@ public class MCUSystickController extends BasicController {
 		g().addCodeStr(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
 
 		g().addCodeStr(oldCode, "}//void SysTick_Init");
-		return super.generateCode(device, pairBlock, model, oldCode);
+		return super.generateCode(device, oldCode);
 	}
 }

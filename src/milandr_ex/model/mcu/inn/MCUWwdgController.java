@@ -31,17 +31,19 @@ public class MCUWwdgController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
-									 PinoutsModel model, List<String> oldCode) {
+	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
-		McuBlockModel blockModel = pairBlock.model();
-		String freq = blockModel.getProp("f_div").getStrValue();
-		Integer div = blockModel.getProp("freq_div").getProp("f_div").getIntValue();
-		Integer hclk = blockModel.getProp("hclk").getIntValue();
-		String cnt = blockModel.getProp("cnt_val").getStrValue();
-		String win = blockModel.getProp("win_val").getStrValue();
-		Integer wint = blockModel.getProp("early_int").getIntValue();
-		log.debug(String.format("#generateWWDGCode(%s, %s, %s)", device, pairBlock, model));
+		log.debug(String.format("#generateWWDGCode(%s) preparing", device));
+		String freq = getConfPropStr("f_div");
+		Integer div = getConfPropInt("freq_div", "f_div");
+		Integer hclk = getConfPropInt("hclk");
+		String cnt = getConfPropStr("cnt_val");
+		String win = getConfPropStr("win_val");
+		Integer wint = getConfPropInt("early_int");
+
+		log.debug(String.format("#generateWWDGCode(%s) %s, %d, %d, %s, %s, %d", device,
+				freq, div, hclk, cnt, win, wint));
+
 		g().addCodeStr(oldCode,"void  WWDG_Init( void ){");
 		g().addCodeStr(oldCode,"MDR_RST_CLK->PER_CLOCK |= ( 1 << 12 ); //разрешение тактирование WWDG");
 		g().addCodeStr(oldCode,"MDR_WWDG->CR  = (( 1 << 7 ) //сторожевой таймер включен");
@@ -50,6 +52,6 @@ public class MCUWwdgController extends BasicController {
 		g().addCodeStr(oldCode,"| ( " + div + " << 7) //частота = HCLK(" + (double)hclk/1000 + " kHz)/4096" + div + " = " + freq + "");
 		g().addCodeStr(oldCode,"|   0x" + Integer.toHexString(Integer.parseInt(win)) + "); //значение окна");
 		g().addCodeStr(oldCode,"}//void WWDG_Init");
-		return super.generateCode(device, pairBlock, model, oldCode);
+		return super.generateCode(device, oldCode);
 	}
 }

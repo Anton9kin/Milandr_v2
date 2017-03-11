@@ -29,14 +29,12 @@ public class MCUIwdgController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, Device.EPairNames pairBlock,
-									 PinoutsModel model, List<String> oldCode) {
+	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
-		McuBlockModel blockModel = pairBlock.model();
-		log.debug(String.format("#generateWDGCode(%s, %s, %s)", device, pairBlock, model));
-		String freq = blockModel.getProp("freq_div").getProp("f_time").getStrValue();
-		Integer div = blockModel.getProp("freq_div").getProp("f_div").getIntValue();
-		Integer irlr = blockModel.getProp("freq_div").getProp("irlr").getIntValue();
+		log.debug(String.format("#generateWDGCode(%s)", device));
+		String freq = getConfPropStr("freq_div", "f_time");
+		Integer div = getConfPropInt("freq_div", "f_div");
+		Integer irlr = getConfPropInt("freq_div", "irlr");
 		g().addCodeStr(oldCode,"#define IWDG_RST() MDR_IWDG->KR = 0xAAAA; //сброс IWDG");
 
 		g().addCodeStr(oldCode,"void IWDG_Init( void ) {");
@@ -51,6 +49,6 @@ public class MCUIwdgController extends BasicController {
 		g().addCodeStr(oldCode,"MDR_IWDG->RLR = 0x" + Integer.toHexString(irlr) + "; //значение перегрузки IWDG");
 		g().addCodeStr(oldCode,"MDR_IWDG->KR =  0xCCCC; //запускаем IWDG");
 		g().addCodeStr(oldCode,"}//void IWDG_Init");
-		return super.generateCode(device, pairBlock, model, oldCode);
+		return super.generateCode(device, oldCode);
 	}
 }
