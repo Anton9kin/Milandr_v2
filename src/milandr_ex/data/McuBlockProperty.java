@@ -17,6 +17,7 @@ import javafx.scene.layout.Pane;
 import jfxtras.scene.control.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -55,10 +56,16 @@ public class McuBlockProperty {
 		}
 
 		public int getIntValue() {
+			if (intValue <= 0 && strValue != null && strValue.matches("\\d+")) {
+				return Integer.parseInt(strValue);
+			}
 			return intValue;
 		}
 
 		public String getStrValue() {
+			if (strValue == null || strValue.isEmpty()) {
+				return "" + intValue;
+			}
 			return strValue;
 		}
 
