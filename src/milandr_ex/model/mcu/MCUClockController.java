@@ -2,19 +2,15 @@ package milandr_ex.model.mcu;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import milandr_ex.data.AppScene;
-import milandr_ex.data.ClockModel;
-import milandr_ex.data.Constants;
-import milandr_ex.data.PinoutsModel;
+import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
+import milandr_ex.model.mcu.ext.MCUExtPairController;
 import milandr_ex.utils.GuiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.*;
+import static milandr_ex.data.McuBlockProperty.buccList;
+import static milandr_ex.data.McuBlockProperty.uccList;
 import static milandr_ex.utils.GuiUtils.*;
 
 /**
  * Created by lizard2k1 on 24.02.2017.
  */
-public class MCUClockController extends BasicController
+public class MCUClockController extends MCUExtPairController
 		implements PinoutsModel.Observer {
 	private static final Logger log	= LoggerFactory.getLogger(MCUClockController.class);
 
@@ -36,8 +34,23 @@ public class MCUClockController extends BasicController
 	private Map<String, Label> cllMap = Maps.newHashMap();
 	private Map<String, GridPane> clkBlocks = Maps.newLinkedHashMap();
 	private GridPane clckCont;
+	@FXML
+	private GridPane cpu_grid;
 
 	public MCUClockController() {
+	}
+
+	@Override
+	protected Pane getPropControl() {
+		return cpu_grid;
+	}
+
+	@Override
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		oldCode = Lists.newArrayList();
+		g().addCodeStr(oldCode, "void CPU_Init( void ){");
+		g().addCodeStr(oldCode, "} //void CPU_Init");
+		return super.generateCode(device, oldCode);
 	}
 
 	public void setClckCont(GridPane clckCont) {
@@ -46,6 +59,8 @@ public class MCUClockController extends BasicController
 
 	@Override
 	protected void postInit(AppScene scene) {
+		setDevicePair(Device.EPairNames.CPU);
+		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
 	}

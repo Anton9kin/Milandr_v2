@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class Device {
     public enum EPairNames {
-        NON(0), GPIO(0),
+        NON(0), GPIO(0), CPU(0),
         ADC(1) {
             @Override
             public void set(Device device, int val) {
