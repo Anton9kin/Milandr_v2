@@ -57,11 +57,15 @@ public class ClockModel {
 			return this;
 		}
 
+		public String getFactor() {
+			return baseFactor == null ? body : baseFactor;
+		}
+
 		public int getValue() {
 			checkFullSetup();
 			int result = baseValue == null ? 1 : baseValue;
 			if (!name.equals("Sim") && body.contains(" ")) {
-				String[] parts = (baseFactor == null ? body : baseFactor).split("\\s");
+				String[] parts = getFactor().split("\\s");
 				int factor = parts[1].matches("\\d+") ? Integer.parseInt(parts[1]) : 1;
 				if (parts[0].equals("*")) {
 					return result * factor;
@@ -191,6 +195,23 @@ public class ClockModel {
 		}
 		public Integer getPin(int index) {
 			return getPin(getPinName(index));
+		}
+		public Integer getSel() {
+			int ind = 0;
+			for(InOut pin: inputs.values()) {
+				if (pin.equals(selected)) return ind;
+				ind++;
+			}
+			return -1;
+		}
+		public Integer getSel(String name) {
+			checkFullSetup();
+			if (inputs.containsKey(name)) {
+				String factor = inputs.get(name).getFactor();
+				if (factor == null || factor.isEmpty()) return 0;
+				return Integer.parseInt(factor.split("\\s")[1]);
+			}
+			return -1;
 		}
 		public Integer getPin(String name) {
 			checkFullSetup();
@@ -434,6 +455,18 @@ public class ClockModel {
 			}
 		}
 		return outputs.getPinRestr(name);
+	}
+	public Integer getSel(String blockName) {
+		if (!blockMap.containsKey(blockName)) {
+			int trInd = blockName.lastIndexOf("-");
+			if (trInd < 0) return -1;
+			String blkName = blockName.substring(0, trInd);
+			if (blockMap.containsKey(blkName)) {
+				return blockMap.get(blkName).getSel(blockName);
+			}
+			return -1;
+		}
+		return blockMap.get(blockName).getSel();
 	}
 	public Integer getOut(String blockName, String name) {
 		checkFullSetup();
