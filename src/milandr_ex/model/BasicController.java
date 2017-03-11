@@ -261,6 +261,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
+	 	if (clock == null) return 0;
 	 	Integer outp = clock.getOutVal(name);
 	 	if (outp != null && outp > 1 ) return outp;
 		return clock.getInpVal(name);
@@ -284,7 +285,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();
-	 	if (pairBlock == null) return Lists.newArrayList();
+	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
 		oldCode.add(0, String.format("// code block for %s module", pairBlock.name()));
 		g().addCodeStr(oldCode, "// end of code block for %s module", pairBlock.name());
 	 	return oldCode;
