@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static milandr_ex.data.McuBlockProperty.istList;
 import static milandr_ex.utils.GuiUtils.bcDef;
 import static milandr_ex.utils.GuiUtils.bcTxt;
 
@@ -259,6 +260,31 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+	protected final List<String> emptyList = Lists.newArrayList();
+	protected int getBasicClockSrc(List<String> istList, String signSrc){
+	 	if (istList == null) istList = emptyList;
+	 	if (istList.isEmpty()) return 1;
+		return getClockProp(istList.get(getConfPropInt(signSrc)));
+	}
+
+	protected int getBasicReloadReg(String countProp, String unitsProp){
+		return getBasicReloadReg(countProp, unitsProp, getBasicClockSrc(null, ""));
+	}
+	protected int getBasicReloadReg(String countProp, String unitsProp, int stClock){
+		int reloadReg;
+		int count = getConfPropInt(countProp);
+		int tf_units = getConfPropInt(unitsProp);
+		switch (tf_units) {
+			case 0:case 1:case 2:
+				reloadReg = stClock * count;
+				break;
+			default:
+				reloadReg = stClock / count;
+				break;
+		}
+		return reloadReg / 10 ^ (3 * (tf_units % 3));
+	}
+
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
 	 	if (clock == null) return 0;
@@ -268,10 +294,18 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	protected Integer getConfPropInt(String name) {
+		if (name.contentEquals(".")) {
+			String[] names = name.split("\\.");
+			return getConfPropInt(names[0], names[1]);
+		}
 	 	return getDevicePair().model().getProp(name).getIntValue();
 	}
 
 	protected String getConfPropStr(String name) {
+		if (name.contentEquals(".")) {
+			String[] names = name.split("\\.");
+			return getConfPropStr(names[0], names[1]);
+		}
 	 	return getDevicePair().model().getProp(name).getStrValue();
 	}
 

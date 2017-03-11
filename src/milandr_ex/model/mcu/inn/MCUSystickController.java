@@ -42,23 +42,11 @@ public class MCUSystickController extends BasicController {
 	}
 
 	private int getSysTickClockSrc(){
-		return getClockProp(istList.get(getConfPropInt("sign_src")));
+		return getBasicClockSrc(istList, "sign_src");
 	}
 
 	private int getSysTickReloadReg(){
-		int reloadReg;
-		int count = getConfPropInt("time_freq");
-		int stClock = getSysTickClockSrc();
-		int tf_units = getConfPropInt("tf_units");
-		switch (tf_units) {
-			case 0:case 1:case 2:
-				reloadReg = stClock * count;
-				break;
-			default:
-				reloadReg = stClock / count;
-				break;
-		}
-		reloadReg /= 10 ^ (3 * (tf_units % 3));
+		int reloadReg = getBasicReloadReg("time_freq", "tf_units", getSysTickClockSrc());
 		return reloadReg - getConfPropInt("wrk_kind");
 	}
 

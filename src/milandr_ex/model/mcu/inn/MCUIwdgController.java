@@ -29,12 +29,21 @@ public class MCUIwdgController extends BasicController {
 	}
 
 	@Override
+	protected int getBasicClockSrc(List<String> istList, String signSrc) {
+		return getConfPropInt("freq_div.f_div") * getClockProp("LSI");
+	}
+
+	private int getWatchDogReloadReg() {
+		return getBasicReloadReg("freq_div.f_time", "freq_div.f_units");
+	}
+
+	@Override
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
 		log.debug(String.format("#generateWDGCode(%s)", device));
 		String freq = getConfPropStr("freq_div", "f_time");
 		Integer div = getConfPropInt("freq_div", "f_div");
-		Integer irlr = getConfPropInt("freq_div", "irlr");
+		Integer irlr = getWatchDogReloadReg();
 		g().addCodeStr(oldCode,"#define IWDG_RST() MDR_IWDG->KR = 0xAAAA; //сброс IWDG");
 
 		g().addCodeStr(oldCode,"void IWDG_Init( void ) {");

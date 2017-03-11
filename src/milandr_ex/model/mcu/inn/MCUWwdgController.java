@@ -34,9 +34,10 @@ public class MCUWwdgController extends BasicController {
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
 		log.debug(String.format("#generateWWDGCode(%s) preparing", device));
-		String freq = getConfPropStr("f_div");
-		Integer div = getConfPropInt("freq_div", "f_div");
-		Integer hclk = getConfPropInt("hclk");
+		Integer hclk = getClockProp("hclk");
+
+		String freq = getConfPropStr("freq_div.f_div");
+		Integer div = getConfPropInt("freq_div.f_div");
 		String cnt = getConfPropStr("cnt_val");
 		String win = getConfPropStr("win_val");
 		Integer wint = getConfPropInt("early_int");
@@ -45,7 +46,8 @@ public class MCUWwdgController extends BasicController {
 				freq, div, hclk, cnt, win, wint));
 
 		g().addCodeStr(oldCode,"void  WWDG_Init( void ){");
-		g().addCodeStr(oldCode,"MDR_RST_CLK->PER_CLOCK |= ( 1 << 12 ); //разрешение тактирование WWDG");
+		g().addCodeStr(oldCode,"//разрешение тактирование WWDG");
+		g().addCodeStr(oldCode,"MDR_RST_CLK->PER_CLOCK |= ( 1 << 12 );");
 		g().addCodeStr(oldCode,"MDR_WWDG->CR  = (( 1 << 7 ) //сторожевой таймер включен");
 		g().addCodeStr(oldCode,"| 0x" + Integer.toHexString(Integer.parseInt(cnt)) + "); //значение счетчика");
 		g().addCodeStr(oldCode,"MDR_WWDG->CFR = (( " + wint + " << 9 ) //ранее предупреждающее прерывание " + g().strWWDGINT[wint] + "");
