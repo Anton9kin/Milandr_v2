@@ -190,7 +190,10 @@ public class MCUPinsController extends BasicController
 		Integer[] pairs = device.getPairCountsArr();
 		for(int i = 0; i < ePairs.length; i++) {
 			Device.EPairNames ePair = ePairs[i];
-			if (!ePair.real()) continue;
+			if (!ePair.real()) {
+				getScene().getPinoutsModel().setBlockModel(ePair.model());
+				continue;
+			}
 			String pairName = ePair.name();
 			int pairSize = pairs[i];
 			if (pairSize < 1) continue;
