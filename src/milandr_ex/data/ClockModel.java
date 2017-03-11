@@ -186,6 +186,9 @@ public class ClockModel {
 			output.setValue(selected.getValue());
 			return this;
 		}
+		public boolean hasPin(String name) {
+			return inputs.containsKey(name);
+		}
 		public Integer getPin(int index) {
 			return getPin(getPinName(index));
 		}
@@ -450,6 +453,14 @@ public class ClockModel {
 	public Integer getOutVal(String name) {
 		checkFullSetup();
 		return outputs.getPin(name);
+	}
+
+	public boolean hasPinIn(String name) {
+		return inputs.hasPin(name);
+	}
+
+	public boolean hasPinOut(String name) {
+		return outputs.hasPin(name);
 	}
 
 	private ClockModel checkFullSetup() {
