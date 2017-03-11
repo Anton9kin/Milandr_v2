@@ -127,9 +127,17 @@ public class MCUPinsController extends BasicController
 			blockModel.addComboBox(newCombo);
 			result.add(newCombo);
 			comboMap.put(sKey, newCombo);
-			newCombo.setItems(pxList.get(key));
+			newCombo.setItems(getComboPxList(key, sKey));
 			GuiUtils.makeListener(sKey, newCombo, changeCallback);
 		}
+	}
+
+	private ObservableList<String> getComboPxList(String key, String sKey) {
+		if (key.startsWith("COMP") && !sKey.equals(key)) {
+			pxList.put(sKey, getScene().getSetsGenerator().genObsList(sKey, true));
+			return pxList.get(sKey);
+		}
+		return pxList.get(key);
 	}
 
 	private void makeListener(final String key, TitledPane tPane) {
@@ -255,7 +263,7 @@ public class MCUPinsController extends BasicController
 			pxList.put(key, getScene().getSetsGenerator().genObsList(sub));
 		}
 		List<Node> result = Lists.newArrayList();
-		Integer pxSize = pxList.get(key).size();
+		Integer pxSize = getComboPxList(key, key).size();
 		if (pxSize > 1) genVboxPair(blockModel, key, pairCnt, result);
 		else genCustPair(blockModel, key, result);
 		VBox vBox = new VBox((Node[]) result.toArray(new Node[]{}));

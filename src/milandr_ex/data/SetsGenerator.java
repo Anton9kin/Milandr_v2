@@ -32,6 +32,23 @@ public class SetsGenerator {
 			List<String> adcList = Lists.newArrayList();
 			for(int i=0; i < 16; i++) adcList.add(i + "");
 			return genObsList(adcList);
+		} else if (cust && setName.startsWith("COMP")) {
+			if (!pairItems.containsKey(setName)) {
+				String[] compItms = {"RESET"};
+				switch (setName) {
+					case "COMP-00" :
+						compItms = new String[]{"RESET", "COMP1_IN1 PE2", "COMP1_REF+ PE4"};
+						break;
+					case "COMP-01" :
+						compItms = new String[]{"RESET", "COMP2_IN1 PE2", "COMP2_IN2 PE3", "COMP2_IN3 PE8", "COMP2_REF- PE5"};
+						break;
+					case "COMP-02" :
+						compItms = new String[]{"RESET", "COMP3_OUT PB8", "COMP3_OUT PB11"};
+						break;
+				}
+				pairItems.put(setName, Lists.newArrayList(compItms));
+			}
+			return genObsList(pairItems.get(setName));
 		}
 		return genObsList(setName, "");
 	}
