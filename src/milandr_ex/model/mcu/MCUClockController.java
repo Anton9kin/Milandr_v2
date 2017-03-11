@@ -59,15 +59,14 @@ public class MCUClockController extends MCUExtPairController
 		int delayEeprom = hClk % 25_000_000;
 		if (delayEeprom > 7) delayEeprom = 7;
 
-		int lowBKP;
-		if (hClk < 200000) lowBKP = 1;
-		else if (hClk < 500000) lowBKP = 2;
-		else if (hClk < 1000000) lowBKP = 3;
-		else if (hClk < 10000000) lowBKP  = 0;
-		else if (hClk < 40000000) lowBKP  = 5;
-		else if (hClk < 80000000) lowBKP  = 6;
-		else if (hClk >= 80000000) lowBKP  = 7;
-		else lowBKP  = 4;
+		int lowBKP = 4; // which case take lowBKP eq 4 value ?!
+		if (hClk < 200_000) lowBKP = 1; // -xxxxx < hClk < 200_000
+		else if (hClk < 500_000) lowBKP = 2; // 200_000 <= hClk < 500_000
+		else if (hClk < 1_000_000) lowBKP = 3; // 500_000 <= hClk < 1_000_000
+		else if (hClk < 10_000_000) lowBKP  = 0; // 1_000_000 <= hClk < 10_000_000
+		else if (hClk < 40_000_000) lowBKP  = 5; // 10_000_000 <= hClk < 40_000_000
+		else if (hClk < 80_000_000) lowBKP  = 6; // 40_000_000 <= hClk < 80_000_000
+		else if (hClk >= 80_000_000) lowBKP  = 7; // 80_000_000 <= hClk < +xxxxx
 
 
 		g().addCodeStr(oldCode, "void CPU_Init( void ){");
