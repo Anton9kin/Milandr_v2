@@ -62,7 +62,7 @@ public class Device {
         	return model;
 		}
     }
-    private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB,
+    private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
     private static List<String> extPairNames;
     public static List<String> extPairNames() {
