@@ -32,11 +32,41 @@ public class MCUSystickController extends BasicController {
 		getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), "tf_units", unitList));
 	}
 
+	@SuppressWarnings("unused")
+	private int getSysTickClock(){
+		switch (getConfPropInt("sign_src")) {
+			case 0: return getClockProp("LSI");
+			case 1: return getClockProp("HCLK");
+		}
+		return 0;
+	}
+
+	private int getSysTickClockSrc(){
+		return getClockProp(istList.get(getConfPropInt("sign_src")));
+	}
+
+	private int getSysTickReloadReg(){
+		int reloadReg;
+		int count = getConfPropInt("time_freq");
+		int stClock = getSysTickClockSrc();
+		int tf_units = getConfPropInt("tf_units");
+		switch (tf_units) {
+			case 0:case 1:case 2:
+				reloadReg = stClock * count;
+				break;
+			default:
+				reloadReg = stClock / count;
+				break;
+		}
+		reloadReg /= 10 ^ (3 * (tf_units % 3));
+		return reloadReg - getConfPropInt("wrk_kind");
+	}
+
 	@Override
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		log.debug(String.format("#generateDACCode(%s)", device));
 		//handling incoming parameters
-		Integer reloadReg = getConfPropInt("sign_src");
+		Integer reloadReg = getSysTickReloadReg();
 		int interrupt = getConfPropInt("intrp");
 		int source = getConfPropInt("sign_src");
 		int mode = getConfPropInt("wrk_kind");
