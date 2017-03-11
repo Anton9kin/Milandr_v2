@@ -27,13 +27,13 @@ public class Device {
             public void set(Device device, int val) {
                 device.setAdc(val);
             }
-        }, COMP(2){
+        }, COMP(3){
             @Override
             public void set(Device device, int val) {
                 device.setComporator(val);
             }
         },
-        USB(1), UART(2), CAN(2), SPI(4), I2C(2), DAC(1),
+        USB(1), UART(2), CAN(2), SPI(4), I2C(2), DAC(1), DMA(1),
         SYST(1), MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
         TMR(3);
 
