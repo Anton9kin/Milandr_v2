@@ -57,15 +57,15 @@ public class McuBlockProperty {
 		}
 
 		public int getIntValue() {
-			if (intValue <= 0 && strValue != null && strValue.matches("\\d+")) {
+			if (intValue < 0 && strValue != null && strValue.matches("\\d+")) {
 				return Integer.parseInt(strValue);
 			}
 			return intValue;
 		}
 
 		public String getStrValue() {
-			if (strValue == null || strValue.isEmpty()) {
-				return "" + intValue;
+			if (strValue == null) {
+				return "";
 			}
 			return strValue;
 		}
