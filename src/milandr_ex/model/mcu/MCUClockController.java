@@ -48,7 +48,72 @@ public class MCUClockController extends MCUExtPairController
 	@Override
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
+		Integer hClk = getClockProp("HCLK");
+		Integer hse = getClockProp("HSE");
+		int cpuC1Sel = getClockProp("CPU-C1.S");
+		int cpuC2Sel = getClockProp("CPU-C2.S");
+		int cpuC3Sel = getClockProp("CPU-C3.S");
+		int hclkSel = getClockProp("CPU-C3-1.S");
+		boolean pllCheck = cpuC2Sel > 0;
+		int pllMull = getClockProp("CPU-C2-1.S");
+		int delayEeprom = hClk % 25_000_000;
+		if (delayEeprom > 7) delayEeprom = 7;
+
+		int lowBKP;
+		if (hClk < 200000) lowBKP = 1;
+		else if (hClk < 500000) lowBKP = 2;
+		else if (hClk < 1000000) lowBKP = 3;
+		else if (hClk < 10000000) lowBKP  = 0;
+		else if (hClk < 40000000) lowBKP  = 5;
+		else if (hClk < 80000000) lowBKP  = 6;
+		else if (hClk >= 80000000) lowBKP  = 7;
+		else lowBKP  = 4;
+
+
 		g().addCodeStr(oldCode, "void CPU_Init( void ){");
+		if (cpuC1Sel < 2) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
+			g().addCodeStr(oldCode,"	//Необходима пауза для работы Flash-памяти программ");
+			g().addCodeStr(oldCode,"	MDR_EEPROM->CMD |= (" + delayEeprom + " << 3);");
+			if (hClk > 80000000){
+				g().addCodeStr(oldCode,"//Частота > 80 МГц: работа миксросхемы не гарантируется!!!");
+			}
+			g().addCodeStr(oldCode,"");
+
+			g().addCodeStr(oldCode,"// вкл. HSE осцилятора (частота кварца " + hse + ")");
+			g().addCodeStr(oldCode,"	MDR_RST_CLK->HS_CONTROL = 0x01;");
+
+			g().addCodeStr(oldCode,"// ждем пока HSE выйдет в рабочий режим\n\r");
+			g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & (1 << 2)) == 0x00);");
+		}
+
+		g().addCodeStr(oldCode,"");
+
+		if (pllCheck){
+			g().addCodeStr(oldCode," //подача частоты на блок PLL");
+			g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0));");
+			g().addCodeStr(oldCode," //вкл. PLL  | коэф. умножения = " + pllMull + "");
+			g().addCodeStr(oldCode,"	MDR_RST_CLK->PLL_CONTROL = ((1 << 2) | (" + (pllMull - 1) + " << 8));");
+			g().addCodeStr(oldCode," // ждем когда PLL выйдет в раб. режим");
+			g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & 0x02) != 0x02);");
+		}
+
+		g().addCodeStr(oldCode,"");
+
+		g().addCodeStr(oldCode," //источник для CPU_C1");
+		g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0)");
+		g().addCodeStr(oldCode," //источник для CPU_C2");
+		g().addCodeStr(oldCode,"							| (" + cpuC2Sel + " << 2)");
+		g().addCodeStr(oldCode," //предделитель для CPU_C3");
+		g().addCodeStr(oldCode,"							| (" + cpuC3Sel + " << 4)");
+		g().addCodeStr(oldCode," //источник для HCLK");
+		g().addCodeStr(oldCode,"							| (" + hclkSel + " << 8));");
+
+		g().addCodeStr(oldCode,"");
+
+		g().addCodeStr(oldCode,"//режим встроенного регулятора напряжения DUcc");
+		g().addCodeStr(oldCode,"	MDR_BKP->REG_0E |= ((" + lowBKP + " << 0) ");
+		g().addCodeStr(oldCode,"//выбор доп.стабилизирующей нагрузки");
+		g().addCodeStr(oldCode,"					  | (" + lowBKP + " << 3)); ");
 		g().addCodeStr(oldCode, "} //void CPU_Init");
 		return super.generateCode(device, oldCode);
 	}
@@ -73,6 +138,8 @@ public class MCUClockController extends MCUExtPairController
 			McuBlockProperty mcuProp = getDevicePair().model().getProp(cpuProp);
 			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
 		}
+		AppScene scene = getScene();
+		scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getDevicePair(), scene.getPinoutsModel());
 	}
 
 	@Override
