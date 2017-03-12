@@ -39,16 +39,16 @@
 						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
 						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
 						<TitledPane fx:id="cfg_adc" text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_bkp" text="%config.bkp_setup" expanded="false"><fx:include fx:id="mcuBkp" source="mcu/MCUBackup.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_comp" text="%config.comp_setup" expanded="false"><fx:include fx:id="mcuComp" source="mcu/MCUComp.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_dac" text="%config.dac_setup" expanded="false"><fx:include fx:id="mcuDac" source="mcu/MCUDac.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_dma" text="%config.dma_setup" expanded="false"><fx:include fx:id="mcuDma" source="mcu/MCUDma.fxml" /></TitledPane>
-						<TitledPane fx:id="cfg_syst" text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
-						<TitledPane fx:id="cfg_mpu" text="%config.mpu_setup" expanded="false"><fx:include fx:id="mcuMpu" source="mcu/MCUMpu.fxml" /></TitledPane>
-						<TitledPane fx:id="cfg_bkp" text="%config.bkp_setup" expanded="false"><fx:include fx:id="mcuBkp" source="mcu/MCUBackup.fxml" /></TitledPane>
-						<TitledPane fx:id="cfg_pwr" text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_iwd" text="%config.iwdg_setup" expanded="false"><fx:include fx:id="mcuIwdg" source="mcu/MCUIwdg.fxml" /></TitledPane>
-						<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_mpu" text="%config.mpu_setup" expanded="false"><fx:include fx:id="mcuMpu" source="mcu/MCUMpu.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_pwr" text="%config.pwr_setup" expanded="false"><fx:include fx:id="mcuPower" source="mcu/MCUPower.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_syst" text="%config.syst_setup" expanded="false"><fx:include fx:id="mcuSystick" source="mcu/MCUSystick.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_tmr" text="%config.tmr_setup" expanded="false"><fx:include fx:id="mcuTimer" source="mcu/MCUTimer.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
 					</VBox>
 					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ex" GridPane.columnIndex="1"
 						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
@@ -56,9 +56,11 @@
 						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
 						<TitledPane fx:id="cfg_cpu" text="%config.cpu_setup" expanded="false"><fx:include fx:id="mcuCpu" source="mcu/MCUCpu.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_ebc" text="%config.ebc_setup" expanded="false"><fx:include fx:id="mcuEbc" source="mcu/MCUEbc.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_i2c" text="%config.i2c_setup" expanded="false"><fx:include fx:id="mcuI2C" source="mcu/MCUI2C.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_spi" text="%config.spi_setup" expanded="false"><fx:include fx:id="mcuSpi" source="mcu/MCUSpi.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_uart" text="%config.uart_setup" expanded="false"><fx:include fx:id="mcuUart" source="mcu/MCUUart.fxml" /></TitledPane>
+						<TitledPane fx:id="cfg_usb" text="%config.usb_setup" expanded="false"><fx:include fx:id="mcuUsb" source="mcu/MCUUsb.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_gpio" text="%config.gpio_setup" expanded="false"><fx:include fx:id="mcuGpio" source="mcu/MCUGpio.fxml" /></TitledPane>
 					</VBox>
 					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ad" GridPane.columnIndex="2"

@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 			fx:controller="milandr_ex.model.mcu.ext.MCUI2CController">
-	<TabPane layoutY="35.0" prefHeight="391.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE"
+	<TabPane layoutY="35.0" prefHeight="120.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE"
 			 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 		<Tab text="Настройка">
 			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
