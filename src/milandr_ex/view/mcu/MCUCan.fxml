@@ -4,10 +4,11 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.mcu.ext.MCUCanController">
-      <TabPane layoutY="35.0" prefHeight="391.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <TabPane layoutY="35.0" prefHeight="320.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
           <Tab text="Настройка">
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <GridPane fx:id="can_grid" layoutX="14.0" layoutY="14.0" prefHeight="253.0" prefWidth="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                        <GridPane fx:id="can_grid" layoutX="14.0" layoutY="14.0" prefHeight="253.0" prefWidth="374.0"
+                                  AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

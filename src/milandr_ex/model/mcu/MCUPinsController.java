@@ -24,10 +24,7 @@ import org.controlsfx.control.IndexedCheckModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static milandr_ex.data.Constants.*;
 import static milandr_ex.utils.GuiUtils.*;
@@ -213,15 +210,16 @@ public class MCUPinsController extends BasicController
 		getScene().setSetsGenerator(new SetsGenerator(portKeys));
 		getScene().setCodeGenerator(CodeGenerator.instance());
 		Device.EPairNames[] ePairs = Device.EPairNames.values();
+		List<Device.EPairNames> ePairList = Lists.newArrayList(ePairs);
+		ePairList.sort(Comparator.comparing(Enum::name));
 		Integer[] pairs = device.getPairCountsArr();
-		for(int i = 0; i < ePairs.length; i++) {
-			Device.EPairNames ePair = ePairs[i];
+		for(Device.EPairNames ePair: ePairList) {
 			if (!ePair.real()) {
 				getScene().getPinoutsModel().setBlockModel(ePair.model());
 				continue;
 			}
 			String pairName = ePair.name();
-			int pairSize = pairs[i];
+			int pairSize = pairs[ePair.ordinal()];
 			if (pairSize < 1) continue;
 			VBox vvBox = new VBox();
 			TitledPane tPane = new TitledPane(pairName, vvBox);

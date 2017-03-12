@@ -4,10 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="426.0" prefWidth="238.0" xmlns="http://javafx.com/javafx/8"
+<AnchorPane prefHeight="170.0" prefWidth="238.0" xmlns="http://javafx.com/javafx/8"
 			fx:controller="milandr_ex.model.mcu.inn.MCUCompController" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-   	<TabPane layoutY="35.0" prefHeight="391.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+   	<TabPane layoutY="35.0" prefHeight="120.0" prefWidth="402.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
       <tabs>
       		<Tab text="Настройка">
          <content>
