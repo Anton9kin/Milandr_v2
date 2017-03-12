@@ -41,7 +41,7 @@ public class MCUAdcController extends BasicController {
 		super.checkSelectedPin(comboKey, value);
 		if (comboKey.startsWith(getDevicePair().name())) {
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
-			setModelProp("lst_chn", Integer.parseInt(ind), value);
+			setModelProp("lst_chn", Integer.parseInt(ind) - 1, value);
 		}
 	}
 }

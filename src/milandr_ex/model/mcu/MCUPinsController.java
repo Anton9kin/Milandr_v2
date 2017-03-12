@@ -368,10 +368,8 @@ public class MCUPinsController extends BasicController
 				val1 = String.valueOf(ccbMap.get("ADC-1").getCheckModel().getCheckedItems());
 				val2 = String.valueOf(ccbMap.get("ADC-2").getCheckModel().getCheckedItems());
 				val = val1 + "," + val2;
-//				saveSelectedPin(comboKey, val1);
-//				saveSelectedPin(comboKey, val2);
 			}
-			saveSelectedPin(comboKey, val);
+//			saveSelectedPin(comboKey, value);
 			selectAdcObjects("cb", comboMap, val);
 			return;
 		} else if (comboKey.startsWith("c-")) {
