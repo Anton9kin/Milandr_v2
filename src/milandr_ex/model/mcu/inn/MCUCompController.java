@@ -2,6 +2,7 @@ package milandr_ex.model.mcu.inn;
 
 import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
@@ -16,7 +17,14 @@ import java.util.List;
 public class MCUCompController extends BasicController {
 
 	@FXML
+	GridPane comp_gpio;
+	@FXML
 	GridPane comp_grid;
+
+	@Override
+	protected Parent getGPIOControl() {
+		return comp_gpio;
+	}
 
 	@Override
 	protected Pane getPropControl() {
