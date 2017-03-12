@@ -167,6 +167,9 @@ public class McuBlockProperty {
 	}
 
 	private void checkValues() {
+		checkValues(valueInd);
+	}
+	private void checkValues(int valueInd) {
 		if (valueInd < 0) throw new IllegalArgumentException("illegal value index");
 		if (values == null) values = Lists.newArrayList();
 		while (values.size() <= valueInd) values.add(new PropValue(intDefValue, strDefValue));
@@ -202,11 +205,18 @@ public class McuBlockProperty {
 	}
 
 	public McuBlockProperty setIntValue(int intValue) {
-		return setIntValue(intValue, false);
+		return setIntValue(intValue, valueInd);
+	}
+	public McuBlockProperty setIntValue(int intValue, int valueInd) {
+		return setIntValue(intValue, valueInd, false);
 	}
 	public McuBlockProperty setIntValue(int intValue, boolean inner) {
-		checkValues();
+		return setIntValue(intValue, valueInd, inner);
+	}
+	public McuBlockProperty setIntValue(int intValue, int valueInd, boolean inner) {
+		checkValues(valueInd);
 		this.values.get(valueInd).intValue = intValue;
+		if (valueInd != this.valueInd) return this;
 		if (!inner) updateObservable(intValue + "");
 		return this;
 	}
@@ -227,13 +237,20 @@ public class McuBlockProperty {
 	}
 
 	public McuBlockProperty setStrValue(String strValue) {
-		return setStrValue(strValue, false);
+		return setStrValue(strValue, valueInd);
+	}
+	public McuBlockProperty setStrValue(String strValue, int valueIndex) {
+		return setStrValue(strValue, valueIndex, false);
 	}
 	public McuBlockProperty setStrValue(String strValue, boolean inner) {
-		checkValues();
+		return setStrValue(strValue, valueInd, inner);
+	}
+	public McuBlockProperty setStrValue(String strValue, int valueInd, boolean inner) {
+		checkValues(valueInd);
 		String newValue = getNewStrValueWithDef(strValue);
 		this.values.get(valueInd).strValue = newValue;
 		this.values.get(valueInd).intValue = getNewIntValue(newValue);
+		if (valueInd != this.valueInd) return this;
 		if (!inner) updateObservable(newValue);
 		return this;
 	}

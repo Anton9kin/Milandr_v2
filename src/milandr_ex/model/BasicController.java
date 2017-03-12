@@ -292,10 +292,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return getDevicePair().model().getProp(name);
 	}
 	protected void setModelProp(String name, int ind, String value) {
-		getModelProp(name).setStrValue(value);
+		getModelProp(name).setStrValue(value, ind);
 	}
 	protected void setModelProp(String name, int ind, Integer value) {
-		getModelProp(name).setIntValue(value);
+		getModelProp(name).setIntValue(value, ind);
 	}
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
