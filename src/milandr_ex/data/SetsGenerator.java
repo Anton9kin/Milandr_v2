@@ -25,13 +25,13 @@ public class SetsGenerator {
 	private static Map<String, List<String>> pairItems = Maps.newHashMap();
 	private static Map<String, Integer[]> pairNumbers = Maps.newHashMap();
 	public ObservableList<String> genObsList(String setName) {
-		return genObsList(setName, false);
+		return FXCollections.observableArrayList(genArrList(setName, false));
 	}
-	public ObservableList<String> genObsList(String setName, boolean cust) {
+	public List<String> genArrList(String setName, boolean cust) {
 		if (cust && setName.startsWith("ADC")) {
 			List<String> adcList = Lists.newArrayList();
 			for(int i=0; i < 16; i++) adcList.add(i + "");
-			return genObsList(adcList);
+			return adcList;
 		} else if (cust && setName.startsWith("COMP")) {
 			if (!pairItems.containsKey(setName)) {
 				String[] compItms = {"RESET"};
@@ -48,12 +48,15 @@ public class SetsGenerator {
 				}
 				pairItems.put(setName, Lists.newArrayList(compItms));
 			}
-			return genObsList(pairItems.get(setName));
+			return Lists.newArrayList(pairItems.get(setName));
 		}
-		return genObsList(setName, "");
+		return genArrList(setName, "");
 	}
 	public ObservableList<String> genObsList(String setName, String skipName) {
-		return FXCollections.observableArrayList(genLists(setName, skipName));
+		return genObsList(genArrList(setName, skipName));
+	}
+	public List<String> genArrList(String setName, String skipName) {
+		return Lists.newArrayList(genLists(setName, skipName));
 	}
 	public ObservableList<String> genObsList(List<String> items) {
 		return FXCollections.observableArrayList(items);

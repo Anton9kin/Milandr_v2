@@ -101,9 +101,21 @@ public class MCUPinsController extends BasicController
 		return cBox;
 	}
 
+	public ObservableList<String> genCustList(String setName) {
+		List<String> arrList = getScene().getSetsGenerator().genArrList(setName, true);
+		arrList.removeIf(arrItem -> {
+			boolean remove = arrItem.contains(" ");
+			if (remove) {
+				String cbKey = textToKey(arrItem.split("\\s")[1]);
+				remove &= (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible());
+			}
+			return remove;
+		});
+		return getScene().getSetsGenerator().genObsList(arrList);
+	}
 	private void genCustPair(McuBlockModel blockModel, String key, List<Node> result) {
 		if (key.startsWith("ADC")) {
-			ObservableList<String> observableList = getScene().getSetsGenerator().genObsList(key, true);
+			ObservableList<String> observableList = genCustList(key);
 			CheckComboBox<String> ccb = new CheckComboBox<>(observableList);
 			Platform.runLater(()->{
 				if (ccb.getSkin() == null) ccb.setSkin(new ComboBox().getSkin());
@@ -134,7 +146,7 @@ public class MCUPinsController extends BasicController
 
 	private ObservableList<String> getComboPxList(String key, String sKey) {
 		if (key.startsWith("COMP") && !sKey.equals(key)) {
-			pxList.put(sKey, getScene().getSetsGenerator().genObsList(sKey, true));
+			pxList.put(sKey, genCustList(sKey));
 			return pxList.get(sKey);
 		}
 		return pxList.get(key);
@@ -166,6 +178,7 @@ public class MCUPinsController extends BasicController
 		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET", "IO out", "IO in");
 		for(String text: texts) {
 			if (text.isEmpty() || text.equals("-")) continue;
+			if (text.startsWith("COMP")) { pxItem.add(text); continue; }
 			boolean match3 = text.matches("\\w{3}\\d") || text.matches("\\w{3}\\d.+");
 			boolean match4 = text.matches("\\w{4}\\d") || text.matches("\\w{4}\\d.+");
 			if (match3 || match4) {
@@ -260,6 +273,11 @@ public class MCUPinsController extends BasicController
 	}
 	private VBox makePairs(McuBlockModel blockModel, String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
+			//filter pair combos items by not existing pin combos
+//			if (text.contains(" ")) {
+//				String cbKey = textToKey(text.split("\\s")[1]);
+//				if (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible()) continue;
+//			}
 			pxList.put(key, getScene().getSetsGenerator().genObsList(sub));
 		}
 		List<Node> result = Lists.newArrayList();
