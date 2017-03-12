@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.*;
@@ -157,7 +158,13 @@ public class MCUClockController extends MCUExtPairController
 		for(int i = 0; i < combostrs.length - 1; i++) {
 			for(int j = 0; j < combostrs[i].length; j++) {
 				String namestr = combostrs[i][j];
-				if (namestr.isEmpty()) continue;
+				if (namestr.isEmpty()) {
+					VBox imgBox = makeImageBox();
+					GridPane.setColumnIndex(imgBox, j);
+					GridPane.setRowIndex(imgBox, i);
+					clckCont.getChildren().add(imgBox);
+					continue;
+				}
 				String combostr = combostrs[combostrs.length - 1][i * combostrs[i].length + j];
 				makeClockGridItem(namestr, combostr, j, i);
 				blocks.add(ClockModel.Block.get(namestr, combostr));
@@ -175,6 +182,13 @@ public class MCUClockController extends MCUExtPairController
 		selectCBox("k-USB-C2-0", "IN-2");
 		selectCBox("k-USB-C2-9", "/ 1");
 		selectCBox("k-USB-C2-30", "* 6");
+	}
+
+	private VBox makeImageBox() {
+		ImageView iv = new ImageView("resourse/clock.png");
+		iv.setFitWidth(360.0);
+		iv.setFitHeight(180.0);
+		return new VBox(iv);
 	}
 
 	@SuppressWarnings("unchecked")

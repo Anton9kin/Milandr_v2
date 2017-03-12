@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
-	<ImageView fitHeight="695.0" fitWidth="776.0" layoutX="45.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="374.0" AnchorPane.topAnchor="14.0">
+	<ImageView fitHeight="695.0" fitWidth="776.0" layoutX="45.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true"
+			   AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="374.0" AnchorPane.topAnchor="14.0">
 		<Image url="@../../../resourse/clock.png" />
 	</ImageView>
 	<TextField layoutX="7.0" layoutY="142.0" prefHeight="42.0" prefWidth="44.0" />
