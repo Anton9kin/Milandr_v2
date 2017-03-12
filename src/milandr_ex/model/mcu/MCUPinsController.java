@@ -363,10 +363,17 @@ public class MCUPinsController extends BasicController
 			selectObjects("cb", comboMap, inValue);
 			return;
 		} else if (comboKey.startsWith("ADC")) {
-			String val = ccbMap.containsKey("ADC") ?
-					String.valueOf(ccbMap.get("ADC").getCheckModel().getCheckedItems()) :
-					String.valueOf(ccbMap.get("ADC-1").getCheckModel().getCheckedItems()) +
-					"," + String.valueOf(ccbMap.get("ADC-2").getCheckModel().getCheckedItems());
+			String val, val1, val2;
+			if (ccbMap.containsKey("ADC")) {
+				val = String.valueOf(ccbMap.get("ADC").getCheckModel().getCheckedItems());
+			} else {
+				val1 = String.valueOf(ccbMap.get("ADC-1").getCheckModel().getCheckedItems());
+				val2 = String.valueOf(ccbMap.get("ADC-2").getCheckModel().getCheckedItems());
+				val = val1 + "," + val2;
+//				saveSelectedPin(comboKey, val1);
+//				saveSelectedPin(comboKey, val2);
+			}
+			saveSelectedPin(comboKey, val);
 			selectAdcObjects("cb", comboMap, val);
 			return;
 		} else if (comboKey.startsWith("c-")) {

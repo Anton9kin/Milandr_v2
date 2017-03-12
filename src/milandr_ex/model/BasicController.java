@@ -288,6 +288,15 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return reloadReg / 10 ^ (3 * (tf_units % 3));
 	}
 
+	protected McuBlockProperty getModelProp(String name) {
+		return getDevicePair().model().getProp(name);
+	}
+	protected void setModelProp(String name, int ind, String value) {
+		getModelProp(name).setStrValue(value);
+	}
+	protected void setModelProp(String name, int ind, Integer value) {
+		getModelProp(name).setIntValue(value);
+	}
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
 	 	if (clock == null) return 0;
@@ -348,12 +357,16 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return "  " + pinOut + pinSuff + "  ";
 	}
 
+	protected void checkSelectedPin(String comboKey, String value) {
+		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
+	}
 	protected void saveSelectedPin(String comboKey, String value) {
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
 		if (value != null && !value.equals("null") && pinoutsModel != null) {
 			pinoutsModel.setSelectedPin(comboKey, value);
 			if (getParentController() != null) {
 				getParentController().fillAllGpio();
+				getParentController().checkSelectedPin(comboKey, value);
 			}
 		}
 	}
