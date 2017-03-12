@@ -71,16 +71,17 @@ public class ChooseController extends BasicController {
 
 	private void initView(){
 		String[] names = PropsFactory.nameProps().toArray(new String[]{});
+		int ii = 0;
 		for(int i = 0; i < names.length; i++) {
 			PropsFactory.Prop prop = PropsFactory.getProp(names[i]);
 			if (prop.getText().equals(prop.getName())) continue;
 			Label caption = new Label(prop.getText());
 			contLabel.getChildren().add(caption);
-			GridPane.setRowIndex(caption, i);
+			GridPane.setRowIndex(caption, ii);
 			Label label = new Label(prop.getName());
 			contLabel.getChildren().add(label);
 			prop.setLabel(label);
-			GridPane.setRowIndex(label, i);
+			GridPane.setRowIndex(label, ii++);
 			GridPane.setColumnIndex(label, 1);
 		}
 	}

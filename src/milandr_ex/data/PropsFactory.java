@@ -34,7 +34,7 @@ public class PropsFactory {
             "Питание", "Частота", "Температура", "USER IO", "USB", "UART",
             "tmr", "syst", "mpu", "bkp", "pwr", "ebc", "dma", "iwdg", "wwdg",
             "CAN", "SPI", "I2C", "ADC", "DAC", "Компаратор", "Внешняя шина"};
-    private static Map<String, Prop> propFields = Maps.newHashMap();
+    private static Map<String, Prop> propFields = Maps.newLinkedHashMap();
     private static boolean initialized = false;
 
     public static class Prop {
