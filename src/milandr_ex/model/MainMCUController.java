@@ -86,6 +86,10 @@ public class MainMCUController extends BasicController {
 	private Parent mcuCpu;
 	@FXML
 	private MCUClockController mcuCpuController;
+	@FXML
+	private Parent mcuComp;
+	@FXML
+	private MCUCompController mcuCompController;
 
 	@FXML
 	private VBox cfg_vbox_in;
@@ -104,7 +108,7 @@ public class MainMCUController extends BasicController {
 		mcuCpuController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
 				mcuCpuController, mcuI2CController, mcuSpiController, mcuUartController,
-				mcuGpioController, mcuDacController, mcuTimerController,
+				mcuGpioController, mcuDacController, mcuTimerController, mcuCompController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
 		makeListeners(cfg_vbox_in.getChildren());
