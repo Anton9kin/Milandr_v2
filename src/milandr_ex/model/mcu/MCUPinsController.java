@@ -104,12 +104,17 @@ public class MCUPinsController extends BasicController
 	public ObservableList<String> genCustList(String setName) {
 		List<String> arrList = getScene().getSetsGenerator().genArrList(setName, true);
 		arrList.removeIf(arrItem -> {
+			boolean remAdc = arrItem.matches("\\d+");
+			if (remAdc) {
+				String cbKey = textToKey("PD" + arrItem);
+				remAdc = (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible());
+			}
 			boolean remove = arrItem.contains(" ");
 			if (remove) {
 				String cbKey = textToKey(arrItem.split("\\s")[1]);
-				remove &= (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible());
+				remove = (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible());
 			}
-			return remove;
+			return remAdc || remove;
 		});
 		return getScene().getSetsGenerator().genObsList(arrList);
 	}

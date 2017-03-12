@@ -30,7 +30,7 @@ public class SetsGenerator {
 	public List<String> genArrList(String setName, boolean cust) {
 		if (cust && setName.startsWith("ADC")) {
 			List<String> adcList = Lists.newArrayList();
-			for(int i=0; i < 16; i++) adcList.add(i + "");
+			for(int i=0; i < 32; i++) adcList.add(i + "");
 			return adcList;
 		} else if (cust && setName.startsWith("COMP")) {
 			if (!pairItems.containsKey(setName)) {
