@@ -53,8 +53,8 @@ public class MCUClockController extends MCUExtPairController
 		Integer hse = getClockProp("HSE");
 		int cpuC1Sel = getClockProp("CPU-C1.S");
 		int cpuC2Sel = getClockProp("CPU-C2.S");
-		int cpuC3Sel = getClockProp("CPU-C3.S");
-		int hclkSel = getClockProp("CPU-C3-1.S");
+		int cpuC3Sel = getClockProp("HCLK.S");
+		int hclkSel = getClockProp("HCLK-1.S");
 		boolean pllCheck = cpuC2Sel > 0;
 		int pllMull = getClockProp("CPU-C2-1.S");
 		int delayEeprom = hClk % 25_000_000;

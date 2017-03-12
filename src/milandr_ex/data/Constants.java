@@ -23,7 +23,7 @@ public class Constants {
     public static boolean USE_HOVERED_STYLE = Boolean.FALSE;
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
-            {"CPU-C1", "CPU-C2", "CPU-C3"},
+            {"CPU-C1", "CPU-C2", "HCLK"},
             {"USB-C1", "USB-C2", ""},
             {"ADC-C1", "ADC-C2", ""},
             {
