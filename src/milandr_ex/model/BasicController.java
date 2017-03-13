@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import milandr_ex.data.*;
 import milandr_ex.utils.*;
 import org.slf4j.Logger;
@@ -145,11 +142,19 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			GridPane.setColumnSpan(hBox, 2);
 		}
 		List<McuBlockProperty> props = pair.model().getProps();
-		if (propsPane != null && props != null) {
+		if (props != null) {
 			for(McuBlockProperty prop: props) {
 				prop.makeUI(getScene(), propsPane, ind++);
 			}
+			changePropsAreaHeight(propsPane, pairCnt, props.size());
 		}
+	}
+
+	private void changePropsAreaHeight(Pane propsPane, int pairCnt, int propsSize) {
+		Pane parent = (Pane)propsPane.getParent();
+		parent.setMinWidth(pairCnt * 25 + propsSize * 25 + 25);
+		parent.setPrefHeight(pairCnt * 25 + propsSize * 25 + 25);
+		parent.setMaxHeight(pairCnt * 25 + propsSize * 25 + 25);
 	}
 
 	private HBox makeToggleGroup(Device.EPairNames pair, Pane propsPane, int pairCnt) {
