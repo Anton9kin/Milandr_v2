@@ -12,6 +12,9 @@ import java.util.List;
  */
 public class CodeGenerator {
 	private static final Logger log	= LoggerFactory.getLogger(CodeGenerator.class);
+	public enum GenKind {
+		SIMPLE, COMPLEX, BUILDER
+	}
 	private CodeGenerator() {
 	}
 	private static CodeGenerator instance;
@@ -107,11 +110,12 @@ public class CodeGenerator {
 	private CodeExpressionBuilder builder;
 
 	public CodeExpressionBuilder builder() {
+		if (builder == null) builder = new CodeExpressionBuilder();
 		return builder;
 	}
 
 	public class CodeExpressionBuilder {
-		String param, value;
+		String param, value, opp;
 		List<String> comments, values;
 
 		public CodeExpressionBuilder clear() {
@@ -119,6 +123,7 @@ public class CodeGenerator {
 			value = null;
 			comments = null;
 			values = null;
+			opp = null;
 			return this;
 		}
 
@@ -129,6 +134,11 @@ public class CodeGenerator {
 
 		public CodeExpressionBuilder setValue(String value) {
 			this.value = value;
+			return this;
+		}
+
+		public CodeExpressionBuilder setOpp(String opp) {
+			this.opp = opp;
 			return this;
 		}
 
@@ -148,14 +158,39 @@ public class CodeGenerator {
 			return this;
 		}
 
-		public void buildparam(List<String> codeList) {
+		public CodeExpressionBuilder setCommentParamValue(String comment, String param, String value) {
+			return setComments(comment).setParam(param).setValues(value);
+		}
+
+		public CodeExpressionBuilder setCommentCommand(String comment, String command) {
+			return setComments(comment).setParam(command);
+		}
+
+		private CodeExpressionBuilder validate() {
+			if (comments == null) comments = Lists.newArrayList();
+			if (values == null) values = Lists.newArrayList();
+			if (comments.isEmpty()) comments.add("");
+			if (values.isEmpty()) values.add("");
+			if (opp == null) opp = "";
+			return this;
+		}
+
+		public void buildParam(List<String> codeList) {
+			validate();
+			CodeGenerator.this.setCodeParameter(codeList, param,
+					comments.get(0), values.get(0), opp);
+			clear();
+		}
+
+		public void buildParams(List<String> codeList) {
+			validate();
 			CodeGenerator.this.setCodeParameters(codeList, param,
 					comments.toArray(new String[]{}), values.toArray(new String[]{}));
 			clear();
 		}
 
 		public void buildCommand(List<String> codeList) {
-			if (comments.isEmpty()) comments.add("");
+			validate();
 			CodeGenerator.this.execCodeCommand(codeList, param,
 					comments.get(0), values.toArray(new String[]{}));
 			clear();
