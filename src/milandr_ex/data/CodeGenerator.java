@@ -1,5 +1,6 @@
 package milandr_ex.data;
 
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,7 @@ public class CodeGenerator {
 	}
 
 	public class CodeExpressionBuilder {
-		String module, param, value, opp;
+		String module, param, value, opp, command;
 		List<String> comments, values;
 
 		public CodeExpressionBuilder clear() {
@@ -152,8 +153,14 @@ public class CodeGenerator {
 			return this;
 		}
 
+		public CodeExpressionBuilder setCommand(String command) {
+			this.command = command;
+			return this;
+		}
+
 		public CodeExpressionBuilder setComments(String... comments) {
 			List<String> list = Lists.newArrayList(comments);
+			Iterators.removeIf(list.iterator(), String::isEmpty);
 			if (this.comments == null) {
 				this.comments = list;
 			} else this.comments.addAll(list);
@@ -173,7 +180,16 @@ public class CodeGenerator {
 		}
 
 		public CodeExpressionBuilder setCommentCommand(String comment, String command) {
-			return setComments(comment).setParam(command);
+			return setComments(comment).setCommand(command);
+		}
+
+		public CodeExpressionBuilder setWhileCommand(String param, String suff, String cond) {
+			return setWhileCommand("", param, suff, cond);
+		}
+		public CodeExpressionBuilder setWhileCommand(String comment, String param, String suff, String cond) {
+			setComments(comment).setParam(param);
+			setCommand(String.format("while ((%s & (%s)) %s);", getFullParam(), suff, cond));
+			return this;
 		}
 
 		private CodeExpressionBuilder validate() {
@@ -182,6 +198,7 @@ public class CodeGenerator {
 			if (comments.isEmpty()) comments.add("");
 			if (values.isEmpty()) values.add("");
 			if (opp == null) opp = "";
+			if (command == null) command = "";
 			return this;
 		}
 
@@ -210,7 +227,7 @@ public class CodeGenerator {
 		public void buildCommand(List<String> codeList) {
 			validate();
 			CodeGenerator.this.execCodeCommand(codeList, comments.get(0),
-					param, values.toArray(new String[]{}));
+					command, values.toArray(new String[]{}));
 			clear();
 		}
 	}
