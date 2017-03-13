@@ -219,6 +219,7 @@ public class MCUPinsController extends BasicController
 				continue;
 			}
 			String pairName = ePair.name();
+			if (checkPairForHide(pairName)) continue;
 			int pairSize = pairs[ePair.ordinal()];
 			if (pairSize < 1) continue;
 			VBox vvBox = new VBox();

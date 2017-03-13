@@ -50,6 +50,9 @@ public class Device {
         public boolean real() {
             return ordinal() >= ADC.ordinal();
         }
+        public boolean prod() {
+            return ordinal() >= ADC.ordinal();
+        }
         public int getSize() {
             return size;
         }
@@ -65,12 +68,30 @@ public class Device {
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
     private static List<String> extPairNames;
+    private static EPairNames[] prodPairs = {EPairNames.CPU, EPairNames.ADC, EPairNames.I2C, EPairNames.SPI, EPairNames.CAN };
+    private static List<String> prodPairNames;
+    private static EPairNames[] testPairs = {EPairNames.UART,  EPairNames.EBC, EPairNames.COMP };
+    private static List<String> testPairNames;
     public static List<String> extPairNames() {
         if (extPairNames == null) {
             extPairNames = Lists.newArrayList();
             for(EPairNames pair: extPairs) extPairNames.add(pair.name());
         }
         return extPairNames;
+    }
+    public static List<String> prodPairNames() {
+        if (prodPairNames == null) {
+            prodPairNames = Lists.newArrayList();
+            for(EPairNames pair: prodPairs) prodPairNames.add(pair.name());
+        }
+        return prodPairNames;
+    }
+    public static List<String> testPairNames() {
+        if (testPairNames == null) {
+            testPairNames = Lists.newArrayList();
+            for(EPairNames pair: testPairs) testPairNames.add(pair.name());
+        }
+        return testPairNames;
     }
     private static List<EPairNames> pairValues = Lists.newArrayList(EPairNames.values());
     private static Set<String> pairsSet = Sets.newHashSet();

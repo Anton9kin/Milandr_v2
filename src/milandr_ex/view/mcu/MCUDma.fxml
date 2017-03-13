@@ -8,8 +8,8 @@
 
 <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0"
       GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.112"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.mcu.inn.MCUPowerController">
-      <GridPane fx:id="pwr_grid" layoutX="14.0" layoutY="14.0" prefHeight="61.0" prefWidth="374.0"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.mcu.inn.MCUDmaController">
+      <GridPane fx:id="dma_grid" layoutX="14.0" layoutY="14.0" prefHeight="61.0" prefWidth="374.0"
                 AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
             <ComboBox fx:id="fix_npe" visible="false"/>
             <Label text="Опорное напряжение для Ucc" />

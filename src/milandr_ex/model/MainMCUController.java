@@ -90,6 +90,26 @@ public class MainMCUController extends BasicController {
 	private Parent mcuComp;
 	@FXML
 	private MCUCompController mcuCompController;
+	@FXML
+	private Parent mcuBkp;
+	@FXML
+	private MCUBkpController mcuBkpController;
+	@FXML
+	private Parent mcuEbc;
+	@FXML
+	private MCUEbcController mcuEbcController;
+	@FXML
+	private Parent mcuDma;
+	@FXML
+	private MCUDmaController mcuDmaController;
+	@FXML
+	private Parent mcuMpu;
+	@FXML
+	private MCUMpuController mcuMpuController;
+	@FXML
+	private Parent mcuUsb;
+	@FXML
+	private MCUUsbController mcuUsbController;
 
 	@FXML
 	private VBox cfg_vbox_in;
@@ -107,6 +127,7 @@ public class MainMCUController extends BasicController {
 	protected void postInit(AppScene scene) {
 		mcuCpuController.setClckCont(clckCont);
 		initSubControllers(mcuPinsController, mcuPowerController, mcuSystickController,
+				mcuBkpController, mcuEbcController, mcuUsbController, mcuDmaController, mcuMpuController,
 				mcuCpuController, mcuI2CController, mcuSpiController, mcuUartController,
 				mcuGpioController, mcuDacController, mcuTimerController, mcuCompController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
@@ -161,9 +182,11 @@ public class MainMCUController extends BasicController {
 		Boolean pairBlockVisibility = !pair.real() || DeviceFactory.getDevice(getScene()
 				.getPinoutsModel().getSelectedBody())
 				.getPairCountsArr()[pair.ordinal()] > 0;
+		if (checkPairForHide(pair.name())) pairBlockVisibility = false;
 		VBox cfg_vbox = pair.ext() ? cfg_vbox_ex : cfg_vbox_in;
 		for(Node node: cfg_vbox.getChildren()) {
-			if (node.getId().equals("cfg_" + pair.name().toLowerCase())) {
+			String lowPairName = pair.name().toLowerCase();
+			if (lowPairName.contains(node.getId().substring(4))) {
 				node.setVisible(pairBlockVisibility);
 				break;
 			}

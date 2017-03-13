@@ -112,6 +112,15 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+
+	protected boolean checkPairForHide(String pairName) {
+		if (getScene().isDebugMode()) { return false; }
+		if (getScene().isTestMode()) {
+			if (Device.testPairNames().contains(pairName)) return false;
+		}
+		return !Device.prodPairNames().contains(pairName);
+	}
+
 	protected void hideChildPane(Device.EPairNames pair) {
 		//do nothing by default
 	}

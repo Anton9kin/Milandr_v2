@@ -50,6 +50,7 @@ public class PinoutsModel {
 	}
 
 	public List<String> getBlockCode(String name) {
+		if (getBlockModel(name) == null) return null;
 		return getBlockModel(name).getCodeList();
 	}
 

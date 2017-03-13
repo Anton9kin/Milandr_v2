@@ -25,7 +25,7 @@ public class CodeGenerator {
 		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model));
 		resetIndent();
 		List<String> codeList = model.getBlockCode(pairBlock.name());
-		if (pairBlock.model() == null) return;
+		if (codeList == null || pairBlock.model() == null) return;
 		if (pairBlock.model().getController() == null) return;
 		codeList = pairBlock.model().getController()
 				.generateCode(device, codeList);
