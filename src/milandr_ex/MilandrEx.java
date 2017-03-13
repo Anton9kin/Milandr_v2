@@ -19,8 +19,23 @@ public class MilandrEx extends Application {
 	public MilandrEx() {
 	}
 
+	public boolean isTestMode() {
+		return testMode;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public boolean isEditMode() {
+		return editMode;
+	}
+
 	public void setScene(AppScene scene) {
 		this.scene = scene;
+		scene.setTestMode(isTestMode());
+		scene.setDebugMode(isDebugMode());
+		scene.setEditMode(isEditMode());
 	}
 
 	public AppScene getScene() {
@@ -68,11 +83,32 @@ public class MilandrEx extends Application {
 		NEW_PAIRS_COMBO_STYLE = !useAqua && newCombo;
 	}
 
+	private static void setArg(String arg) {
+		if (arg == null || arg.isEmpty()) return;
+		if (arg.equals("test")) setTestMode();
+		if (arg.equals("debug")) setDebugMode();
+		if (arg.equals("edit")) setEditMode();
+	}
+
+	private static boolean testMode = false;
+	private static boolean debugMode = false;
+	private static boolean editMode = false;
+	private static void setTestMode() { testMode = true; }
+	private static void setDebugMode() { debugMode = true; }
+	private static void setEditMode() { editMode = true; }
+
+	private static void setArgs(String[] args) {
+		if (args == null || args.length < 1) return;
+		for(String arg: args) {
+			setArg(arg);
+		}
+	}
 	public static void main(String[] args) {
 //		preInit(true, false, false);
 //		preInit(false, false, false);
 //		preInit(false, false, true);
 		preInit(false, true, false);
+		setArgs(args);
 //		preInit(false, true, true);
 		launch(args);
 	}

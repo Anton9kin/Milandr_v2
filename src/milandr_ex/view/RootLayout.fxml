@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.RootLayoutController">
    <top>
       <MenuBar prefHeight="20.0" BorderPane.alignment="CENTER">
-          <Menu mnemonicParsing="false" text="Project">
+          <Menu fx:id="mnuPrj" mnemonicParsing="false" text="Project">
               <MenuItem mnemonicParsing="false" onAction="#handleNew" text="%menu.new">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="ANY" meta="UP" shift="UP" shortcut="UP" />
@@ -30,13 +30,13 @@
                      </accelerator>
                   </MenuItem>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu fx:id="mnuEdit" mnemonicParsing="false" text="Edit">
               <MenuItem mnemonicParsing="false" text="Copy" />
               <MenuItem mnemonicParsing="false" text="Paste" />
               <MenuItem mnemonicParsing="false" text="Cut" />
               <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Processor">
+          <Menu fx:id="mnuProc" mnemonicParsing="false" text="Processor">
               <MenuItem mnemonicParsing="false" text="Select" onAction="#handleNew"/>
               <MenuItem mnemonicParsing="false" text="Load" />
               <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave" />
@@ -44,7 +44,7 @@
               <MenuItem mnemonicParsing="false" text="Close" />
               <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Pinouts" disable="true">
+          <Menu fx:id="mnuPins" mnemonicParsing="false" text="Pinouts" disable="true">
                 <MenuItem mnemonicParsing="false" text="Clear"  onAction="#handleNew"/>
                 <MenuItem mnemonicParsing="false" text="Load" />
                 <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave"/>
@@ -52,7 +52,7 @@
                 <MenuItem mnemonicParsing="false" text="Close" />
                 <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Clock" disable="true">
+          <Menu fx:id="mnuClk" mnemonicParsing="false" text="Clock" disable="true">
               <MenuItem mnemonicParsing="false" text="Clear"  onAction="#handleNew"/>
               <MenuItem mnemonicParsing="false" text="Load" />
               <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave"/>
@@ -60,7 +60,7 @@
               <MenuItem mnemonicParsing="false" text="Close" />
               <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Timer" disable="true">
+          <Menu fx:id="mnuTmr" mnemonicParsing="false" text="Timer" disable="true">
                 <MenuItem mnemonicParsing="false" text="Clear" onAction="#handleNew"/>
                 <MenuItem mnemonicParsing="false" text="Load" />
                 <MenuItem mnemonicParsing="false" text="Save" onAction="#handleSave" />
@@ -68,10 +68,10 @@
                 <MenuItem mnemonicParsing="false" text="Close" />
                 <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu fx:id="mnuHelp" mnemonicParsing="false" text="Help">
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
           </Menu>
-          <Menu mnemonicParsing="false" text="Quit" onAction="#handleExit"/>
+          <Menu fx:id="mnuExit" mnemonicParsing="false" text="Quit" onAction="#handleExit"/>
       </MenuBar>
    </top>
 </BorderPane>

@@ -32,6 +32,23 @@ public class RootLayoutController extends BasicController {
 		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR
 	}
 
+	@FXML
+	private Menu mnuPrj;
+	@FXML
+	private Menu mnuEdit;
+	@FXML
+	private Menu mnuProc;
+	@FXML
+	private Menu mnuPins;
+	@FXML
+	private Menu mnuClk;
+	@FXML
+	private Menu mnuTmr;
+	@FXML
+	private Menu mnuHelp;
+	@FXML
+	private Menu mnuExit;
+
 	public RootLayoutController() {
 
 	}
@@ -45,17 +62,27 @@ public class RootLayoutController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
-		ChooseController.setDefaultMCU();
+		ChooseController.setDefaultMCU(scene.isDebugMode());
 		Platform.runLater(() -> {
 			scene.setMcuMain(DeviceFactory.getDevice("LQFP64").getMcu());
 			LoadProject(true);
 		});
+		if (!scene.isTestMode()) {
+			mnuProc.setVisible(false);
+			mnuPins.setVisible(false);
+			mnuClk.setVisible(false);
+			mnuTmr.setVisible(false);
+			mnuExit.setVisible(false);
+		}
+		if (!scene.isEditMode()) {
+			mnuEdit.setVisible(false);
+		}
 	}
 
 	public void LoadProjectFromFile(ResourceBundle messages, File selectedFile) {
 		if (selectedFile != null) {
 			getScene().setPinoutsModel(PinoutsModel.load(selectedFile));
-			ChooseController.setDefaultMCU();
+			ChooseController.setDefaultMCU(getScene().isDebugMode());
 			getScene().setMcuMain(DeviceFactory.getDevice(
 					getScene().getPinoutsModel().getSelectedBody()).getMcu());
 			LoadProject(false);

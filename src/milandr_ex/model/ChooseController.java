@@ -53,12 +53,8 @@ public class ChooseController extends BasicController {
 		ioColumn.setCellValueFactory(cellData->cellData.getValue().getSProp("io"));
 		mcuTable.setEditable(false);
 
-
 		initView();
-		setDefaultMCU(mcuTable);
-		
-		showMCUDetails(null);
-		
+
 		mcuTable.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> showMCUDetails(newValue));
 		
@@ -66,7 +62,8 @@ public class ChooseController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
-		//do nothing
+		setDefaultMCU(mcuTable, scene.isDebugMode());
+		showMCUDetails(null);
 	}
 
 	private void initView(){
@@ -86,10 +83,13 @@ public class ChooseController extends BasicController {
 		}
 	}
 	public static void setDefaultMCU(){
-		setDefaultMCU(null);
+		setDefaultMCU(null, false);
+	}
+	public static void setDefaultMCU(boolean fillGenerics){
+		setDefaultMCU(null, fillGenerics);
 	}
 	@SuppressWarnings("unchecked")
-	private static void setDefaultMCU(TableView mcuTable){
+	private static void setDefaultMCU(TableView mcuTable, boolean fillGenerics){
 		if (mcuTable != null) mcuTable.getItems().clear();
 
 		Device d;
@@ -114,7 +114,7 @@ public class ChooseController extends BasicController {
 		d.addPair(Device.EPairNames.I2C, 0, true).setExtWire(0);
 		if (mcuTable != null) mcuTable.getItems().add(d.getMcu());
 
-		fillGenericDevices(mcuTable);
+		if (fillGenerics) fillGenericDevices(mcuTable);
 	}
 
 	private static void fillGenericDevices(TableView mcuTable) {

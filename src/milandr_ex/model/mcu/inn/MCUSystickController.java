@@ -26,7 +26,7 @@ public class MCUSystickController extends BasicController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.SYST);
 		getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), "sign_src", istList));
-		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "intrp", true));
+		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "intrp", true)); // прерывание
 		getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), "wrk_kind", modeList));
 		getDevicePair().model().addModelProp(McuBlockProperty.get(getDevicePair(), "time_freq", ""));
 		getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), "tf_units", unitList));
@@ -67,14 +67,13 @@ public class MCUSystickController extends BasicController {
 		g().addCodeStr(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
 		g().addCodeStr(oldCode, "//стартовое значение загружаемое в регистр VAL");
 		g().addCodeStr(oldCode, "SysTick->VAL = 0x00;");
-		g().addCodeStr(oldCode, "SysTick->CTRL = ((1 << 0)");
-
 		g().addCodeStr(oldCode, "//включение таймера");
-		g().addCodeStr(oldCode, "| ((" + interrupt + " << 1)");
+		g().addCodeStr(oldCode, "SysTick->CTRL = ((1 << 0)");
 		g().addCodeStr(oldCode, "//" + g().EN_INT[interrupt] + " прерывания");
+		g().addCodeStr(oldCode, "| ((" + interrupt + " << 1)");
+		g().addCodeStr(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
 		g().addCodeStr(oldCode, "| ((" + source + " << 2));");
 
-		g().addCodeStr(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
 
 		g().addCodeStr(oldCode, "}//void SysTick_Init");
 		return super.generateCode(device, oldCode);

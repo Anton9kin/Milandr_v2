@@ -38,6 +38,9 @@ public class AppScene extends Scene {
 	private SetsGenerator setsGenerator;
 	private CodeGenerator codeGenerator;
 	private boolean setupInProcess = false;
+	private boolean testMode = false;
+	private boolean debugMode = false;
+	private boolean editMode = false;
 
 	public void addObserver(String key, ModelObserver observer) {
 		if (!observers.containsKey(key)) {
@@ -54,6 +57,30 @@ public class AppScene extends Scene {
 				((PinoutsModel.Observer) observer).observe(pinoutsModel);
 			}
 		}
+	}
+
+	public boolean isTestMode() {
+		return testMode;
+	}
+
+	public void setTestMode(boolean testMode) {
+		this.testMode = testMode;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
+	public boolean isEditMode() {
+		return editMode;
+	}
+
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
 	}
 
 	public void clearObservers() {

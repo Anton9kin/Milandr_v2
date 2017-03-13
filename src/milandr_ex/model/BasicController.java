@@ -131,7 +131,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		Pane propsPane = getPropControl();
 		propsPane.getChildren().clear();
 		if (propsPane instanceof GridPane) {
-			makeColumnConstraints((GridPane) propsPane, 60, 40);
+			makeColumnConstraints((GridPane) propsPane, 70, 30);
 		}
 		String body = getScene().getPinoutsModel().getSelectedBody();
 		int pairCnt = DeviceFactory.getDevice(body).getPairCounts().get(pair.ordinal());
