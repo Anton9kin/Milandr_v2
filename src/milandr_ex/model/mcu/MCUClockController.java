@@ -71,48 +71,36 @@ public class MCUClockController extends MCUExtPairController
 
 
 		if (cpuC1Sel < 2) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
-			g().addCodeStr(oldCode,"	//Необходима пауза для работы Flash-памяти программ");
-			g().addCodeStr(oldCode,"	MDR_EEPROM->CMD |= (" + delayEeprom + " << 3);");
+			g().setCodeParameter(oldCode, "Необходима пауза для работы Flash-памяти программ",
+					"MDR_EEPROM->CMD",  delayEeprom + " << 3", "|");
 			if (hClk > 80000000){
 				g().addCodeStr(oldCode,"//Частота > 80 МГц: работа миксросхемы не гарантируется!!!");
 			}
-			g().addCodeStr(oldCode,"");
 
-			g().addCodeStr(oldCode,"// вкл. HSE осцилятора (частота кварца " + hse + ")");
-			g().addCodeStr(oldCode,"	MDR_RST_CLK->HS_CONTROL = 0x01;");
-
-			g().addCodeStr(oldCode,"// ждем пока HSE выйдет в рабочий режим\n\r");
-			g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & (1 << 2)) == 0x00);");
+			g().setCodeParameter(oldCode,"вкл. HSE осцилятора (частота кварца " + hse + ")",
+					"MDR_RST_CLK->HS_CONTROL", "0x01");
+			g().execCodeCommand(oldCode,"ждем пока HSE выйдет в рабочий режим",
+					"	while ((MDR_RST_CLK->CLOCK_STATUS & (1 << 2)) == 0x00);", "");
 		}
-
-		g().addCodeStr(oldCode,"");
 
 		if (pllCheck){
-			g().addCodeStr(oldCode," //подача частоты на блок PLL");
-			g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0));");
-			g().addCodeStr(oldCode," //вкл. PLL  | коэф. умножения = " + pllMull + "");
-			g().addCodeStr(oldCode,"	MDR_RST_CLK->PLL_CONTROL = ((1 << 2) | (" + (pllMull - 1) + " << 8));");
-			g().addCodeStr(oldCode," // ждем когда PLL выйдет в раб. режим");
-			g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & 0x02) != 0x02);");
+			g().setCodeParameter(oldCode,"подача частоты на блок PLL",
+					"MDR_RST_CLK->CPU_CLOCK",+ cpuC1Sel + " << 0");
+			g().setCodeParameter(oldCode,"вкл. PLL  | коэф. умножения = " + pllMull,
+					"MDR_RST_CLK->PLL_CONTROL","(1 << 2) | (" + (pllMull - 1) + " << 8)");
+			g().execCodeCommand(oldCode,"ждем когда PLL выйдет в раб. режим",
+					"while ((MDR_RST_CLK->CLOCK_STATUS & 0x02) != 0x02);", "");
 		}
 
 		g().addCodeStr(oldCode,"");
+		String[] comments = {"источник для CPU_C1", "источник для CPU_C2", "предделитель для CPU_C3", "источник для HCLK"};
+		String[] values = {cpuC1Sel + " << 0", cpuC2Sel + " << 2", cpuC3Sel + " << 4", hclkSel + " << 8"};
+		g().setCodeParameters(oldCode, "MDR_RST_CLK->CPU_CLOCK", comments, values);
 
-		g().addCodeStr(oldCode," //источник для CPU_C1");
-		g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0)");
-		g().addCodeStr(oldCode," //источник для CPU_C2");
-		g().addCodeStr(oldCode,"							| (" + cpuC2Sel + " << 2)");
-		g().addCodeStr(oldCode," //предделитель для CPU_C3");
-		g().addCodeStr(oldCode,"							| (" + cpuC3Sel + " << 4)");
-		g().addCodeStr(oldCode," //источник для HCLK");
-		g().addCodeStr(oldCode,"							| (" + hclkSel + " << 8));");
 
-		g().addCodeStr(oldCode,"");
-
-		g().addCodeStr(oldCode,"//режим встроенного регулятора напряжения DUcc");
-		g().addCodeStr(oldCode,"	MDR_BKP->REG_0E |= ((" + lowBKP + " << 0) ");
-		g().addCodeStr(oldCode,"//выбор доп.стабилизирующей нагрузки");
-		g().addCodeStr(oldCode,"					  | (" + lowBKP + " << 3)); ");
+		comments = new String[]{"режим встроенного регулятора напряжения DUcc", "выбор доп.стабилизирующей нагрузки"};
+		values = new String[]{ lowBKP + " << 0",  lowBKP + " << 3 "};
+		g().setCodeParameters(oldCode, "MDR_BKP->REG_0E", comments, values);
 		return super.generateCode(device, oldCode);
 	}
 
