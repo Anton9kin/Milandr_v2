@@ -142,11 +142,11 @@ public class MCUClockController extends MCUExtPairController
 			case 3:
 				b().setComments("источник для CPU_C1", "источник для CPU_C2", "предделитель для CPU_C3", "источник для HCLK");
 				b().setValues(cpuC1Sel + " << 0", cpuC2Sel + " << 2", cpuC3Sel + " << 4", hclkSel + " << 8");
-				b().buildParams(oldCode);
+				b().setParam("MDR_RST_CLK->CPU_CLOCK").buildParams(oldCode);
 
 				b().setComments("режим встроенного регулятора напряжения DUcc", "выбор доп.стабилизирующей нагрузки");
 				b().setValues( lowBKP + " << 0",  lowBKP + " << 3 ");
-				b().buildParams(oldCode);
+				b().setParam("MDR_BKP->REG_0E").buildParams(oldCode);
 				break;
 		}
 		return oldCode;

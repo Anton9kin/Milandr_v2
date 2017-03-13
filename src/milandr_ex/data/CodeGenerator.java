@@ -177,8 +177,8 @@ public class CodeGenerator {
 
 		public void buildParam(List<String> codeList) {
 			validate();
-			CodeGenerator.this.setCodeParameter(codeList, param,
-					comments.get(0), values.get(0), opp);
+			CodeGenerator.this.setCodeParameter(codeList, comments.get(0), param,
+					values.get(0), opp);
 			clear();
 		}
 
@@ -191,8 +191,8 @@ public class CodeGenerator {
 
 		public void buildCommand(List<String> codeList) {
 			validate();
-			CodeGenerator.this.execCodeCommand(codeList, param,
-					comments.get(0), values.toArray(new String[]{}));
+			CodeGenerator.this.execCodeCommand(codeList, comments.get(0), param,
+					values.toArray(new String[]{}));
 			clear();
 		}
 	}
