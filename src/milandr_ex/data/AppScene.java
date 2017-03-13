@@ -41,6 +41,7 @@ public class AppScene extends Scene {
 	private boolean testMode = false;
 	private boolean debugMode = false;
 	private boolean editMode = false;
+	private CodeGenerator.GenKind genKind = CodeGenerator.GenKind.COMPLEX;
 
 	public void addObserver(String key, ModelObserver observer) {
 		if (!observers.containsKey(key)) {
@@ -57,6 +58,14 @@ public class AppScene extends Scene {
 				((PinoutsModel.Observer) observer).observe(pinoutsModel);
 			}
 		}
+	}
+
+	public CodeGenerator.GenKind genKind() {
+		return genKind;
+	}
+
+	public void genKind(CodeGenerator.GenKind genKind) {
+		this.genKind = genKind;
 	}
 
 	public boolean isTestMode() {
