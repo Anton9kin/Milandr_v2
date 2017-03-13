@@ -1,5 +1,6 @@
 package milandr_ex.data;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,5 +102,53 @@ public class CodeGenerator {
 		}
 		addCodeStr(codeList, lastLine + ");");
 		addCodeStrL(codeList, "");
+	}
+
+	private CodeExpressionBuilder builder;
+
+	public CodeExpressionBuilder builder() {
+		return builder;
+	}
+
+	public class CodeExpressionBuilder {
+		String param, value;
+		List<String> comments, values;
+
+		public CodeExpressionBuilder setParam(String param) {
+			this.param = param;
+			return this;
+		}
+
+		public CodeExpressionBuilder setValue(String value) {
+			this.value = value;
+			return this;
+		}
+
+		public CodeExpressionBuilder setComments(String... comments) {
+			List<String> list = Lists.newArrayList(comments);
+			if (this.comments == null) {
+				this.comments = list;
+			} else this.comments.addAll(list);
+			return this;
+		}
+
+		public CodeExpressionBuilder setValues(String... values) {
+			List<String> list = Lists.newArrayList(values);
+			if (this.values == null) {
+				this.values = list;
+			} else this.values.addAll(list);
+			return this;
+		}
+
+		public void buildparam(List<String> codeList) {
+			CodeGenerator.this.setCodeParameters(codeList, param,
+					comments.toArray(new String[]{}), values.toArray(new String[]{}));
+		}
+
+		public void buildCommand(List<String> codeList) {
+			if (comments.isEmpty()) comments.add("");
+			CodeGenerator.this.execCodeCommand(codeList, param,
+					comments.get(0), values.toArray(new String[]{}));
+		}
 	}
 }

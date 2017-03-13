@@ -382,6 +382,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	protected CodeGenerator g() { return getScene().getCodeGenerator(); }
+	protected CodeGenerator.CodeExpressionBuilder b() { return g().builder(); }
 	public ResourceBundle getMessages() {
 		return messages;
 	}
