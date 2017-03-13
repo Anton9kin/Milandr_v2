@@ -157,4 +157,20 @@ public class McuBlockModel {
 			}
 		}
 	}
+
+	public void load(List<String> toLoad) {
+		for(String loadStr: toLoad) {
+			String[] loadItms = loadStr.split("\\.");
+			if (!pair.name().equals(loadItms[1])) continue;
+			for(McuBlockProperty prop: props) {
+				if (!prop.getName().equals(loadItms[2])) continue;
+				String[] valParts = loadItms[3].split("=");
+				int valueInd = Integer.parseInt(valParts[0]);
+				int intValue = Integer.parseInt(valParts[1].split(":")[0]);
+				String strValue = valParts[1].split(":")[1];
+				prop.setIntValue(intValue, valueInd);
+				prop.setStrValue(strValue, valueInd);
+			}
+		}
+	}
 }
