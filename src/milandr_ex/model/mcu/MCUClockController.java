@@ -46,7 +46,8 @@ public class MCUClockController extends MCUExtPairController
 		return cpu_grid;
 	}
 
-	public List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
+	@Override
+	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		Integer hClk = getClockProp("HCLK");
 		int delayEeprom = getDelayEeprom(hClk);
 		int lowBKP = getLowBKP(hClk);
@@ -104,7 +105,8 @@ public class MCUClockController extends MCUExtPairController
 		return oldCode;
 	}
 
-	public List<String> generateComplexCodeStep(List<String> oldCode, int codeStep) {
+	@Override
+	protected List<String> generateComplexCodeStep(List<String> oldCode, int codeStep) {
 		Integer hClk = getClockProp("HCLK");
 		int delayEeprom = getDelayEeprom(hClk);
 		int lowBKP = getLowBKP(hClk);
@@ -150,7 +152,8 @@ public class MCUClockController extends MCUExtPairController
 		return oldCode;
 	}
 
-	public List<String> generateBuilderCodeStep(List<String> oldCode, int codeStep) {
+	@Override
+	protected List<String> generateBuilderCodeStep(List<String> oldCode, int codeStep) {
 		Integer hClk = getClockProp("HCLK");
 		int delayEeprom = getDelayEeprom(hClk);
 		int lowBKP = getLowBKP(hClk);
@@ -203,14 +206,6 @@ public class MCUClockController extends MCUExtPairController
 		int delayEeprom = hClk % 25_000_000;
 		if (delayEeprom > 7) delayEeprom = 7;
 		return delayEeprom;
-	}
-	public List<String> generateCode(List<String> oldCode, int step) {
-		switch (getScene().genKind()) {
-			case SIMPLE: return generateSimpleCodeStep(oldCode, step);
-			case COMPLEX: return generateComplexCodeStep(oldCode, step);
-			case BUILDER: return generateBuilderCodeStep(oldCode, step);
-		}
-		return oldCode;
 	}
 
 	@Override

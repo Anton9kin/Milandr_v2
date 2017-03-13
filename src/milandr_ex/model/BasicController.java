@@ -365,6 +365,23 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected List<String> generateDefines(Device device, List<String> oldCode) {
 		return oldCode;
 	}
+	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
+		return oldCode;
+	}
+	protected List<String> generateComplexCodeStep(List<String> oldCode, int codeStep) {
+		return generateSimpleCodeStep(oldCode, codeStep);
+	}
+	protected List<String> generateBuilderCodeStep(List<String> oldCode, int codeStep) {
+		return generateComplexCodeStep(oldCode, codeStep);
+	}
+	protected List<String> generateCode(List<String> oldCode, int step) {
+		switch (getScene().genKind()) {
+			case SIMPLE: return generateSimpleCodeStep(oldCode, step);
+			case COMPLEX: return generateComplexCodeStep(oldCode, step);
+			case BUILDER: return generateBuilderCodeStep(oldCode, step);
+		}
+		return oldCode;
+	}
 
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();

@@ -51,17 +51,13 @@ public class MCUSystickController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		log.debug(String.format("#generateDACCode(%s)", device));
+	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		//handling incoming parameters
 		Integer reloadReg = getSysTickReloadReg();
 		int interrupt = getConfPropInt("intrp");
 		int source = getConfPropInt("sign_src");
 		int mode = getConfPropInt("wrk_kind");
-
-		//code block generation
-		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateSystCode(%s) %d, %d, %d, %d", device, reloadReg, interrupt, source, mode));
+		log.debug(String.format("#generateSystCode(%d) %d, %d, %d, %d", codeStep, reloadReg, interrupt, source, mode));
 
 		g().addCodeStr(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
 		g().addCodeStr(oldCode, "//стартовое значение загружаемое в регистр VAL");
@@ -72,7 +68,16 @@ public class MCUSystickController extends BasicController {
 		g().addCodeStr(oldCode, "| ((" + interrupt + " << 1)");
 		g().addCodeStr(oldCode, "//источник синхросигнала = " + g().EN_IST[source] + "");
 		g().addCodeStr(oldCode, "| ((" + source + " << 2));");
+		return oldCode;
+	}
 
+	@Override
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		log.debug(String.format("#generateDACCode(%s)", device));
+
+		//code block generation
+		oldCode = Lists.newArrayList();
+		generateCode(oldCode, 0);
 
 		return super.generateCode(device, oldCode);
 	}
