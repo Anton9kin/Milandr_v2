@@ -115,7 +115,7 @@ public class CodeGenerator {
 	}
 
 	public class CodeExpressionBuilder {
-		String param, value, opp;
+		String module, param, value, opp;
 		List<String> comments, values;
 
 		public CodeExpressionBuilder clear() {
@@ -124,6 +124,16 @@ public class CodeGenerator {
 			comments = null;
 			values = null;
 			opp = null;
+			return this;
+		}
+
+		public CodeExpressionBuilder reset() {
+			clear();
+			module = null;
+			return this;
+		}
+		public CodeExpressionBuilder setModule(String module) {
+			this.module = module;
 			return this;
 		}
 
@@ -177,22 +187,30 @@ public class CodeGenerator {
 
 		public void buildParam(List<String> codeList) {
 			validate();
-			CodeGenerator.this.setCodeParameter(codeList, comments.get(0), param,
-					values.get(0), opp);
+			CodeGenerator.this.setCodeParameter(codeList, comments.get(0),
+					getFullParam(), values.get(0), opp);
 			clear();
+		}
+
+		private String getFullParam() {
+			String fullParam;
+			if (module != null && !module.isEmpty()) {
+				fullParam = module + "->" + param;
+			} else fullParam = param;
+			return fullParam;
 		}
 
 		public void buildParams(List<String> codeList) {
 			validate();
-			CodeGenerator.this.setCodeParameters(codeList, param,
+			CodeGenerator.this.setCodeParameters(codeList, getFullParam(),
 					comments.toArray(new String[]{}), values.toArray(new String[]{}));
 			clear();
 		}
 
 		public void buildCommand(List<String> codeList) {
 			validate();
-			CodeGenerator.this.execCodeCommand(codeList, comments.get(0), param,
-					values.toArray(new String[]{}));
+			CodeGenerator.this.execCodeCommand(codeList, comments.get(0),
+					param, values.toArray(new String[]{}));
 			clear();
 		}
 	}

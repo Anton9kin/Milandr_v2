@@ -380,6 +380,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			case COMPLEX: return generateComplexCodeStep(oldCode, step);
 			case BUILDER: return generateBuilderCodeStep(oldCode, step);
 		}
+		b().reset();
 		return oldCode;
 	}
 
