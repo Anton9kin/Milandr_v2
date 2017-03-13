@@ -67,7 +67,8 @@ public class CodeGenerator {
 			format = format.replaceFirst("//", "\t//");
 		}
 		if (braces.endsWith("}")) indent--;
-		for(int i = indent; i >0; i--) format = "\t" + format.trim();
+		format = format.trim();
+		for(int i = indent; i > 0; i--) format = "\t" + format;
 		if (lineInd >= 0) codeList.add(lineInd, String.format(format, args));
 		else codeList.add(String.format(format, args));
 		if (braces.endsWith("{")) indent++;
@@ -84,7 +85,7 @@ public class CodeGenerator {
 	}
 	public void setCodeParameter(List<String> codeList, String comment, String param, String value, String opp) {
 		addCodeStr(codeList,"// " + comment);
-		addCodeStr(codeList, String.format("%s %s= (%s)", opp, param, value));
+		addCodeStr(codeList, String.format("%s %s= (%s)", param, opp, value));
 		addCodeStr(codeList, "");
 	}
 
@@ -94,10 +95,11 @@ public class CodeGenerator {
 		String lastLine = String.format("%s = ((%s)", param, values[0]);
 		for(int i = 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
+			if (i == 1) indent++;
 			if (comments.length > i) addCodeStr(codeList,"// " + comments[i]);
 			lastLine = String.format("| (%s)", values[i]);
 		}
 		addCodeStr(codeList, lastLine + ");");
-		addCodeStr(codeList, "");
+		addCodeStrL(codeList, "");
 	}
 }
