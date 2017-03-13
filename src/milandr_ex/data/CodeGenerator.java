@@ -114,6 +114,14 @@ public class CodeGenerator {
 		String param, value;
 		List<String> comments, values;
 
+		public CodeExpressionBuilder clear() {
+			param = null;
+			value = null;
+			comments = null;
+			values = null;
+			return this;
+		}
+
 		public CodeExpressionBuilder setParam(String param) {
 			this.param = param;
 			return this;
@@ -143,12 +151,14 @@ public class CodeGenerator {
 		public void buildparam(List<String> codeList) {
 			CodeGenerator.this.setCodeParameters(codeList, param,
 					comments.toArray(new String[]{}), values.toArray(new String[]{}));
+			clear();
 		}
 
 		public void buildCommand(List<String> codeList) {
 			if (comments.isEmpty()) comments.add("");
 			CodeGenerator.this.execCodeCommand(codeList, param,
 					comments.get(0), values.toArray(new String[]{}));
+			clear();
 		}
 	}
 }
