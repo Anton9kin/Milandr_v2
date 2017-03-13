@@ -79,7 +79,7 @@ public class CodeGenerator {
 	}
 
 	public void execCodeCommand(List<String> codeList, String comment, String command, String... values) {
-		addCodeStr(codeList,"// " + comment);
+		if (!comment.trim().isEmpty()) addCodeStr(codeList,"// " + comment);
 		addCodeStr(codeList, command, values);
 		addCodeStr(codeList, "");
 	}
@@ -88,7 +88,7 @@ public class CodeGenerator {
 		setCodeParameter(codeList, comment, param, value, "");
 	}
 	public void setCodeParameter(List<String> codeList, String comment, String param, String value, String opp) {
-		addCodeStr(codeList,"// " + comment);
+		if (!comment.trim().isEmpty()) addCodeStr(codeList,"// " + comment);
 		addCodeStr(codeList, String.format("%s %s= (%s)", param, opp, value));
 		addCodeStr(codeList, "");
 	}
