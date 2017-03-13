@@ -272,15 +272,24 @@ public class McuBlockProperty {
 	}
 
 	public int getIntValue() {
-		checkValues();
+		return getIntValue(valueInd);
+	}
+	public int getIntValue(int valueInd) {
+		checkValues(valueInd);
 		return this.values.get(valueInd).getIntValue();
 	}
-
 	public String getStrValue() {
-		checkValues();
+		return getStrValue(valueInd);
+	}
+	public String getStrValue(int valueInd) {
+		checkValues(valueInd);
 		PropValue propValue = this.values.get(valueInd);
 		return "" + (kind.equals(PropKind.INT) ? propValue.getIntValue()
 				: propValue.getStrValue());
+	}
+	public int getValuesCount() {
+		checkValues();
+		return values.size();
 	}
 
 	public void setSubItems(List<String> subItems) {

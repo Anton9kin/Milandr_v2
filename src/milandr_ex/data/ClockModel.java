@@ -15,6 +15,11 @@ public class ClockModel {
 	private static Map<String, String> pinAliases = new HashMap<String, String>(){{
 		put("ADC-CLK", "ADC-C2");put("CPU-CLK", "HCLK");put("USB-CLK", "USB-C2");
 	}};
+
+	public void save(List<String> toSave) {
+		//do nothing - will saved by pins
+	}
+
 	public static class InOut {
 		private String alias;
 		private final String name;

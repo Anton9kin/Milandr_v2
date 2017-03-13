@@ -89,6 +89,8 @@ public class PinoutsModel {
 		for(String key: selectedPins.keySet()) {
 			toSave.add(String.format("pin.%s=%s", key, selectedPins.get(key)));
 		}
+		clockModel.save(toSave);
+		for(McuBlockModel blockModel: mcuBlocks.values()) blockModel.save(toSave);
 		Constants.saveTxtList(file, toSave, override);
 		hasUnsavedChanges = false;
 	}
