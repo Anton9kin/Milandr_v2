@@ -50,8 +50,55 @@ public class MCUClockController extends MCUExtPairController
 		Integer hClk = getClockProp("HCLK");
 		int delayEeprom = getDelayEeprom(hClk);
 		int lowBKP = getLowBKP(hClk);
+
+		Integer hse = getClockProp("HSE");
+		int pllMull = getClockProp("CPU-C2-1.S");
+		int cpuC1Sel = getClockProp("CPU-C1.S");
+
+		int cpuC2Sel = getClockProp("CPU-C2.S");
+		int cpuC3Sel = getClockProp("HCLK.S");
+		int hclkSel = getClockProp("HCLK-1.S");
+
 		switch (codeStep) {
 			case 0:
+				g().addCodeStr(oldCode,"	//Необходима пауза для работы Flash-памяти программ");
+				g().addCodeStr(oldCode,"	MDR_EEPROM->CMD |= (" + delayEeprom + " << 3);");
+				g().addCodeStr(oldCode,"");
+				break;
+			case 1:
+				g().addCodeStr(oldCode,"// вкл. HSE осцилятора (частота кварца " + hse + ")");
+				g().addCodeStr(oldCode,"	MDR_RST_CLK->HS_CONTROL = 0x01;");
+
+				g().addCodeStr(oldCode,"// ждем пока HSE выйдет в рабочий режим\n\r");
+				g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & (1 << 2)) == 0x00);");
+				g().addCodeStr(oldCode,"");
+				break;
+			case 2:
+				g().addCodeStr(oldCode," //подача частоты на блок PLL");
+				g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0));");
+				g().addCodeStr(oldCode," //вкл. PLL  | коэф. умножения = " + pllMull + "");
+				g().addCodeStr(oldCode,"	MDR_RST_CLK->PLL_CONTROL = ((1 << 2) | (" + (pllMull - 1) + " << 8));");
+				g().addCodeStr(oldCode," // ждем когда PLL выйдет в раб. режим");
+				g().addCodeStr(oldCode,"	while ((MDR_RST_CLK->CLOCK_STATUS & 0x02) != 0x02);");
+				g().addCodeStr(oldCode,"");
+				break;
+			case 3:
+				g().addCodeStr(oldCode," //источник для CPU_C1");
+				g().addCodeStr(oldCode,"	MDR_RST_CLK->CPU_CLOCK = ((" + cpuC1Sel + " << 0)");
+				g().addCodeStr(oldCode," //источник для CPU_C2");
+				g().addCodeStr(oldCode,"							| (" + cpuC2Sel + " << 2)");
+				g().addCodeStr(oldCode," //предделитель для CPU_C3");
+				g().addCodeStr(oldCode,"							| (" + cpuC3Sel + " << 4)");
+				g().addCodeStr(oldCode," //источник для HCLK");
+				g().addCodeStr(oldCode,"							| (" + hclkSel + " << 8));");
+
+				g().addCodeStr(oldCode,"");
+
+				g().addCodeStr(oldCode,"//режим встроенного регулятора напряжения DUcc");
+				g().addCodeStr(oldCode,"	MDR_BKP->REG_0E |= ((" + lowBKP + " << 0) ");
+				g().addCodeStr(oldCode,"//выбор доп.стабилизирующей нагрузки");
+				g().addCodeStr(oldCode,"					  | (" + lowBKP + " << 3)); ");
+				g().addCodeStr(oldCode,"");
 				break;
 		}
 		return oldCode;
