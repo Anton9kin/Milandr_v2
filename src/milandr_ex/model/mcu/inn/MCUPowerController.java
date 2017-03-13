@@ -20,6 +20,7 @@ public class MCUPowerController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.PWR);
+		//noinspection unchecked
 		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 	}
 

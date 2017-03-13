@@ -25,6 +25,7 @@ public class MCUCanController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.CAN);
+		//noinspection unchecked
 		addModelProps(new String[]{"pre_div", "speed"}, div128List, speedList);
 		addModelProps("-", "quants", "seg1", "seg2", "pseg", "-", "r_speed", "error");
 	}

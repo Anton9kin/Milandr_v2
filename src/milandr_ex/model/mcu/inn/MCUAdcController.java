@@ -1,7 +1,6 @@
 package milandr_ex.model.mcu.inn;
 
 import com.google.common.collect.Lists;
-import io.swagger.models.auth.In;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -25,6 +24,7 @@ public class MCUAdcController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.ADC);
+		//noinspection unchecked
 		addModelProps(new String[]{"base_power", "start_kind"}, opUList, typeStartList);
 		addModelProps(new String[]{"sw_chn", "temp_sens", "lst_chn"}, "BBS");
 	}
@@ -39,7 +39,7 @@ public class MCUAdcController extends BasicController {
 	@Override
 	protected void checkSelectedPin(String comboKey, String value) {
 		super.checkSelectedPin(comboKey, value);
-		if (comboKey.startsWith(getDevicePair().name())) {
+		if (comboKey.matches(getDevicePair().name() + "-\\d")) {
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
 			setModelProp("lst_chn", Integer.parseInt(ind) - 1, value);
 		}
