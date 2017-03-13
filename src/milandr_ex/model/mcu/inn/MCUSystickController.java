@@ -62,7 +62,6 @@ public class MCUSystickController extends BasicController {
 		//code block generation
 		oldCode = Lists.newArrayList();
 		log.debug(String.format("#generateSystCode(%s) %d, %d, %d, %d", device, reloadReg, interrupt, source, mode));
-		g().addCodeStr(oldCode, "void SysTick_Init(void){");
 
 		g().addCodeStr(oldCode, "SysTick->LOAD = 0x" + Integer.toString(reloadReg, 16) + ";");
 		g().addCodeStr(oldCode, "//стартовое значение загружаемое в регистр VAL");
@@ -75,7 +74,6 @@ public class MCUSystickController extends BasicController {
 		g().addCodeStr(oldCode, "| ((" + source + " << 2));");
 
 
-		g().addCodeStr(oldCode, "}//void SysTick_Init");
 		return super.generateCode(device, oldCode);
 	}
 }

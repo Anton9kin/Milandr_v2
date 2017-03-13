@@ -27,6 +27,7 @@ public class CodeGenerator {
 		List<String> codeList = model.getBlockCode(pairBlock.name());
 		if (codeList == null || pairBlock.model() == null) return;
 		if (pairBlock.model().getController() == null) return;
+		indent++;
 		codeList = pairBlock.model().getController()
 				.generateCode(device, codeList);
 		model.setBlockCode(pairBlock.name(), codeList);
@@ -57,6 +58,9 @@ public class CodeGenerator {
 		addCodeStr(codeList, format, args);
 	}
 	public void addCodeStr(List<String> codeList, String format, Object... args) {
+		addCodeStr(-1, codeList, format, args);
+	}
+	public void addCodeStr(int lineInd, List<String> codeList, String format, Object... args) {
 		String braces = format.trim();
 		if (braces.contains("//")) {
 			braces = braces.substring(0, format.lastIndexOf("//")).trim();
@@ -64,7 +68,8 @@ public class CodeGenerator {
 		}
 		if (braces.endsWith("}")) indent--;
 		for(int i = indent; i >0; i--) format = "\t" + format.trim();
-		codeList.add(String.format(format, args));
+		if (lineInd >= 0) codeList.add(lineInd, String.format(format, args));
+		else codeList.add(String.format(format, args));
 		if (braces.endsWith("{")) indent++;
 	}
 }

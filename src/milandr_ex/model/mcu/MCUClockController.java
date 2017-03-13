@@ -70,7 +70,6 @@ public class MCUClockController extends MCUExtPairController
 		else if (hClk >= 80_000_000) lowBKP  = 7; // 80_000_000 <= hClk < +xxxxx
 
 
-		g().addCodeStr(oldCode, "void CPU_Init( void ){");
 		if (cpuC1Sel < 2) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
 			g().addCodeStr(oldCode,"	//Необходима пауза для работы Flash-памяти программ");
 			g().addCodeStr(oldCode,"	MDR_EEPROM->CMD |= (" + delayEeprom + " << 3);");
@@ -114,7 +113,6 @@ public class MCUClockController extends MCUExtPairController
 		g().addCodeStr(oldCode,"	MDR_BKP->REG_0E |= ((" + lowBKP + " << 0) ");
 		g().addCodeStr(oldCode,"//выбор доп.стабилизирующей нагрузки");
 		g().addCodeStr(oldCode,"					  | (" + lowBKP + " << 3)); ");
-		g().addCodeStr(oldCode, "} //void CPU_Init");
 		return super.generateCode(device, oldCode);
 	}
 

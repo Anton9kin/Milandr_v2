@@ -33,7 +33,7 @@ public class MCUAdcController extends BasicController {
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
 		log.debug(String.format("#generateADCCode(%s)", device));
-		g().addCodeStr(oldCode, "void  ADC_init( void ){");
+
 		//, Color\.\w+,\sFontStyle\.\w+,\s\w+
 
 		int adcC1 = getClockProp("ADC-C1.S");
@@ -83,7 +83,6 @@ public class MCUAdcController extends BasicController {
 
 		g().addCodeStr(oldCode, "/*коэффициент деления частоты*/");
 		g().addCodeStr(oldCode, "                        |(" + DIV_CLK + " << 12)); ");
-		g().addCodeStr(oldCode,"} //void ADC_init");
 		return super.generateCode(device, oldCode);
 	}
 

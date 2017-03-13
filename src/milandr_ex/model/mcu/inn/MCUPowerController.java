@@ -35,8 +35,6 @@ public class MCUPowerController extends BasicController {
 		int bucc = getConfPropInt("bp_bucc");
 		oldCode = Lists.newArrayList();
 
-		g().addCodeStr(oldCode, "void Power_Init( void ){");
-
 		g().addCodeStr(oldCode, "//разрешение тактирования Power");
 		g().addCodeStr(oldCode, "    MDR_RST_CLK->PER_CLOCK |= 1 << 11;");
 
@@ -46,7 +44,6 @@ public class MCUPowerController extends BasicController {
 		g().addCodeStr(oldCode, " //равнение с BUcc ( " + buccList.get(bucc) + " ));");
 		g().addCodeStr(oldCode, "                     | (" + bucc + " << 1);");
 
-		g().addCodeStr(oldCode, "} //void Power_Init");
 		return super.generateCode(device, oldCode);
 	}
 }

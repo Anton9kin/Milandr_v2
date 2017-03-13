@@ -362,10 +362,21 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	return getDevicePair().model().getProp(name).getProp(sName).getIntValue();
 	}
 
+	protected List<String> generateDefines(Device device, List<String> oldCode) {
+		return oldCode;
+	}
+
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();
 	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
-		oldCode.add(0, String.format("// code block for %s module", pairBlock.name()));
+	 	int lineInd = 0;
+	 	g().resetIndent();
+		g().addCodeStr(lineInd++, oldCode, String.format("// code block for %s module", pairBlock.name()));
+		for(String codeStr: generateDefines(device, Lists.newArrayList())) {
+			g().addCodeStr(lineInd++, oldCode, codeStr);
+		}
+		g().addCodeStr(lineInd, oldCode, String.format("void %s_init( void ){", pairBlock.name()));
+		g().addCodeStr(oldCode, "} //void %s_init", pairBlock.name());
 		g().addCodeStr(oldCode, "// end of code block for %s module", pairBlock.name());
 	 	return oldCode;
 	}

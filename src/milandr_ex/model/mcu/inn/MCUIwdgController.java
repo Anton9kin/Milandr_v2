@@ -38,15 +38,18 @@ public class MCUIwdgController extends BasicController {
 	}
 
 	@Override
+	protected List<String> generateDefines(Device device, List<String> oldCode) {
+		oldCode.add("#define IWDG_RST() MDR_IWDG->KR = 0xAAAA; //сброс IWDG");
+		return super.generateDefines(device, oldCode);
+	}
+
+	@Override
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		oldCode = Lists.newArrayList();
 		log.debug(String.format("#generateWDGCode(%s)", device));
 		String freq = getConfPropStr("freq_div", "f_time");
 		Integer div = getConfPropInt("freq_div", "f_div");
 		Integer irlr = getWatchDogReloadReg();
-		g().addCodeStr(oldCode,"#define IWDG_RST() MDR_IWDG->KR = 0xAAAA; //сброс IWDG");
-
-		g().addCodeStr(oldCode,"void IWDG_Init( void ) {");
 
 		g().addCodeStr(oldCode,"//разрешение тактирование IWDG");
 		g().addCodeStr(oldCode,"MDR_RST_CLK->PER_CLOCK |= ( 1 << 13 );");
@@ -57,7 +60,6 @@ public class MCUIwdgController extends BasicController {
 		g().addCodeStr(oldCode,"MDR_IWDG->PR =  " + div + "; //частота IWDG = LSI(40kHz)" + div + " = " + freq+ "");
 		g().addCodeStr(oldCode,"MDR_IWDG->RLR = 0x" + Integer.toHexString(irlr) + "; //значение перегрузки IWDG");
 		g().addCodeStr(oldCode,"MDR_IWDG->KR =  0xCCCC; //запускаем IWDG");
-		g().addCodeStr(oldCode,"}//void IWDG_Init");
 		return super.generateCode(device, oldCode);
 	}
 }
