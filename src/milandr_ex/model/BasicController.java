@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -117,9 +118,24 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected void hideChildPane(Device.EPairNames pair) {
 		//do nothing by default
 	}
+	private void makeColumnConstraint(List<ColumnConstraints> cc, double percent) {
+		ColumnConstraints cci = new ColumnConstraints();
+		cci.setPercentWidth(percent);
+		cci.setFillWidth(true);
+		cc.add(cci);
+	}
+	private void makeColumnConstraints(GridPane gp, double... percents) {
+		List<ColumnConstraints> cc = gp.getColumnConstraints();
+		cc.clear();
+		for(double percent: percents) makeColumnConstraint(cc, percent);
+	}
+
 	private void makeUI(Device.EPairNames pair) {
 		Pane propsPane = getPropControl();
 		propsPane.getChildren().clear();
+		if (propsPane instanceof GridPane) {
+			makeColumnConstraints((GridPane) propsPane, 60, 40);
+		}
 		String body = getScene().getPinoutsModel().getSelectedBody();
 		int pairCnt = DeviceFactory.getDevice(body).getPairCounts().get(pair.ordinal());
 		int ind = 0;

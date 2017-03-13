@@ -7,13 +7,12 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import jfxtras.scene.control.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,7 +353,7 @@ public class McuBlockProperty {
 		switch (kind) {
 			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(scene, pane, gridIndex++); break;
 			case CHK: node = new CheckBox("");
-						makeListener(scene, node, ((CheckBox) node).selectedProperty()); break;
+				makeListener(scene, node, ((CheckBox) node).selectedProperty()); break;
 			case STR: node = new TextField(strDefValue);
 						makeListener(scene, node, ((TextField) node).textProperty()); break;
 			case INT: node = new TextField(intDefValue + "");
@@ -378,6 +377,8 @@ public class McuBlockProperty {
 				pane.getChildren().add(node);
 				GridPane.setRowIndex(node, gridIndex);
 				GridPane.setColumnIndex(node, 1);
+				if (kind.equals(PropKind.CHK)) GridPane.setHalignment(node, HPos.RIGHT);
+				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
 			}
 			node.setDisable(readOnly);
 			setValueInd(0);
