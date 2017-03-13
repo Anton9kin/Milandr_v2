@@ -20,13 +20,20 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import milandr_ex.data.AppScene;
-import milandr_ex.data.Constants;
-import milandr_ex.data.DeviceFactory;
-import milandr_ex.data.PinoutsModel;
+import milandr_ex.data.*;
 import milandr_ex.utils.LoaderUtils;
 
 public class RootLayoutController extends BasicController {
+
+	public void genSmpl(ActionEvent actionEvent) {
+		getScene().genKind(CodeGenerator.GenKind.SIMPLE);
+	}
+	public void genCplx(ActionEvent actionEvent) {
+		getScene().genKind(CodeGenerator.GenKind.COMPLEX);
+	}
+	public void genBldr(ActionEvent actionEvent) {
+		getScene().genKind(CodeGenerator.GenKind.BUILDER);
+	}
 
 	public enum MenuKind {
 		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR

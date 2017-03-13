@@ -68,6 +68,13 @@
                 <MenuItem mnemonicParsing="false" text="Close" />
                 <MenuItem mnemonicParsing="false" text="Delete" />
           </Menu>
+          <Menu fx:id="mnuOpts" mnemonicParsing="false" text="Options">
+              <Menu mnemonicParsing="false" text="Gen Kind">
+                <MenuItem mnemonicParsing="false" text="Simple" onAction="#genSmpl"/>
+                <MenuItem mnemonicParsing="false" text="Complex" onAction="#genCplx"/>
+                <MenuItem mnemonicParsing="false" text="Builder" onAction="#genBldr" />
+              </Menu>
+          </Menu>
           <Menu fx:id="mnuHelp" mnemonicParsing="false" text="Help">
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
           </Menu>
