@@ -66,9 +66,12 @@ public class AppScene extends Scene {
 
 	public void genKind(CodeGenerator.GenKind genKind) {
 		this.genKind = genKind;
-		Device.EPairNames pair = Device.EPairNames.CPU;
-		getCodeGenerator().listenPinsChanges(getDevice(), pair, getPinoutsModel());
-		getMainController().updateCodeGenerator(pair.name());
+		Device.EPairNames temp = Device.EPairNames.SYST;
+		for(Device.EPairNames pair: Device.EPairNames.values()) {
+			getCodeGenerator().listenPinsChanges(getDevice(), pair, getPinoutsModel());
+			if (!temp.equals(pair)) continue;
+			getMainController().updateCodeGenerator(pair.name());
+		}
 	}
 
 	public boolean isTestMode() {
