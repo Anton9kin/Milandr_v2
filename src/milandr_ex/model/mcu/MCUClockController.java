@@ -10,6 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.*;
+import milandr_ex.data.code.Command;
+import milandr_ex.data.code.Module;
+import milandr_ex.data.code.Param;
 import milandr_ex.model.BasicController;
 import milandr_ex.model.mcu.ext.MCUExtPairController;
 import milandr_ex.utils.GuiUtils;
@@ -203,6 +206,57 @@ public class MCUClockController extends MCUExtPairController
 
 				b().setComments(6, 7).setValues(lowBKP, lowBKP).setShifts(0, 3);
 				b().setModule("MDR_BKP").setParam("REG_0E").buildParams(oldCode);
+				break;
+		}
+		return oldCode;
+	}
+
+	Module MDR_EEPROM = Module.MDR_EEPROM.get();
+	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	Module MDR_BKP = Module.MDR_BKP.get();
+
+	@Override
+	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		Integer hClk = getClockProp("HCLK");
+		int delayEeprom = getDelayEeprom(hClk);
+		int lowBKP = getLowBKP(hClk);
+
+		Integer hse = getClockProp("HSE");
+		int pllMull = getClockProp("CPU-C2-1.S");
+		int cpuC1Sel = getClockProp("CPU-C1.S");
+
+		int cpuC2Sel = getClockProp("CPU-C2.S");
+		int cpuC3Sel = getClockProp("HCLK.S");
+		int hclkSel = getClockProp("HCLK-1.S");
+
+
+		switch (codeStep) {
+			case 0:
+				MDR_EEPROM.get().arr(comments);
+				MDR_EEPROM.set(Param.CMD.set(delayEeprom).shift(3).opp("|")).cmt(0).build(oldCode);
+				break;
+			case 1:
+				MDR_RST_CLK.get().arr(comments);
+				MDR_RST_CLK.set(Param.HS_CONTROL.set(1)).cmta(1, hse).build(oldCode);
+				MDR_RST_CLK.set(Command.WHILE.set(
+						Param.CLOCK_STATUS, "2 << 3", "== 0x45"))
+						.cmta(2, 2).build(oldCode);
+				break;
+			case 2:
+				MDR_RST_CLK.set(Param.CPU_CLOCK.seti(cpuC1Sel , 0)).cmta(3, hse).build(oldCode);
+				MDR_RST_CLK.set(
+						Param.PLL_CONTROL.add("(1 << 2) | (%s << 8)",
+								(pllMull - 1))).cmta(5, pllMull).build(oldCode);
+				MDR_RST_CLK.set(Command.WHILE.set(
+						Param.CLOCK_STATUS, "0x02", "!= 0x02"))
+						.cmt(4).build(oldCode);
+				break;
+			case 3:
+				MDR_RST_CLK.set(Param.CPU_CLOCK.set(cpuC1Sel, cpuC2Sel, cpuC3Sel, hclkSel).shift(0, 2, 4, 8))
+						.pre("источник для ").cmt("CPU_C1", "CPU_C2", "CPU_C3", "HCLK").build(oldCode);
+
+				MDR_BKP.get().arr(comments);
+				MDR_BKP.set(Param.REG_0E.set(lowBKP, lowBKP).shift(0, 3)).cmt(6, 7).build(oldCode);
 				break;
 		}
 		return oldCode;

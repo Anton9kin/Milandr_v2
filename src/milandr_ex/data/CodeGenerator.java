@@ -100,14 +100,19 @@ public class CodeGenerator {
 	public void setCodeParameters(List<String> codeList, String param, String[] comments, String[] values, Integer[] shifts) {
 		setCodeParameters(codeList, param, "", comments, values, shifts);
 	}
-	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments, String[] values, Integer[] shifts) {
+	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments,
+								  String[] values, Integer[] shifts) {
+		setCodeParameters(codeList, param, pref, comments, values, shifts, "");
+	}
+	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments,
+								  String[] values, Integer[] shifts, String opp) {
 		if (values.length < 1) return;
 		if (comments.length > 0 && !comments[0].isEmpty()) {
 			addCodeStr(codeList,"// " + pref + comments[0]);
 		}
 		String value = values[0];
 		if (shifts != null && shifts.length > 0) value += " << " + shifts[0];
-		String lastLine = String.format("%s = ((%s)", param, value);
+		String lastLine = String.format("%s %s= ((%s)", param, opp, value);
 		for(int i = 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
 			if (i == 1) indent++;
@@ -238,7 +243,7 @@ public class CodeGenerator {
 			if (values == null) return this;
 			String[] strValues = new String[values.length];
 			for(int i = 0; i < values.length; i++) {
-				strValues[i] = values[i] + "";
+				strValues[i] = Integer.toHexString(values[i]);
 			}
 			return setValues(strValues);
 		}
@@ -337,7 +342,7 @@ public class CodeGenerator {
 			validate();
 			CodeGenerator.this.setCodeParameters(codeList, getFullParam(),
 					commentPref, comments.toArray(new String[]{}),
-					values.toArray(new String[]{}), shifts.toArray(new Integer[]{}));
+					values.toArray(new String[]{}), shifts.toArray(new Integer[]{}), opp);
 			clear();
 		}
 

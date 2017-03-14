@@ -9,7 +9,7 @@ import java.util.List;
  * Created by lizard on 14.03.17 at 12:17.
  */
 public enum Module {
-	SysTick();
+	SysTick(), MDR_EEPROM(), MDR_RST_CLK(), MDR_BKP();
 	private final CodeGenerator.CodeExpressionBuilder builder;
 	private Object[] args;
 
@@ -29,14 +29,26 @@ public enum Module {
 	}
 	public Module set(Param param) {
 		this.param = param;
+		this.command = null;
 		return this;
 	}
 	public Module set(Command command) {
+		this.param = null;
 		this.command = command;
+		return this;
+	}
+	public Module pre(String prefix) {
+		builder.setCommentPref(prefix);
 		return this;
 	}
 	public Module cmt(Integer... comments) {
 		if (param != null) param.comment(comments, args);
+		if (command != null) command.comment(comments, args);
+		return this;
+	}
+	public Module cmta(Integer cind, Object... args) {
+		if (param != null) param.comment(cind, args);
+		if (command != null) command.comment(cind, args);
 		return this;
 	}
 	public Module args(Object... args) {
