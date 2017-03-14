@@ -22,7 +22,8 @@ public class MCUUsbController extends MCUExtPairController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.USB);
 		//noinspection unchecked
-		addModelProps(new String[]{"usb_mode", "usb_len", "usb_sph", "usb_spo"}, usbModeList, usbSpeedList, usbPolarList, usbPushPullList);
+		addModelProps(new String[]{"usb_mode", "usb_len", "usb_sph", "usb_spo"},
+				usbModeList, usbSpeedList, usbPolarList, usbPushPullList);
 		addModelProps(new String[]{"usb_txd"}, "B", true);
 	}
 

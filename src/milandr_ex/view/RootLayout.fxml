@@ -73,6 +73,7 @@
                 <MenuItem mnemonicParsing="false" text="Simple" onAction="#genSmpl"/>
                 <MenuItem mnemonicParsing="false" text="Complex" onAction="#genCplx"/>
                 <MenuItem mnemonicParsing="false" text="Builder" onAction="#genBldr" />
+                <MenuItem mnemonicParsing="false" text="Model" onAction="#genMdl" />
               </Menu>
           </Menu>
           <Menu fx:id="mnuHelp" mnemonicParsing="false" text="Help">

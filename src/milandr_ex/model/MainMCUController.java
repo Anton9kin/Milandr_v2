@@ -164,6 +164,7 @@ public class MainMCUController extends BasicController {
 		Boolean inValue = value != null && value.equals("true");
 		if (comboKey.startsWith("t-")) {
 			if (!inValue) return;
+			setLastPair(subKey.substring(4));
 			collapseChildren(subKey, cfg_vbox_in.getChildren());
 			collapseChildren(subKey, cfg_vbox_ex.getChildren());
 			updateCodeGenerator(getPairForComboKey(comboKey));

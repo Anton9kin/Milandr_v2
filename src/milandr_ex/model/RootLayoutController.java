@@ -34,6 +34,9 @@ public class RootLayoutController extends BasicController {
 	public void genBldr(ActionEvent actionEvent) {
 		getScene().genKind(CodeGenerator.GenKind.BUILDER);
 	}
+	public void genMdl(ActionEvent actionEvent) {
+		getScene().genKind(CodeGenerator.GenKind.MODEL);
+	}
 
 	public enum MenuKind {
 		NONE, PROJECT, PROCESSOR, PINOUTS, CLOCK, TIMER, ERROR

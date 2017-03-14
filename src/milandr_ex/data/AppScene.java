@@ -66,7 +66,7 @@ public class AppScene extends Scene {
 
 	public void genKind(CodeGenerator.GenKind genKind) {
 		this.genKind = genKind;
-		Device.EPairNames temp = Device.EPairNames.SYST;
+		Device.EPairNames temp = getMainController().getLastPair();
 		for(Device.EPairNames pair: Device.EPairNames.values()) {
 			getCodeGenerator().listenPinsChanges(getDevice(), pair, getPinoutsModel());
 			if (!temp.equals(pair)) continue;

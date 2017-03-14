@@ -421,6 +421,21 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return "  " + pinOut + pinSuff + "  ";
 	}
 
+	private Device.EPairNames lastPair = Device.EPairNames.NON;
+
+	protected void setLastPair(String lastPairKey) {
+		lastPairKey = lastPairKey.toUpperCase();
+		if (lastPairKey.endsWith("WD")) lastPairKey += "G";
+		setLastPair(Device.EPairNames.valueOf(lastPairKey));
+	}
+	protected void setLastPair(Device.EPairNames lastPair) {
+		this.lastPair = lastPair;
+	}
+
+	public Device.EPairNames getLastPair() {
+		return lastPair;
+	}
+
 	protected void checkSelectedPin(String comboKey, String value) {
 		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
 	}
