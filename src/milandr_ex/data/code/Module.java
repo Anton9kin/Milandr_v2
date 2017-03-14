@@ -9,7 +9,10 @@ import java.util.List;
  * Created by lizard on 14.03.17 at 12:17.
  */
 public enum Module {
-	SysTick(), MDR_EEPROM(), MDR_RST_CLK(), MDR_BKP();
+	SysTick(), MDR_EEPROM(), MDR_RST_CLK(), MDR_BKP(),
+	MDR_PORTA, MDR_PORTB, MDR_PORTC, MDR_PORTD, MDR_PORTE, MDR_PORTF,
+	MDR_ADC, MDR_DAC,
+	MDR_ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
 	private Object[] args;
 

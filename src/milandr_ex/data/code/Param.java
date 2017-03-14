@@ -11,7 +11,10 @@ import java.util.List;
 public enum Param {
 	LOAD(), VAL(), CTRL(), // sysTick
 	CMD(), // MDR_EEPROM
+	ADC_MCO_CLOCK(), PER_CLOCK(),
 	HS_CONTROL(), CLOCK_STATUS(), CPU_CLOCK(), PLL_CONTROL(),  // MDR_RST_CLK
+	O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, OA, OB, OC, OD, OE, OF, // MDR_PORTX
+	ANALOG(), ADC1_CFG(), ADC2_CFG(),
 	REG_0E(), //MDR_BKP
 	ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
