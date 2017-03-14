@@ -40,6 +40,11 @@ public class McuBlockProperty {
 	public static ObservableList<String> uccList = FXCollections.observableArrayList("2.0 B", "2.2 B", "2.4 B", "2.6 B", "2.8 B", "3.0 B", "3.2 B", "3.4 B");
 	public static ObservableList<String> buccList = FXCollections.observableArrayList("1.8 B", "2.2 B", "2.6 B", "3.0 B");
 
+	public static ObservableList<String> usbModeList = FXCollections.observableArrayList("Device", "Host");
+	public static ObservableList<String> usbSpeedList = FXCollections.observableArrayList("1.5 Мбит/с", "12 Мбит/с");
+	public static ObservableList<String> usbPolarList = FXCollections.observableArrayList("Low Speed", "High Speed");
+	public static ObservableList<String> usbPushPullList = FXCollections.observableArrayList("Подтяжки нет", "Подтяжка к GND", "Подтяжка к VCC");
+
 	public enum PropKind {
 		NONE,
 		INT, STR, CHK, CMB, LST, CMP,

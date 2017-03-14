@@ -10,8 +10,7 @@ import milandr_ex.data.Device;
 
 import java.util.List;
 
-import static milandr_ex.data.McuBlockProperty.opUList;
-import static milandr_ex.data.McuBlockProperty.typeStartList;
+import static milandr_ex.data.McuBlockProperty.*;
 
 public class MCUUsbController extends MCUExtPairController {
 	@FXML
@@ -23,7 +22,7 @@ public class MCUUsbController extends MCUExtPairController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.USB);
 		//noinspection unchecked
-		addModelProps(new String[]{"usb_mode", "usb_len", "usb_sph", "usb_spo"}, (List)null, null, null, null);
+		addModelProps(new String[]{"usb_mode", "usb_len", "usb_sph", "usb_spo"}, usbModeList, usbSpeedList, usbPolarList, usbPushPullList);
 		addModelProps(new String[]{"usb_txd"}, "B", true);
 	}
 
