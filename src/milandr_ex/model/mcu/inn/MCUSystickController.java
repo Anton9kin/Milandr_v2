@@ -52,7 +52,7 @@ public class MCUSystickController extends BasicController {
 
 	private String[] comments = {
 			"стартовое значение загружаемое в регистр VAL",
-			"включение таймера %s прерывания",
+			"включение таймера", "%s прерывания",
 			"источник синхросигнала = %s",
 	};
 
@@ -89,7 +89,7 @@ public class MCUSystickController extends BasicController {
 		g().setCodeParameter(oldCode, "стартовое значение загружаемое в регистр VAL",
 				"SysTick->VAL", "0x00");
 		g().setCodeParameters(oldCode, "SysTick->CTRL",
-				new String[]{"включение таймера", g().EN_INT[interrupt] + " прерывания", "//источник синхросигнала = " + g().EN_IST[source]},
+				new String[]{"включение таймера", g().EN_INT[interrupt] + " прерывания", "источник синхросигнала = " + g().EN_IST[source]},
 				new String[]{"0x00", interrupt + " << 1", source + " << 2"});
 		return oldCode;
 	}
@@ -108,8 +108,7 @@ public class MCUSystickController extends BasicController {
 		b().setCommentParamValue(0, "VAL", "0x00").buildParam(oldCode);
 		g().addCodeStr(oldCode,"");
 
-		b().addComment(1, g().EN_INT[interrupt]);
-		b().addComment(2, g().EN_IST[source]);
+		b().addComment(1).addComment(2, g().EN_INT[interrupt]).addComment(3, g().EN_IST[source]);
 		b().setParam("CTRL").setValues(0, interrupt, source).setShifts(0, 1, 2).buildParams(oldCode);
 		g().addCodeStr(oldCode,"");
 		return oldCode;

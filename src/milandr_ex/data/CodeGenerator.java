@@ -14,7 +14,7 @@ import java.util.List;
 public class CodeGenerator {
 	private static final Logger log	= LoggerFactory.getLogger(CodeGenerator.class);
 	public enum GenKind {
-		SIMPLE, COMPLEX, BUILDER
+		SIMPLE, COMPLEX, BUILDER, MODEL
 	}
 	private CodeGenerator() {
 	}
