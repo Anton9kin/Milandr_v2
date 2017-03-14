@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.*;
+import milandr_ex.data.code.Command;
+import milandr_ex.data.code.Module;
+import milandr_ex.data.code.Param;
 import milandr_ex.model.BasicController;
 
 import java.util.List;
@@ -44,9 +47,7 @@ public class MCUIwdgController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateWDGCode(%s)", device));
+	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		String freq = getConfPropStr("freq_div", "f_time");
 		Integer div = getConfPropInt("freq_div", "f_div");
 		Integer irlr = getWatchDogReloadReg();
@@ -60,6 +61,43 @@ public class MCUIwdgController extends BasicController {
 		g().addCodeStr(oldCode,"MDR_IWDG->PR =  " + div + "; //частота IWDG = LSI(40kHz)" + div + " = " + freq+ "");
 		g().addCodeStr(oldCode,"MDR_IWDG->RLR = 0x" + Integer.toHexString(irlr) + "; //значение перегрузки IWDG");
 		g().addCodeStr(oldCode,"MDR_IWDG->KR =  0xCCCC; //запускаем IWDG");
+		return oldCode;
+	}
+
+	private String[] comments = {
+			"разрешение тактирование IWDG",
+			"ждем обновления частоты сторожевого таймера",
+			"разрешение записи в регистры PR и RLR",
+			"частота IWDG = LSI(40kHz) %s = %s",
+			"значение перегрузки IWDG",
+			"запускаем IWDG",
+	};
+	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	Module MDR_IWDG = Module.MDR_IWDG.get();
+
+	@Override
+	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		String freq = getConfPropStr("freq_div", "f_time");
+		Integer div = getConfPropInt("freq_div", "f_div");
+		String irlr = "0x" + Integer.toHexString(getWatchDogReloadReg());
+
+		MDR_RST_CLK.get().arr(comments);
+		MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 13, "|")).cmt(0).build(oldCode);
+
+		MDR_IWDG.get().arr(comments);
+		MDR_IWDG.set(Command.WHILE.set(Param.SR, "1 << 0", " != 0")).cmt(1).build(oldCode);
+		MDR_IWDG.set(Param.KR.set("0x5555")).cmt(2).build(oldCode);
+		MDR_IWDG.set(Param.PR.set(div)).cmta(3, div, freq).build(oldCode);
+		MDR_IWDG.set(Param.RLR.set(irlr)).cmt(4).build(oldCode);
+		MDR_IWDG.set(Param.KR.set("0xCCCC")).cmt(5).build(oldCode);
+		return oldCode;
+	}
+
+	@Override
+	public List<String> generateCode(Device device, List<String> oldCode) {
+		oldCode = Lists.newArrayList();
+		log.debug(String.format("#generateWDGCode(%s)", device));
+		generateCode(oldCode, 0);
 		return super.generateCode(device, oldCode);
 	}
 }

@@ -15,6 +15,7 @@ public enum Param {
 	HS_CONTROL(), CLOCK_STATUS(), CPU_CLOCK(), PLL_CONTROL(),  // MDR_RST_CLK
 	O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, OA, OB, OC, OD, OE, OF, // MDR_PORTX
 	ANALOG(), ADC1_CFG(), ADC2_CFG(),
+	SR, PR, KR, RLR,
 	REG_0E(), //MDR_BKP
 	ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
@@ -55,12 +56,18 @@ public enum Param {
 		return this;
 	}
 	public Param seti(Integer value, Integer shift) {
+		return seti(value, shift, "");
+	}
+	public Param seti(Integer value, Integer shift, String opp) {
 		builder.setValues(value).setShifts(shift);
-		return this;
+		return opp(opp);
 	}
 	public Param sets(String value, Integer shift) {
+		return sets(value, shift, "");
+	}
+	public Param sets(String value, Integer shift, String opp) {
 		builder.setValues(value).setShifts(shift);
-		return this;
+		return opp(opp);
 	}
 	public Param add(String value, Object args) {
 		builder.addValue(value, args);
