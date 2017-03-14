@@ -190,8 +190,9 @@ public class CodeGenerator {
 			return this;
 		}
 
-		public void setCommentsArr(String[] commentsArr) {
+		public CodeExpressionBuilder setCommentsArr(String[] commentsArr) {
 			this.commentsArr = commentsArr;
+			return this;
 		}
 
 		public CodeExpressionBuilder addComment(Integer ind, Object... args) {
@@ -248,6 +249,11 @@ public class CodeGenerator {
 				this.shifts = list;
 			} else this.shifts.addAll(list);
 			return this;
+		}
+
+		public CodeExpressionBuilder setCommentParamValue(Integer cind, String param, String value) {
+			String comment =  (commentsArr == null || cind >= commentsArr.length) ? "" : commentsArr[cind];
+			return setComments(comment).setParamValue(param, value);
 		}
 
 		public CodeExpressionBuilder setCommentParamValue(String comment, String param, String value) {

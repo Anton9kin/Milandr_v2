@@ -50,6 +50,12 @@ public class MCUSystickController extends BasicController {
 		return reloadReg - getConfPropInt("wrk_kind");
 	}
 
+	private String[] comments = {
+			"стартовое значение загружаемое в регистр VAL",
+			"включение таймера %s прерывания",
+			"источник синхросигнала = %s",
+	};
+
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		//handling incoming parameters
@@ -96,15 +102,15 @@ public class MCUSystickController extends BasicController {
 		int mode = getConfPropInt("wrk_kind");
 		log.debug(String.format("#generateSystCode(%d) %d, %d, %d, %d", codeStep, reloadReg, interrupt, source, mode));
 		String hexRR = "0x" + Integer.toString(reloadReg, 16);
+		b().setCommentsArr(comments).setModule("SysTick");
 
-		b().setModule("SysTick").setParam("LOAD").setValues(hexRR).buildParam(oldCode);
-		b().setCommentParamValue("стартовое значение загружаемое в регистр VAL",
-				"VAL", "0x00").buildParam(oldCode);
+		b().setParam("LOAD").setValues(hexRR).buildParam(oldCode);
+		b().setCommentParamValue(0, "VAL", "0x00").buildParam(oldCode);
 		g().addCodeStr(oldCode,"");
 
-		b().setComments("включение таймера", g().EN_INT[interrupt] + " прерывания",
-				"//источник синхросигнала = " + g().EN_IST[source]);
-		b().setParam("CTRL").setValues("0x00", interrupt + " << 1", source + " << 2").buildParams(oldCode);
+		b().addComment(1, g().EN_INT[interrupt]);
+		b().addComment(2, g().EN_IST[source]);
+		b().setParam("CTRL").setValues(0, interrupt, source).setShifts(0, 1, 2).buildParams(oldCode);
 		g().addCodeStr(oldCode,"");
 		return oldCode;
 	}
