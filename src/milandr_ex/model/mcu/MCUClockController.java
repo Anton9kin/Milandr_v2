@@ -152,6 +152,16 @@ public class MCUClockController extends MCUExtPairController
 		return oldCode;
 	}
 
+	private String[] comments = {
+			"Необходима пауза для работы Flash-памяти программ",
+			"вкл. HSE осцилятора (частота кварца %s)",
+			"ждем пока HSE выйдет в рабочий режим",
+			"ждем пока PLL выйдет в рабочий режим",
+			"подача частоты на блок PLL",
+			"вкл. PLL  | коэф. умножения = %s",
+			"режим встроенного регулятора напряжения DUcc",
+			"выбор доп.стабилизирующей нагрузки",
+	};
 	@Override
 	protected List<String> generateBuilderCodeStep(List<String> oldCode, int codeStep) {
 		Integer hClk = getClockProp("HCLK");
@@ -168,37 +178,31 @@ public class MCUClockController extends MCUExtPairController
 
 		switch (codeStep) {
 			case 0:
-				b().setModule("MDR_EEPROM");
-				b().setComments("Необходима пауза для работы Flash-памяти программ")
-						.setParam("CMD").setValues(delayEeprom + " << 3")
-						.setOpp("|").buildParam(oldCode);
+				b().setCommentsArr(comments);
+				b().setModule("MDR_EEPROM").setParam("CMD").setValues(delayEeprom).setShifts(3)
+					.setComments(0).setOpp("|").buildParam(oldCode);
 				break;
 			case 1:
-				b().setModule("MDR_RST_CLK");
-				b().setComments("вкл. HSE осцилятора (частота кварца " + hse + ")")
-						.setParam("HS_CONTROL").setValues("0x01")
-						.buildParam(oldCode);
+				b().addComment(1, hse).setParam("HS_CONTROL").setValues("0x01");
+				b().setModule("MDR_RST_CLK").buildParam(oldCode);
 
-				b().setWhileCommand("CLOCK_STATUS", "1 << 2", "== 0x00")
-						.setComments("ждем пока HSE выйдет в рабочий режим")
-						.buildCommand(oldCode);
+				b().setWhileCommand("CLOCK_STATUS", "1 << 2", "== 0x00");
+				b().setComments(2).buildCommand(oldCode);
 				break;
 			case 2:
-				b().setCommentParamValue("подача частоты на блок PLL",
-						"CPU_CLOCK", cpuC1Sel + " << 0").buildParam(oldCode);
-				b().setCommentParamValue("вкл. PLL  | коэф. умножения = " + pllMull,
-						"PLL_CONTROL", "(1 << 2) | (" + (pllMull - 1) + " << 8)").buildParam(oldCode);
+				b().setCommentParamValue(3,"CPU_CLOCK", cpuC1Sel , 0).buildParam(oldCode);
+				b().setParam("PLL_CONTROL").addValue("(1 << 2) | (%s << 8)", (pllMull - 1))
+						.addComment(5, pllMull).buildParam(oldCode);
 				b().setWhileCommand("CLOCK_STATUS", "0x02", "!= 0x02")
-						.setComments("ждем когда PLL выйдет в раб. режим").buildCommand(oldCode);
+						.setComments(4).buildCommand(oldCode);
 				break;
 			case 3:
-				b().setComments("источник для CPU_C1", "источник для CPU_C2", "предделитель для CPU_C3", "источник для HCLK");
-				b().setValues(cpuC1Sel + " << 0", cpuC2Sel + " << 2", cpuC3Sel + " << 4", hclkSel + " << 8");
+				b().setCommentPref("источник для ").setComments("CPU_C1", "CPU_C2", "CPU_C3", "HCLK");
+				b().setValues(cpuC1Sel, cpuC2Sel, cpuC3Sel, hclkSel).setShifts(0, 2, 4, 8);
 				b().setParam("CPU_CLOCK").buildParams(oldCode);
 
-				b().setComments("режим встроенного регулятора напряжения DUcc", "выбор доп.стабилизирующей нагрузки");
-				b().setValues( lowBKP + " << 0",  lowBKP + " << 3 ").setModule("MDR_BKP");
-				b().setParam("REG_0E").buildParams(oldCode);
+				b().setComments(6, 7).setValues(lowBKP, lowBKP).setShifts(0, 3);
+				b().setModule("MDR_BKP").setParam("REG_0E").buildParams(oldCode);
 				break;
 		}
 		return oldCode;
