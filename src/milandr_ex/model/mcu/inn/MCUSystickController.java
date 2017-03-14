@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.*;
+import milandr_ex.data.code.Module;
+import milandr_ex.data.code.Param;
 import milandr_ex.model.BasicController;
 
 import java.util.List;
@@ -111,6 +113,26 @@ public class MCUSystickController extends BasicController {
 		b().addComment(1).addComment(2, g().EN_INT[interrupt]).addComment(3, g().EN_IST[source]);
 		b().setParam("CTRL").setValues(0, interrupt, source).setShifts(0, 1, 2).buildParams(oldCode);
 		g().addCodeStr(oldCode,"");
+		return oldCode;
+	}
+
+	private Module SysTick = Module.SysTick.get();
+	@Override
+	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		int interrupt = getConfPropInt("intrp");
+		Integer reloadReg = getSysTickReloadReg();
+		int source = getConfPropInt("sign_src");
+		int mode = getConfPropInt("wrk_kind");
+		log.debug(String.format("#generateSystCode(%d) %d, %d, %d, %d", codeStep, reloadReg, interrupt, source, mode));
+		String hexRR = "0x" + Integer.toString(reloadReg, 16);
+		String a1 = g().EN_INT[interrupt], a2= g().EN_IST[source];
+		SysTick.get().arr(comments);
+
+		SysTick.set(Param.LOAD.set(hexRR)).build(oldCode);
+		SysTick.cmt(0).set(Param.VAL.set("0x00")).build(oldCode);
+		SysTick.args(0, a1, a2).cmt(1,2,3).set(
+				Param.CTRL.set(0, interrupt, source).shift(0, 1, 2)
+		).build(oldCode);
 		return oldCode;
 	}
 
