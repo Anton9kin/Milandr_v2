@@ -374,11 +374,15 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected List<String> generateBuilderCodeStep(List<String> oldCode, int codeStep) {
 		return generateComplexCodeStep(oldCode, codeStep);
 	}
+	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		return generateBuilderCodeStep(oldCode, codeStep);
+	}
 	protected List<String> generateCode(List<String> oldCode, int step) {
 		switch (getScene().genKind()) {
 			case SIMPLE: return generateSimpleCodeStep(oldCode, step);
 			case COMPLEX: return generateComplexCodeStep(oldCode, step);
 			case BUILDER: return generateBuilderCodeStep(oldCode, step);
+			case MODEL: return generateModelCodeStep(oldCode, step);
 		}
 		b().reset();
 		return oldCode;

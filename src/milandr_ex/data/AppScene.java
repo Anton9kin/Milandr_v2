@@ -41,7 +41,7 @@ public class AppScene extends Scene {
 	private boolean testMode = false;
 	private boolean debugMode = false;
 	private boolean editMode = false;
-	private CodeGenerator.GenKind genKind = CodeGenerator.GenKind.COMPLEX;
+	private CodeGenerator.GenKind genKind = CodeGenerator.GenKind.MODEL;
 
 	public void addObserver(String key, ModelObserver observer) {
 		if (!observers.containsKey(key)) {
