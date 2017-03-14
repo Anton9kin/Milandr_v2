@@ -102,7 +102,9 @@ public class CodeGenerator {
 	}
 	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments, String[] values, Integer[] shifts) {
 		if (values.length < 1) return;
-		addCodeStr(codeList,"// " + pref + comments[0]);
+		if (comments.length > 0 && !comments[0].isEmpty()) {
+			addCodeStr(codeList,"// " + pref + comments[0]);
+		}
 		String value = values[0];
 		if (shifts != null && shifts.length > 0) value += " << " + shifts[0];
 		String lastLine = String.format("%s = ((%s)", param, value);
@@ -115,7 +117,8 @@ public class CodeGenerator {
 			lastLine = String.format("| (%s)", value);
 		}
 		addCodeStr(codeList, lastLine + ");");
-		addCodeStrL(codeList, "");
+		if (values.length > 1) addCodeStrL(codeList, "");
+		else addCodeStr(codeList, "");
 	}
 
 	private CodeExpressionBuilder builder;
@@ -207,15 +210,21 @@ public class CodeGenerator {
 		}
 
 		public CodeExpressionBuilder setComments(Integer... idxs) {
+			return setComments(idxs, new Object[]{});
+		}
+		public CodeExpressionBuilder setComments(Integer[] idxs, Object... args) {
 			if (commentsArr == null || idxs == null) return this;
 			for(Integer idx: idxs) {
 				if (idx == null || idx > commentsArr.length) continue;
-				addComment(commentsArr[idx]);
+				addComment(commentsArr[idx], args);
 			}
 			return this;
 		}
 
 		public CodeExpressionBuilder setComments(String... comments) {
+			return setComments(comments, new Object[]{});
+		}
+		public CodeExpressionBuilder setComments(String[] comments, Object... args) {
 			if (comments == null) return this;
 			List<String> list = Lists.newArrayList(comments);
 			Iterators.removeIf(list.iterator(), String::isEmpty);
