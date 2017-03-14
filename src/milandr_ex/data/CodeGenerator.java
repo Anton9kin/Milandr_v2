@@ -90,7 +90,9 @@ public class CodeGenerator {
 	}
 	public void setCodeParameter(List<String> codeList, String comment, String param, String value, String opp) {
 		if (!comment.trim().isEmpty()) addCodeStr(codeList,"// " + comment);
-		addCodeStr(codeList, String.format("%s %s= (%s);", param, opp, value));
+		String opp1 = opp == null || opp.isEmpty() ? "" : opp.charAt(0) + "";
+		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
+		addCodeStr(codeList, String.format("%s %s=%s (%s);", param, opp1, opp2, value));
 		addCodeStr(codeList, "");
 	}
 
@@ -112,7 +114,9 @@ public class CodeGenerator {
 		}
 		String value = values[0];
 		if (shifts != null && shifts.length > 0) value += " << " + shifts[0];
-		String lastLine = String.format("%s %s= ((%s)", param, opp, value);
+		String opp1 = opp == null || opp.isEmpty() ? "" : opp.charAt(0) + "";
+		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
+		String lastLine = String.format("%s %s=%s ((%s)", param, opp1, opp2, value);
 		for(int i = 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
 			if (i == 1) indent++;
