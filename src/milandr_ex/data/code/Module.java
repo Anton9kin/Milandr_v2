@@ -11,7 +11,7 @@ import java.util.List;
 public enum Module {
 	SysTick(), MDR_EEPROM(), MDR_RST_CLK(), MDR_BKP(),
 	MDR_PORTA, MDR_PORTB, MDR_PORTC, MDR_PORTD, MDR_PORTE, MDR_PORTF,
-	MDR_ADC, MDR_DAC, MDR_IWDG, MDR_WWDG,
+	MDR_ADC, MDR_DAC, MDR_IWDG, MDR_WWDG, MDR_POWER,
 	MDR_ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
 	private Object[] args;

@@ -16,6 +16,7 @@ public enum Param {
 	O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, OA, OB, OC, OD, OE, OF, // MDR_PORTX
 	ANALOG(), ADC1_CFG(), ADC2_CFG(),
 	SR, PR, KR, RLR,
+	PVDCS(), // MDR_POWER
 	REG_0E(), //MDR_BKP
 	ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
