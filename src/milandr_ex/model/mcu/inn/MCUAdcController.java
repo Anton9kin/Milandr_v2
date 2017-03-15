@@ -108,7 +108,7 @@ public class MCUAdcController extends BasicController {
 				MDR_RST_CLK.get();
 				MDR_RST_CLK.set(
 						Param.ADC_MCO_CLOCK.set(adcC1, adcC2, adcDiv, 1).shift(0, 4, 8, 13)
-					).pre("источник для ").cmt("ADC_C1", "ADC_C2", "ADC_C3", "ADC_CLK").build(oldCode);
+					).pre(1, 1, 2, 4).cmt("ADC_C1", "ADC_C2", "ADC_C3", "ADC_CLK").build(oldCode);
 				break;
 			case 1:
 				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build(oldCode);
