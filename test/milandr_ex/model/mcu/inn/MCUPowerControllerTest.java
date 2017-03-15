@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  * Created by lizard2k1 on 15.03.2017.
  */
 public class MCUPowerControllerTest {
-	private static String defaultCodeResult = "void PWR_init( void ){MDR_RST_CLK->PER_CLOCK |= ((1 << 11));MDR_POWER->PVDCS = ((0 << 3)| (0 << 1));}";
+	private static String defaultCodeResult = "voidPWR_init(void){MDR_RST_CLK->PER_CLOCK|=((1<<11));MDR_POWER->PVDCS=((0<<3)|(0<<1));}";
 
 	@Mock
 	private AppScene appScene;
@@ -64,7 +64,7 @@ public class MCUPowerControllerTest {
 			}
 			if (codeLine.trim().isEmpty()) continue;
 			linesCount++;
-			codeResult.append(codeLine.trim());
+			codeResult.append(codeLine.trim().replaceAll("\\s", ""));
 		}
 		assertEquals(6, commentsCount);
 		assertEquals(5, linesCount);
