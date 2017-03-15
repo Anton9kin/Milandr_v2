@@ -145,7 +145,6 @@ public class McuBlockModel {
 				", parent=" + parent +
 				", cbKeys=" + cbKeys +
 				", props=" + props +
-				", codeList=" + codeList +
 				'}';
 	}
 
