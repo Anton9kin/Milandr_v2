@@ -40,6 +40,18 @@ public enum Module {
 		this.command = command;
 		return this;
 	}
+	public Module pre(Integer... prefixes) {
+		CommentKind[] arr = new CommentKind[prefixes.length];
+		CommentKind[] vals = CommentKind.values();
+		for(int i = 0; i < prefixes.length; i++) {
+			arr[i] = vals[prefixes[i]];
+		}
+		return pre(arr);
+	}
+	public Module pre(CommentKind... prefixes) {
+		builder.setCommentPrefs(prefixes);
+		return this;
+	}
 	public Module pre(String prefix) {
 		builder.setCommentPref(prefix);
 		return this;

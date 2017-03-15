@@ -2,10 +2,13 @@ package milandr_ex.data;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import milandr_ex.data.code.CommentKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Main class for code generation
@@ -40,6 +43,12 @@ public class CodeGenerator {
 
 	public final String[] strWWDGINT = { "запрещено", "разрешено" };
 	public final String[] EN_INT = { "запрещение", "разрешение" }, EN_IST = {"LSI", "HCLK"};
+	public final Map<CommentKind, String> definedComments = new HashMap<CommentKind, String>(){{
+		put(CommentKind.SOURCE, "Источник для ");
+		put(CommentKind.DIVIDOR, "Делитель для ");
+		put(CommentKind.FACTOR, "Множитель для ");
+		put(CommentKind.TICK_TACK, "Тактирование ");
+	}};
 
 	private int indent = 0;
 
@@ -143,6 +152,7 @@ public class CodeGenerator {
 		String[] commentsArr;
 		List<String> comments, values;
 		List<Integer> shifts;
+		private CommentKind[] commentPrefs;
 
 		public CodeExpressionBuilder clear() {
 			param = null;
@@ -151,6 +161,7 @@ public class CodeGenerator {
 			values = null;
 			shifts = null;
 			commentPref = null;
+			commentPrefs = null;
 			opp = null;
 			return this;
 		}
@@ -191,6 +202,10 @@ public class CodeGenerator {
 			return this;
 		}
 
+		public CodeExpressionBuilder setCommentPrefs(CommentKind ... commentPrefs) {
+			this.commentPrefs = commentPrefs;
+			return this;
+		}
 		public CodeExpressionBuilder setCommentPref(String commentPref) {
 			this.commentPref = commentPref;
 			return this;
@@ -322,6 +337,7 @@ public class CodeGenerator {
 			if (opp == null) opp = "";
 			if (command == null) command = "";
 			if (commentPref == null) commentPref = "";
+			if (commentPrefs == null) commentPrefs = new CommentKind[]{};
 			return this;
 		}
 
@@ -344,8 +360,13 @@ public class CodeGenerator {
 
 		public void buildParams(List<String> codeList) {
 			validate();
+			String[] fullComments = new String[comments.size()];
+			if (fullComments.length > 0) for(int i = 0; i < comments.size(); i++) {
+				fullComments[i] = (commentPrefs.length <= i ? ""
+						: definedComments.get(commentPrefs[i])) + comments.get(i);
+			}
 			CodeGenerator.this.setCodeParameters(codeList, getFullParam(),
-					commentPref, comments.toArray(new String[]{}),
+					commentPref, fullComments,
 					values.toArray(new String[]{}), shifts.toArray(new Integer[]{}), opp);
 			clear();
 		}
