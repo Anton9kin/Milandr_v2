@@ -30,7 +30,7 @@ public class CodeGenerator {
 
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
-		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model));
+		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model.toStr()));
 		resetIndent();
 		List<String> codeList = model.getBlockCode(pairBlock.name());
 		if (codeList == null || pairBlock.model() == null) return;
