@@ -68,9 +68,15 @@ public class Device {
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
     private static List<String> extPairNames;
-    private static EPairNames[] prodPairs = {EPairNames.CPU, EPairNames.ADC, EPairNames.I2C, EPairNames.SPI, EPairNames.CAN };
+    private static EPairNames[] prodPairs = {
+            EPairNames.ADC, EPairNames.IWDG, EPairNames.PWR, EPairNames.SYST, EPairNames.WWDG,
+            EPairNames.CPU,
+    };
     private static List<String> prodPairNames;
-    private static EPairNames[] testPairs = {EPairNames.UART,  EPairNames.EBC, EPairNames.COMP };
+    private static EPairNames[] testPairs = {
+            EPairNames.BKP, EPairNames.COMP, EPairNames.DAC, EPairNames.DMA, EPairNames.MPU,
+            EPairNames.TMR, EPairNames.USB,
+    };
     private static List<String> testPairNames;
     public static List<String> extPairNames() {
         if (extPairNames == null) {
