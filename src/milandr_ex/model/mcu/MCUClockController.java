@@ -364,10 +364,22 @@ public class MCUClockController extends MCUExtPairController
 		clock.addRestriction("ADC-CLK", "< 14000000");
 		clock.addRestriction("HCLK", "< 80000000");
 		clock.addRestriction("CPU-CLK", "< 80000000");
+		// make cpu default
+		selectClockCBoxes("CPU-C1", 0, 30, "IN-2","/ 2");
+		selectClockCBoxes("CPU-C2", 0, 30, "IN-2","* 2");
+		selectClockCBoxes("HCLK", 0, 30, "IN-2","/ 2");
 		// make usb 48 MHz
-		selectCBox("k-USB-C2-0", "IN-2");
-		selectCBox("k-USB-C2-9", "/ 1");
-		selectCBox("k-USB-C2-30", "* 6");
+		selectClockCBoxes("USB-C2", 0, 9, 30, "IN-2", "/ 1", "* 6");
+	}
+
+	private void selectClockCBoxes(String block, int i1, int i2, int i3, String v1, String v2, String v3) {
+		selectClockCBoxes(block, i1, i2, v1, v2);
+		selectCBox("k-" + block + "-" + i3, v3);
+	}
+
+	private void selectClockCBoxes(String block, int i1, int i2, String v1, String v2) {
+		selectCBox("k-" + block + "-" + i1, v1);
+		selectCBox("k-" + block + "-" + i2, v2);
 	}
 
 	private VBox makeImageBox() {
