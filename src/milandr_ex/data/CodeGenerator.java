@@ -262,7 +262,7 @@ public class CodeGenerator {
 			if (values == null) return this;
 			String[] strValues = new String[values.length];
 			for(int i = 0; i < values.length; i++) {
-				strValues[i] = Integer.toHexString(values[i]);
+				strValues[i] = "0x" + Integer.toHexString(values[i]);
 			}
 			return setValues(strValues);
 		}
