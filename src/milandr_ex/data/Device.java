@@ -27,6 +27,8 @@ public class Device {
             public void set(Device device, int val) {
                 device.setAdc(val);
             }
+            @Override
+            public int colWidth() { return 50; }
         }, COMP(3){
             @Override
             public void set(Device device, int val) {
@@ -34,7 +36,10 @@ public class Device {
             }
         },
         USB(1), UART(2), CAN(2), SPI(4), I2C(2), DAC(1), DMA(1),
-        SYST(1), MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
+        SYST(1){
+            @Override
+            public int colWidth() { return 60; }
+        }, MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
         TMR(3);
 
         private final int size;
@@ -64,6 +69,7 @@ public class Device {
         	if (model == null) model = new McuBlockModel(this);
         	return model;
 		}
+		public int colWidth() { return 70;  }
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
