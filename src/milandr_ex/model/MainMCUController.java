@@ -8,6 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
@@ -226,9 +227,17 @@ public class MainMCUController extends BasicController {
 		for(Node node: cfg_vbox.getChildren()) {
 			String lowPairName = pair.name().toLowerCase();
 			if (lowPairName.contains(node.getId().substring(4))) {
-				node.setVisible(pairBlockVisibility);
+				hideTPaneNode(pairBlockVisibility, node);
 				break;
 			}
 		}
+	}
+
+	private void hideTPaneNode(Boolean pairBlockVisibility, Node node) {
+		node.setVisible(pairBlockVisibility);
+		if (pairBlockVisibility) return;
+		((Region)node).setMinHeight(0.0);
+		((Region)node).setPrefHeight(0.0);
+		((Region)node).setMaxHeight(0.0);
 	}
 }
