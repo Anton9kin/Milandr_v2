@@ -55,9 +55,9 @@ public class BasicControllerTest {
 			linesCount++;
 			codeResult.append(codeLine.trim().replaceAll("\\s", ""));
 		}
-		assertEquals(expectedComments, commentsCount);
-		assertEquals(expectedLines, linesCount);
-		assertEquals(expectedSize, newCodeList.size());
-		assertEquals(expectedCodeResult, codeResult.toString());
+		assertEquals("expectedComments", expectedComments, commentsCount);
+		assertEquals("expectedLines", expectedLines, linesCount);
+		assertEquals("expectedSize", expectedSize, newCodeList.size());
+		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
 	}
 }
