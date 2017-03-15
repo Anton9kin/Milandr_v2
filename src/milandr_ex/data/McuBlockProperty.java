@@ -28,8 +28,10 @@ public class McuBlockProperty {
 	public static ObservableList<String> typeStartList = FXCollections.observableArrayList("Одиночное", "Последовательное");
 	public static ObservableList<String> div8List = FXCollections.observableArrayList("/1", "/2", "/4", "/8");
 	public static ObservableList<String> div512List = FXCollections.observableArrayList("/4", "/8", "/16", "/32", "/64", "/128", "/256", "/512");
+	public static ObservableList<String> div2048List = FXCollections.observableArrayList("/1", "/2", "/4", "/8", "/16", "/32", "/64", "/128", "/256", "/512", "/1024", "/2048");
 	public static ObservableList<String> unitList = FXCollections.observableArrayList("с", "мс", "мкс", "Гц", "кГц", "МГц");
 	public static ObservableList<String> istList = FXCollections.observableArrayList("LSI", "HCLK");
+	public static ObservableList<String> adcSrcList = FXCollections.observableArrayList("ADC_CLK", "HCLK");
 	public static ObservableList<String> modeList = FXCollections.observableArrayList("Таймер", "Задержка");
 	public static ObservableList<String> div128List = FXCollections.observableArrayList("/1", "/2", "/4", "/8", "/16", "/32", "/64", "/128");
 	public static ObservableList<String> speedList = FXCollections.observableArrayList("10 000", "20 000", "50 000", "100 000", "125 000", "250 000", "500 000", "1000 000");

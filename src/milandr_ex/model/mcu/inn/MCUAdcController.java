@@ -27,20 +27,21 @@ public class MCUAdcController extends BasicController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.ADC);
 		//noinspection unchecked
-		addModelProps(new String[]{"base_power", "start_kind"}, opUList, typeStartList);
+		addModelProps(new String[]{"base_power", "start_kind", "adc_src", "adc_div"},
+				opUList, typeStartList, adcSrcList, div2048List);
 		addModelProps(new String[]{"sw_chn", "temp_sens", "lst_chn"}, "BBS");
 	}
 
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
-		int NUMCH = 0; int IST = 1; int SAMPLE = 2;
-		int MREF = 3; int DIV_CLK = 4;
+		int NUMCH = 0;
 
 		switch (codeStep) {
 			case 0:
 				int adcC1 = getClockProp("ADC-C1.S");
 				int adcC2 = getClockProp("ADC-C2.S");
 				int adcDiv = getClockProp("ADC-C2-4.S");
+				if (adcDiv > 0) adcDiv += 7;
 
 				g().addCodeStr(oldCode, " MDR_RST_CLK->ADC_MCO_CLOCK = ((" + adcC1 + " << 0)");
 				g().addCodeStr(oldCode, "/*источник для ADC_C1*/");
@@ -62,22 +63,29 @@ public class MCUAdcController extends BasicController {
 				break;
 			case 2:
 			case 3:
+				int adcIndex = codeStep - 2;
+				int adcSrcDiv = getConfPropInt("adc_src", adcIndex) == 0 ? 0 :
+						getConfPropInt("adc_div", adcIndex);
+				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
+				int mref = getConfPropInt("base_power", adcIndex);
+				int sample = getConfPropInt("start_kind", adcIndex);
+
 				g().addCodeStr(oldCode, "/*начало преобразования*/");
-				g().addCodeStr(oldCode, "MDR_ADC->ADC" + (codeStep - 1)+"_CFG = ( 1 ");
+				g().addCodeStr(oldCode, "MDR_ADC->ADC" + (adcIndex)+"_CFG = ( 1 ");
 				g().addCodeStr(oldCode, "/*источник синхросигнала*/");
-				g().addCodeStr(oldCode, "|(" + (IST - 1) + " << 2) ");
+				g().addCodeStr(oldCode, "|(" + (syncSrc - 1) + " << 2) ");
 
 				g().addCodeStr(oldCode, "/*выбор запуска*/");
-				g().addCodeStr(oldCode, "|(" + SAMPLE + " << 3) ");
+				g().addCodeStr(oldCode, "|(" + sample + " << 3) ");
 
 				g().addCodeStr(oldCode, "/*номер канала преобразования*/");
 				g().addCodeStr(oldCode, "|(" + NUMCH + " << 4) ");
 
 				g().addCodeStr(oldCode, "/*источник опорного*/");
-				g().addCodeStr(oldCode, "|(" + MREF + " << 11) ");
+				g().addCodeStr(oldCode, "|(" + mref + " << 11) ");
 
 				g().addCodeStr(oldCode, "/*коэффициент деления частоты*/");
-				g().addCodeStr(oldCode, "|(" + DIV_CLK + " << 12)); ");
+				g().addCodeStr(oldCode, "|(" + adcSrcDiv + " << 12)); ");
 				break;
 		}
 		return oldCode;
@@ -96,14 +104,13 @@ public class MCUAdcController extends BasicController {
 	};
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
-		int NUMCH = 0; int IST = 1; int SAMPLE = 2;
-		int MREF = 3; int DIV_CLK = 4;
+		int NUMCH = 0; // todo implement using each selected adc channel
 
 		switch (codeStep) {
 			case 0:
 				int adcC1 = getClockProp("ADC-C1.S");
 				int adcC2 = getClockProp("ADC-C2.S");
-				int adcDiv = getClockProp("ADC-C2-4.S");
+				int adcDiv = getClockProp("ADC-C2-O.S");
 
 				MDR_RST_CLK.get();
 				MDR_RST_CLK.set(
@@ -118,9 +125,16 @@ public class MCUAdcController extends BasicController {
 				break;
 			case 2:
 			case 3:
+				int adcIndex = codeStep - 2;
+				int adcSrcDiv = getConfPropInt("adc_src", adcIndex) == 0 ? 0 :
+						getConfPropInt("adc_div", adcIndex);
+				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
+				int mref = getConfPropInt("base_power", adcIndex);
+				int sample = getConfPropInt("start_kind", adcIndex);
+
 				MDR_ADC.get().arr(comments);
 				MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
-						.set(1, IST - 1, SAMPLE, NUMCH, MREF, DIV_CLK)
+						.set(1, syncSrc - 1, sample, NUMCH, mref, adcSrcDiv)
 				.shift(0, 2, 3, 4, 11, 12)).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
 				break;
 		}
@@ -134,8 +148,8 @@ public class MCUAdcController extends BasicController {
 
 		//, Color\.\w+,\sFontStyle\.\w+,\s\w+
 
-		int IST = 2;
-		if (IST == 2) generateCode(oldCode, 0);
+		int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
+		if (syncSrc == 2) generateCode(oldCode, 0);
 
 		generateCode(oldCode, 1);
 
