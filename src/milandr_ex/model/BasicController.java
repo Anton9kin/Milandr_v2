@@ -339,27 +339,39 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	protected Integer getConfPropInt(String name) {
+		return getConfPropInt(name, 0);
+	}
+	protected Integer getConfPropInt(String name, int valueInd) {
 		if (name.contentEquals(".")) {
 			String[] names = name.split("\\.");
-			return getConfPropInt(names[0], names[1]);
+			return getConfPropInt(names[0], names[1], valueInd);
 		}
-	 	return getDevicePair().model().getProp(name).getIntValue();
+	 	return getDevicePair().model().getProp(name).getIntValue(valueInd);
 	}
 
 	protected String getConfPropStr(String name) {
+		return getConfPropStr(name, 0);
+	}
+	protected String getConfPropStr(String name, int valueInd) {
 		if (name.contentEquals(".")) {
 			String[] names = name.split("\\.");
-			return getConfPropStr(names[0], names[1]);
+			return getConfPropStr(names[0], names[1], valueInd);
 		}
-	 	return getDevicePair().model().getProp(name).getStrValue();
+	 	return getDevicePair().model().getProp(name).getStrValue(valueInd);
 	}
 
 	protected String getConfPropStr(String name, String sName) {
-	 	return getDevicePair().model().getProp(name).getProp(sName).getStrValue();
+		return getConfPropStr(name, sName, 0);
+	}
+	protected String getConfPropStr(String name, String sName, int valueInd) {
+	 	return getDevicePair().model().getProp(name).getProp(sName).getStrValue(valueInd);
 	}
 
 	protected Integer getConfPropInt(String name, String sName) {
-	 	return getDevicePair().model().getProp(name).getProp(sName).getIntValue();
+		return getConfPropInt(name, sName, 0);
+	}
+	protected Integer getConfPropInt(String name, String sName, int valueInd) {
+	 	return getDevicePair().model().getProp(name).getProp(sName).getIntValue(valueInd);
 	}
 
 	protected List<String> generateDefines(Device device, List<String> oldCode) {
