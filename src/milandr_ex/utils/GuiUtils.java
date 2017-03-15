@@ -242,7 +242,7 @@ public class GuiUtils {
 		} else cb = !items.matches("[\\/\\*] \\d+") ? new TextField(items) :
 				new ComboBox<String>(Constants.getDvMlItems(items));
 		if (cb instanceof ComboBox) {
-			((ComboBox) cb).getSelectionModel().selectLast();
+			((ComboBox) cb).getSelectionModel().selectFirst();
 			if (!key.isEmpty()) makeListener(key, (ComboBox) cb, callBack);
 		} else if (cb instanceof TextField) {
 			((TextField) cb).setEditable(false);
