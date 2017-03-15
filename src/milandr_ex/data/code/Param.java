@@ -56,6 +56,10 @@ public enum Param {
 		builder.setValues(values);
 		return this;
 	}
+	public Param seti(Integer[] values, Integer[] shifts, String opp) {
+		builder.setValues(values).setShifts(shifts);
+		return opp(opp);
+	}
 	public Param seti(Integer value, Integer shift) {
 		return seti(value, shift, "");
 	}
