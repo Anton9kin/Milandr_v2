@@ -35,6 +35,13 @@ public class ClockModel {
 			this.name = name;
 			this.body = body;
 			this.from = from;
+			initFactor();
+		}
+
+		private void initFactor() {
+			if (body.contains(" ")) {
+				setFactor(body.charAt(0) + " 1", 0);
+			}
 		}
 
 		public InOut setAlias(String alias) {
