@@ -9,6 +9,7 @@ import milandr_ex.data.code.Module;
 import milandr_ex.data.code.Param;
 import milandr_ex.model.BasicController;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static milandr_ex.data.McuBlockProperty.*;
@@ -104,7 +105,7 @@ public class MCUAdcController extends BasicController {
 	};
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
-		int NUMCH = 0; // todo implement using each selected adc channel
+		// xtodo implement using each selected adc channel
 
 		switch (codeStep) {
 			case 0:
@@ -120,8 +121,18 @@ public class MCUAdcController extends BasicController {
 			case 1:
 				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build(oldCode);
 				MDR_PORTD.get();
-				MDR_PORTD.set(Param.OE.seti(1, NUMCH, "&~")).cmt("вход").build(oldCode);
-				MDR_PORTD.set(Param.ANALOG.seti(1, NUMCH, "&~")).cmt("аналоговый").build(oldCode);
+				String chnlLst = getConfPropStr("lst_chn", 0) + getConfPropStr("lst_chn", 1);
+				chnlLst = chnlLst.replaceAll("[\\s\\,\\[\\]]","").replace("RESET", "");
+				Integer[] vals = new Integer[chnlLst.length()];
+				Integer[] ofst = new Integer[chnlLst.length()];
+				Arrays.fill(vals, 1);
+				for(int i = 0; i < chnlLst.length(); i++) {
+					ofst[i] = Integer.parseInt(chnlLst.charAt(i) + "");
+				}
+				if (chnlLst.length() > 0) {
+					MDR_PORTD.set(Param.OE.seti(vals, ofst, "&~")).cmt("вход").build(oldCode);
+					MDR_PORTD.set(Param.ANALOG.seti(vals, ofst, "&~")).cmt("аналоговый").build(oldCode);
+				}
 				break;
 			case 2:
 			case 3:
