@@ -170,7 +170,7 @@ public class MainMCUController extends BasicController {
 			if (!inValue) return;
 			setLastPair(subKey.substring(4));
 			boolean prevent = collapseChildren(subKey, cfg_vbox_in.getChildren());
-			prevent |= collapseChildren(subKey, cfg_vbox_ex.getChildren());
+			prevent &= collapseChildren(subKey, cfg_vbox_ex.getChildren());
 			if (!prevent) updateCodeGenerator(getPairForComboKey(comboKey));
 		} else if (comboKey.startsWith("c-")) {
 			subKey = "cfg_" + subKey.toLowerCase().replace("wdg", "wd");
