@@ -95,7 +95,7 @@ public class MCUAdcController extends BasicController {
 	Module MDR_PORTD = Module.MDR_PORTD.get();
 	Module MDR_ADC = Module.MDR_ADC.get();
 	String[] comments = {
-			"начало преобразования",
+			"начало преобразования %s канала",
 			"источник синхросигнала",
 			"выбор запуска",
 			"номер канала преобразования",
@@ -131,11 +131,15 @@ public class MCUAdcController extends BasicController {
 				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
 				int mref = getConfPropInt("base_power", adcIndex);
 				int sample = getConfPropInt("start_kind", adcIndex);
+				String chnLst = getConfPropStr("lst_chn", adcIndex);
 
 				MDR_ADC.get().arr(comments);
-				MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
-						.set(1, syncSrc - 1, sample, NUMCH, mref, adcSrcDiv)
-				.shift(0, 2, 3, 4, 11, 12)).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+				for(int chn = 0; chn < 32; chn++) {
+					if (!chnLst.contains(chn + "")) continue;
+					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
+							.set(1, syncSrc - 1, sample, chn, mref, adcSrcDiv)
+							.shift(0, 2, 3, 4, 11, 12)).args(chn).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+				}
 				break;
 		}
 		return oldCode;
