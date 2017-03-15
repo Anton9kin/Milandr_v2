@@ -55,14 +55,20 @@ public class MCUPowerControllerTest {
 		List<String> newCodeList = powerController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
 		StringBuilder codeResult = new StringBuilder();
-		Integer commentsCount = 0;
+		int commentsCount = 0;
+		int linesCount = 0;
 		for(String codeLine: newCodeList) {
 			if (codeLine.trim().contains("//")) {
 				commentsCount++;
 				codeLine = codeLine.substring(0, codeLine.indexOf("//"));
 			}
+			if (codeLine.trim().isEmpty()) continue;
+			linesCount++;
 			codeResult.append(codeLine.trim());
 		}
+		assertEquals(6, commentsCount);
+		assertEquals(5, linesCount);
+		assertEquals(12, newCodeList.size());
 		assertEquals(defaultCodeResult, codeResult.toString());
 	}
 }
