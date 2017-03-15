@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -16,9 +17,11 @@ import milandr_ex.model.mcu.ext.*;
 import milandr_ex.model.mcu.inn.*;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
+import org.hibernate.annotations.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
@@ -162,23 +165,58 @@ public class MainMCUController extends BasicController {
 		}
 		String subKey = comboKey.substring(2);
 		Boolean inValue = value != null && value.equals("true");
-		if (comboKey.startsWith("t-")) {
+		if (comboKey.startsWith("t-cfg")) {
 			if (!inValue) return;
 			setLastPair(subKey.substring(4));
-			collapseChildren(subKey, cfg_vbox_in.getChildren());
-			collapseChildren(subKey, cfg_vbox_ex.getChildren());
-			updateCodeGenerator(getPairForComboKey(comboKey));
+			boolean prevent = collapseChildren(subKey, cfg_vbox_in.getChildren());
+			prevent |= collapseChildren(subKey, cfg_vbox_ex.getChildren());
+			if (!prevent) updateCodeGenerator(getPairForComboKey(comboKey));
+		} else if (comboKey.startsWith("c-")) {
+			subKey = "cfg_" + subKey.toLowerCase().replace("wdg", "wd");
+			if (subKey.contains("-")) subKey = subKey.substring(0, subKey.indexOf("-"));
+			disableChildren(subKey, cfg_vbox_in.getChildren());
+			disableChildren(subKey, cfg_vbox_ex.getChildren());
 		}
 	}
 
-	private void collapseChildren(String subKey, List<Node> children) {
+	private void disableChildren(String subKey, List<Node> children) {
+		String cboxKey = subKey.substring(4).toUpperCase();
 		for (Node node : children) {
-			if (node instanceof TitledPane && !node.getId().equals(subKey)) {
+			boolean isCurentTab = node.getId().equals(subKey);
+			if (isCurentTab && node instanceof TitledPane) {
+				boolean oneChecked = checkOneChecked(cboxKey);
 				((TitledPane) node).setExpanded(false);
+				node.setDisable(!oneChecked);
 			}
 		}
 	}
+	private boolean collapseChildren(String subKey, List<Node> children) {
+		String cboxKey = subKey.substring(4).toUpperCase();
+		boolean oneChecked = false;
+		for (Node node : children) {
+			boolean isCurentTab = node.getId().equals(subKey);
+			if (node instanceof TitledPane) {
+				if (isCurentTab) {
+					oneChecked = checkOneChecked(cboxKey);
+					if (!oneChecked) ((TitledPane) node).setExpanded(false);
+				} else ((TitledPane) node).setExpanded(false);
+			}
+		}
+		return !oneChecked;
+	}
 
+	private boolean checkOneChecked(String cboxKey) {
+		if (cboxKey.equals("CPU") || cboxKey.equals("GPIO")) return true;
+		if (cboxKey.endsWith("WD")) cboxKey += "G";
+		CheckBox cb = mcuPinsController.cboxMap().get(cboxKey);
+		if (cb != null) return cb.isSelected();
+		boolean oneChecked = false;
+		for (int i = 0; i < 9; i++) {
+			cb = mcuPinsController.cboxMap().get(cboxKey + "-" + i);
+			oneChecked |= cb != null && cb.isSelected();
+		}
+		return oneChecked;
+	}
 	protected void hideChildPane(Device.EPairNames pair) {
 		Boolean pairBlockVisibility = !pair.real() || DeviceFactory.getDevice(getScene()
 				.getPinoutsModel().getSelectedBody())

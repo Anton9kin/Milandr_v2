@@ -342,10 +342,12 @@ public class MCUPinsController extends BasicController
 		return comboMap;
 	}
 
+	public Map<String, CheckBox> cboxMap() { return cboxMap; }
 	@Override
 	public void callGuiListener(String comboKey, String prev, String value) {
 		if (comboKey == null) return;
 		super.callGuiListener(comboKey, prev, value);
+		getParentController().callGuiListener(comboKey, prev, value);
 		switchComboIndex(comboKey, comboMap.get(comboKey), prev, value);
 	}
 
