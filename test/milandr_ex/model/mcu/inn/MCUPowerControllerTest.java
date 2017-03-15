@@ -1,6 +1,7 @@
 package milandr_ex.model.mcu.inn;
 
 import com.google.common.collect.Lists;
+import milandr_ex.data.CodeGenerator;
 import milandr_ex.model.BasicControllerTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,5 +32,15 @@ public class MCUPowerControllerTest extends BasicControllerTest {
 		List<String> newCodeList = powerController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
 		testCodeResult(defaultCodeResult, 6, 5, 12, newCodeList);
+	}
+
+	@Test
+	public void testDefaultSimplePowerParams() {
+		setGenKind(CodeGenerator.GenKind.SIMPLE);
+		List<String> oldCodeList = Lists.newArrayList();
+		assertEquals("[]", String.valueOf(oldCodeList));
+		List<String> newCodeList = powerController.generateCode(device, oldCodeList);
+		assertNotEquals(oldCodeList, newCodeList);
+		testCodeResult(defaultCodeResult, 6, 5, 10, newCodeList);
 	}
 }

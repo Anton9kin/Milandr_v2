@@ -29,12 +29,16 @@ public class BasicControllerTest {
 		device = DeviceFactory.getDevice("LQFP64");
 		CodeGenerator codeGenerator = CodeGenerator.instance();
 		when(appScene.getPinoutsModel()).thenReturn(pinoutsModel);
-		when(appScene.genKind()).thenReturn(CodeGenerator.GenKind.MODEL);
+		setGenKind(CodeGenerator.GenKind.MODEL);
 		when(appScene.getCodeGenerator()).thenReturn(codeGenerator);
 		when(pinoutsModel.getBlockModel(Mockito.anyString())).thenReturn(blockModel);
 		when(pinoutsModel.getClockModel()).thenReturn(clockModel);
 		controller.setScene(appScene);
 		controller.postInit(appScene);
+	}
+
+	protected void setGenKind(CodeGenerator.GenKind kind) {
+		when(appScene.genKind()).thenReturn(kind);
 	}
 
 	protected void testCodeResult(String expectedCodeResult, int expectedComments, int expectedLines,

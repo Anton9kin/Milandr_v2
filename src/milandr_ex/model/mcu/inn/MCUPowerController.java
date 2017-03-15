@@ -37,13 +37,13 @@ public class MCUPowerController extends BasicController {
 		int bucc = getConfPropInt("bp_bucc");
 
 		g().addCodeStr(oldCode, "//разрешение тактирования Power");
-		g().addCodeStr(oldCode, "    MDR_RST_CLK->PER_CLOCK |= 1 << 11;");
+		g().addCodeStr(oldCode, "    MDR_RST_CLK->PER_CLOCK |= ((1 << 11));");
 
 		g().addCodeStr(oldCode, " //сравнение с Ucc ( " + uccList.get(ucc) + " )");
 		g().addCodeStr(oldCode, "    MDR_POWER->PVDCS = ((" + ucc + " << 3)");
 
 		g().addCodeStr(oldCode, " //равнение с BUcc ( " + buccList.get(bucc) + " ));");
-		g().addCodeStr(oldCode, "                     | (" + bucc + " << 1);");
+		g().addCodeStr(oldCode, "                     | (" + bucc + " << 1));");
 
 		return oldCode;
 	}
