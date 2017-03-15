@@ -67,6 +67,10 @@ public class ClockModel {
 			return baseFactor == null ? body : baseFactor;
 		}
 
+		public Integer getFactorIndex() {
+			return factorIndex == null ? 0 :  factorIndex;
+		}
+
 		public int getValue() {
 			checkFullSetup();
 			int result = baseValue == null ? 1 : baseValue;
@@ -215,10 +219,10 @@ public class ClockModel {
 			if (inputs.containsKey(name)) {
 				String factor = inputs.get(name).getFactor();
 				if (factor == null || factor.isEmpty()) return 0;
-				return inputs.get(name).factorIndex;
+				return inputs.get(name).getFactorIndex();
 //				return Integer.parseInt(factor.split("\\s")[1]);
 			} else if (name.endsWith("-O")) {
-				return output.factorIndex;
+				return output.getFactorIndex();
 			}
 			return -1;
 		}
@@ -270,9 +274,9 @@ public class ClockModel {
 		}
 		public String getPinFactor(String name) {
 			if (inputs.containsKey(name)) {
-				return inputs.get(name).baseFactor;
+				return inputs.get(name).getFactor();
 			} else if (name.equals("out")) {
-				return output.baseFactor;
+				return output.getFactor();
 			}
 			return "";
 		}
@@ -281,9 +285,9 @@ public class ClockModel {
 		}
 		public Integer getPinFactorIndex(String name) {
 			if (inputs.containsKey(name)) {
-				return inputs.get(name).factorIndex;
+				return inputs.get(name).getFactorIndex();
 			} else if (name.equals("out")) {
-				return output.factorIndex;
+				return output.getFactorIndex();
 			}
 			return 0;
 		}
