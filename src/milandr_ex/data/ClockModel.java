@@ -27,6 +27,7 @@ public class ClockModel {
 		private final String from;
 		private Integer baseValue;
 		private String baseFactor;
+		private Integer factorIndex;
 		private String restriction = "";
 		private Integer value;
 
@@ -41,9 +42,10 @@ public class ClockModel {
 			return this;
 		}
 
-		public InOut setFactor(String baseFactor) {
+		public InOut setFactor(String baseFactor, Integer index) {
 			System.out.println(String.format("pin::%s factor changed %s -> %s", this, this.baseFactor, baseFactor));
 			this.baseFactor = baseFactor;
+			this.factorIndex = index;
 			return this;
 		}
 
@@ -213,7 +215,10 @@ public class ClockModel {
 			if (inputs.containsKey(name)) {
 				String factor = inputs.get(name).getFactor();
 				if (factor == null || factor.isEmpty()) return 0;
-				return Integer.parseInt(factor.split("\\s")[1]);
+				return inputs.get(name).factorIndex;
+//				return Integer.parseInt(factor.split("\\s")[1]);
+			} else if (name.endsWith("-O")) {
+				return output.factorIndex;
 			}
 			return -1;
 		}
@@ -248,17 +253,39 @@ public class ClockModel {
 			}
 			return this;
 		}
-		public Block setPinFactor(int ind, String value) {
-			return setPinFactor(getPinName(ind), value);
+		public Block setPinFactor(int ind, String value, Integer index) {
+			return setPinFactor(getPinName(ind), value, index);
 		}
-		public Block setPinFactor(String name, String value) {
+		public Block setPinFactor(String name, String value, Integer index) {
 			checkFullSetup();
 			if (inputs.containsKey(name)) {
-				inputs.get(name).setFactor(value);
+				inputs.get(name).setFactor(value, index);
 			} else if (name.equals("out")) {
-				output.setFactor(value);
+				output.setFactor(value, index);
 			}
 			return this;
+		}
+		public String getPinFactor(int ind) {
+			return getPinFactor(getPinName(ind));
+		}
+		public String getPinFactor(String name) {
+			if (inputs.containsKey(name)) {
+				return inputs.get(name).baseFactor;
+			} else if (name.equals("out")) {
+				return output.baseFactor;
+			}
+			return "";
+		}
+		public Integer getPinFactorIndex(int ind) {
+			return getPinFactorIndex(getPinName(ind));
+		}
+		public Integer getPinFactorIndex(String name) {
+			if (inputs.containsKey(name)) {
+				return inputs.get(name).factorIndex;
+			} else if (name.equals("out")) {
+				return output.factorIndex;
+			}
+			return 0;
 		}
 		public Block setPinRestr(int ind, String value) {
 			return setPinRestr(getPinName(ind), value);
@@ -399,18 +426,18 @@ public class ClockModel {
 		inputs.setPin(name, value);
 		return this;
 	}
-	public ClockModel setFactor(int blkInd,  int pinInd, String value) {
-		return setFactor(getBlockName(blkInd), pinInd, value);
+	public ClockModel setFactor(int blkInd,  int pinInd, String value, Integer fIndex) {
+		return setFactor(getBlockName(blkInd), pinInd, value, fIndex);
 	}
-	public ClockModel setFactor(String block, int index, String value) {
+	public ClockModel setFactor(String block, int index, String value, Integer fIndex) {
 		if (index < 0) return this;
 		checkFullSetup();
-		blockMap.get(block).setPinFactor(index, value);
+		blockMap.get(block).setPinFactor(index, value, fIndex);
 		return this;
 	}
-	public ClockModel setFactor(String block, String name, String value) {
+	public ClockModel setFactor(String block, String name, String value, Integer fIndex) {
 		checkFullSetup();
-		blockMap.get(block).setPinFactor(name, value);
+		blockMap.get(block).setPinFactor(name, value, fIndex);
 		return this;
 	}
 	public ClockModel setSelected(String block, int ind) {
@@ -490,6 +517,11 @@ public class ClockModel {
 	public Integer getOutVal(String name) {
 		checkFullSetup();
 		return outputs.getPin(name);
+	}
+
+	public Integer getOutSel(String name) {
+		checkFullSetup();
+		return outputs.getSel(name);
 	}
 
 	public boolean hasPinIn(String name) {

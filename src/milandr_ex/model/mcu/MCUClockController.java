@@ -461,16 +461,19 @@ public class MCUClockController extends MCUExtPairController
 		String subKey = comboKey.substring(2, comboKey.lastIndexOf("-"));
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
+		ComboBox comboBox = clkMap.get(comboKey);
+		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		if (clock == null) return;
 		switch (subInd) {
 			case 0 :
 				clock.setSelected(subKey, Integer.parseInt(value.split("-")[1]) - 1);
 				break;
 			case 9 :
-				clock.setFactor(subKey, "out", value);
+				clock.setFactor(subKey, "out", value, selIndex);
 				break;
 			default:
-				clock.setFactor(subKey, factors.indexOf(subInd), value);
+				clock.setFactor(subKey, factors.indexOf(subInd), value, selIndex);
 				break;
 		}
 		log_debug(log, clock.calc().toStr(subKey));
