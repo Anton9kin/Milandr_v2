@@ -30,7 +30,8 @@ public class MCUAdcController extends BasicController {
 		//noinspection unchecked
 		addModelProps(new String[]{"base_power", "start_kind", "adc_src", "adc_div"},
 				opUList, typeStartList, adcSrcList, div2048List);
-		addModelProps(new String[]{"sw_chn", "temp_sens", "lst_chn"}, "BBS");
+		addModelProps(new String[]{"sw_chn", "temp_sens"}, "BB");
+		addModelProps(new String[]{"lst_chn"}, true);
 	}
 
 	@Override
