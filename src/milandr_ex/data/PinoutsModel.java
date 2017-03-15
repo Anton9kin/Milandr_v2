@@ -123,6 +123,15 @@ public class PinoutsModel {
 				'}';
 	}
 
+	public String toStr() {
+		return "PINMdl{" +
+				"selectedBody='" + selectedBody + '\'' +
+//				", mcuBlocks=" + mcuBlocks +
+				", hasUnsavedChanges=" + hasUnsavedChanges +
+//				", clockModel=" + clockModel.toStr("out") +
+				'}';
+	}
+
 	public static PinoutsModel get(McuType mcuType) {
 		return get(mcuType.getProp("pack"));
 	}
