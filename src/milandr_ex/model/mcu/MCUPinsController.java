@@ -180,7 +180,10 @@ public class MCUPinsController extends BasicController
 		ObservableList<String> pxItem = FXCollections.observableArrayList("RESET", "IO out", "IO in");
 		for(String text: texts) {
 			if (text.isEmpty() || text.equals("-")) continue;
-			if (text.startsWith("COMP")) { pxItem.add(text); continue; }
+			if (text.startsWith("COMP")) {
+				if (!checkPairForHide("COMP")) pxItem.add(text);
+				continue;
+			}
 			boolean match3 = text.matches("\\w{3}\\d") || text.matches("\\w{3}\\d.+");
 			boolean match4 = text.matches("\\w{4}\\d") || text.matches("\\w{4}\\d.+");
 			if (match3 || match4) {
@@ -192,6 +195,7 @@ public class MCUPinsController extends BasicController
 				if (pairName.equals("SSP")) pairName = "SPI";
 				if (pairName.equals("SCL")) pairName = "I2C";
 				if (pairName.equals("SDA")) pairName = "I2C";
+				if (checkPairForHide(pairName)) continue;
 				int pCnt = getScene().getDevice().getPairCount(pairName);
 				if (pCnt == 0) continue;
 				int cnt = Integer.parseInt(text.substring(match3 ? 3 : 4, match3 ? 4 : 5));
@@ -482,9 +486,10 @@ public class MCUPinsController extends BasicController
 			}
 			return true;
 		}
-		if (value1.startsWith("IO") || value1.startsWith("DATA") ||
-				value1.startsWith("EXT") || value1.startsWith("ADC") ||
-				value1.startsWith("ADDR")) return true;
+		if (value1.length() <= 3) return true;
+		for(String exclusive: exclusiveList) {
+			if (value1.startsWith(exclusive)) return true;
+		}
 		return false;
 	}
 
