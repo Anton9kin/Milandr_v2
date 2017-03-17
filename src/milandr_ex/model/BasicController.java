@@ -23,6 +23,7 @@ import static milandr_ex.utils.GuiUtils.bcDef;
 import static milandr_ex.utils.GuiUtils.bcTxt;
 
 /**
+ * Базовая реализация для всех контроллеров
  * Created by lizard on 20.02.17 at 12:40.
  */
 public abstract class BasicController implements ChangeCallbackOwner {
@@ -43,10 +44,19 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected ChangeCallback changeCallback;
 	protected List<BasicController> subControllers = Lists.newArrayList();
 
+	/**
+	 * Предварительная инициализация контроллера в момент получения AppScene
+	 * @return self instance
+	 */
 	public <T extends BasicController> T preInit() {
 		preInit(getScene());
 		return (T) this;
 	}
+
+	/**
+	 * Пост инициализация контроллера
+	 * @return self instance
+	 */
 	@SuppressWarnings("unchecked")
 	public <T extends BasicController> T postInit() {
 		if (getParentController() != null) {
@@ -101,6 +111,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+	/**
+	 * Инициализация "свойств" блоков.
+	 * Позволяет скрывает панели родительского контроллера
+	 * @param pair указанный блок для инициализации
+	 */
 	private void initProps(Device.EPairNames pair) {
 		if (pair == null) return;
 		if (getParentController() != null) {
@@ -114,6 +129,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 
+	/**
+	 * Проверка блока на скритие в зависимости от режима запузка приложения (test или debug)
+	 * @param pairName указанный блок для проверки
+	 * @return true - если необходимо скрыть
+	 */
 	protected boolean checkPairForHide(String pairName) {
 		if (getScene().isDebugMode()) { return false; }
 		if (getScene().isTestMode()) {
@@ -137,6 +157,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		for(double percent: percents) makeColumnConstraint(cc, percent);
 	}
 
+	/**
+	 * Инициализация UI "свойств" блоков.
+	 * Содержит программную инициализация ColumnConstraints
+	 * @param pair указанный блок для инициализации
+	 */
 	private void makeUI(Device.EPairNames pair) {
 		Pane propsPane = getPropControl();
 		propsPane.getChildren().clear();
@@ -218,6 +243,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+	/**
+	 * Add new combo-properties to current block's model
+	 * @param props list of properties names
+	 * @param lists array of lists of values for combo-boxes
+	 */
 	 protected void addModelProps(String[] props, List<String>... lists){
 		int ind = 0;
 		for(String prop: props) {
@@ -225,6 +255,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	 }
 
+	/**
+	 * Add new properties to current block's model with defined types and values
+	 * @param props list of properties names
+	 * @param types defined types of new properties
+	 * @param args default values of new properties
+	 */
 	 protected void addModelProps(String[] props, String types, Object... args){
 		int ind = 0;
 		Device.EPairNames pair = getDevicePair();
@@ -244,9 +280,18 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	 }
 
+	/**
+	 * Add new string properties to current block's model
+	 * @param props list of properties names
+	 */
 	 protected void addModelProps(String... props){
 	 	addModelProps(props, false);
 	 }
+	/**
+	 * Add new string properties to current block's model
+	 * @param props list of properties names
+	 * @param ro set true for create read-only properties
+	 */
 	 protected void addModelProps(String[] props, boolean ro){
 		 Device.EPairNames pair = getDevicePair();
 		for(String prop: props) {
@@ -264,11 +309,23 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return null;
 	}
 
+	/**
+	 * Basic method called from auto-created listeners of pinouts|clock tabs
+	 * @param key key of selected combo-box
+	 * @param prev prev value of combo
+	 * @param value new value of combo
+	 */
 	public void callListener(String key, String prev, String value) {
 		//do nothing by default
 		getScene().setMainController(this);
 		updateCodeGenerator(key);
 	}
+	/**
+	 * GUI method called from auto-created listeners of pinouts|clock tabs
+	 * @param key key of selected combo-box
+	 * @param prev prev value of combo
+	 * @param value new value of combo
+	 */
 	public void callGuiListener(String key, String prev, String value) {
 		//do nothing by default
 		getScene().setMainController(this);
@@ -319,15 +376,39 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return reloadReg / 10 ^ (3 * (tf_units % 3));
 	}
 
+	/**
+	 * Get block's model property by it's name
+	 * @param name name for property
+	 * @return block property
+	 */
 	protected McuBlockProperty getModelProp(String name) {
 		return getDevicePair().model().getProp(name);
 	}
+
+	/**
+	 * Set new value for current block's model property
+	 * @param name name for property
+	 * @param ind value index for setup
+	 * @param value new value for property
+	 */
 	protected void setModelProp(String name, int ind, String value) {
 		getModelProp(name).setStrValue(value, ind);
 	}
+	/**
+	 * Set new value for current block's model property
+	 * @param name name for property
+	 * @param ind value index for setup
+	 * @param value new value for property
+	 */
 	protected void setModelProp(String name, int ind, Integer value) {
 		getModelProp(name).setIntValue(value, ind);
 	}
+
+	/**
+	 * Get Clock property by it's name
+	 * @param name name of property
+	 * @return current selected value
+	 */
 	protected Integer getClockProp(String name) {
 	 	ClockModel clock = getScene().getPinoutsModel().getClockModel();
 	 	if (clock == null) return 0;
@@ -339,9 +420,20 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	return clock.getOut(names[0], names[1]);
 	}
 
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @return current selected value
+	 */
 	protected Integer getConfPropInt(String name) {
 		return getConfPropInt(name, 0);
 	}
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param valueInd index of value of property
+	 * @return current selected value
+	 */
 	protected Integer getConfPropInt(String name, int valueInd) {
 		if (name.contentEquals(".")) {
 			String[] names = name.split("\\.");
@@ -350,9 +442,20 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	return getDevicePair().model().getProp(name).getIntValue(valueInd);
 	}
 
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @return current selected value
+	 */
 	protected String getConfPropStr(String name) {
 		return getConfPropStr(name, 0);
 	}
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param valueInd index of value of property
+	 * @return current selected value
+	 */
 	protected String getConfPropStr(String name, int valueInd) {
 		if (name.contentEquals(".")) {
 			String[] names = name.split("\\.");
@@ -361,16 +464,40 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	return getDevicePair().model().getProp(name).getStrValue(valueInd);
 	}
 
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param sName sub-name of property
+	 * @return current selected value
+	 */
 	protected String getConfPropStr(String name, String sName) {
 		return getConfPropStr(name, sName, 0);
 	}
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param valueInd index of value of property
+	 * @return current selected value
+	 */
 	protected String getConfPropStr(String name, String sName, int valueInd) {
 	 	return getDevicePair().model().getProp(name).getProp(sName).getStrValue(valueInd);
 	}
 
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param sName sub-name of property
+	 * @return current selected value
+	 */
 	protected Integer getConfPropInt(String name, String sName) {
 		return getConfPropInt(name, sName, 0);
 	}
+	/**
+	 * Get Configuration's block property by it's name
+	 * @param name name of property
+	 * @param valueInd index of value of property
+	 * @return current selected value
+	 */
 	protected Integer getConfPropInt(String name, String sName, int valueInd) {
 	 	return getDevicePair().model().getProp(name).getProp(sName).getIntValue(valueInd);
 	}
@@ -390,6 +517,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
 		return generateBuilderCodeStep(oldCode, codeStep);
 	}
+	/**
+	 * Basic method for start code generation with steps and separation by code generation kind
+	 *
+	 * @param oldCode list of strings with prev generated code
+	 * @param step define step of generation for complex code conditions
+	 * @return list of strings with new generated code
+	 */
 	protected List<String> generateCode(List<String> oldCode, int step) {
 		switch (getScene().genKind()) {
 			case SIMPLE: return generateSimpleCodeStep(oldCode, step);
@@ -401,6 +535,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return oldCode;
 	}
 
+	/**
+	 * Main method for start code generation
+	 *
+	 * @param device current selected device
+	 * @param oldCode list of strings with prev generated code
+	 * @return list of strings with new generated code
+	 */
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();
 	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
@@ -416,7 +557,15 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 	return oldCode;
 	}
 
+	/**
+	 * Short alias for returning current scene code generator
+	 * @return code generator instance
+	 */
 	protected CodeGenerator g() { return getScene().getCodeGenerator(); }
+	/**
+	 * Short alias for returning current scene code generator builder
+	 * @return code builder instance
+	 */
 	protected CodeGenerator.CodeExpressionBuilder b() { return g().builder(); }
 	public ResourceBundle getMessages() {
 		return messages;
@@ -436,37 +585,73 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	private Device.EPairNames lastPair = Device.EPairNames.NON;
 
+	/**
+	 * Set last selected pair from controller
+	 * @param lastPairKey last selected pair name
+	 */
 	protected void setLastPair(String lastPairKey) {
 		lastPairKey = lastPairKey.toUpperCase();
 		if (lastPairKey.endsWith("WD")) lastPairKey += "G";
 		setLastPair(Device.EPairNames.valueOf(lastPairKey));
 	}
+	/**
+	 * Set last selected pair from controller
+	 * @param lastPair last selected pair
+	 */
 	protected void setLastPair(Device.EPairNames lastPair) {
 		this.lastPair = lastPair;
 	}
 
+	/**
+	 * Get last selected pair from controller
+	 * @return last selected pair
+	 */
 	public Device.EPairNames getLastPair() {
 		return lastPair;
 	}
 
 	private boolean[] cboxChecked = {false, false, false, false, false};
 	private Map<String, String> pinSelected = Maps.newHashMap();
+
+	/**
+	 * Check if needed checkbox of pair is selected
+	 * @param index index of looked checkbox
+	 * @return true is checked
+	 */
 	protected boolean isCboxChecked(int index) {
 		if (index <0 || index >= cboxChecked.length) return false;
 		return cboxChecked[index];
 	}
+
+	/**
+	 * Get selected item of needed combo box
+	 * @param pinName needed combo box key
+	 * @return string value of selected item
+	 */
 	protected String getPinSelected(String pinName) {
 		if (!pinSelected.containsKey(pinName)) return "";
 		String value = pinSelected.get(pinName);
 		if (value.contains(" ")) value = value.split("\\s")[1];
 		return value;
 	}
+	/**
+	 * Get selected port's pin index of needed combo box
+	 * @param pinName needed combo box key
+	 * @return int index of pin in pair's block
+	 */
 	protected int getPinSelectedInd(String pinName) {
 		String value = getPinSelected(pinName).trim();
 		if (value.isEmpty()) return -1;
 		if (!value.matches("\\w{2}\\d+")) return 0;
 		return Integer.parseInt(value.substring(2));
 	}
+
+	/**
+	 * Auto-called method from each pin's combo change for
+	 * saving pin combos with separation by target controller
+	 * @param comboKey key of changed combo-box
+	 * @param value new selected value
+	 */
 	protected void checkSelectedPin(String comboKey, String value) {
 		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
 		if (comboKey.matches("c-" + getDevicePair().name() + "-\\d")) {
@@ -488,12 +673,21 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
+	/**
+	 * Set device pair of current controller for auto-driven method of separation model, props, pins
+	 * by controllers that's assigned to pair defined here
+	 * @param devicePair pair for assign controller with pair's model
+	 */
 	protected void setDevicePair(Device.EPairNames devicePair) {
 		this.devicePair = devicePair;
 		devicePair.model().setBundle(getMessages());
 		devicePair.model().setController(this);
 	}
 
+	/**
+	 * Get device pair of current controller
+	 * @return device pair
+	 */
 	public Device.EPairNames getDevicePair() {
 		return devicePair;
 	}
