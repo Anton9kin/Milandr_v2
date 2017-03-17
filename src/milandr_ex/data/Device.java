@@ -35,7 +35,10 @@ public class Device {
                 device.setComporator(val);
             }
         },
-        USB(1), UART(2), CAN(2), SPI(4), I2C(2), DAC(1), DMA(1),
+        USB(1), UART(2), CAN(2){
+            @Override
+            public int colWidth() { return 50; }
+        }, SPI(4), I2C(2), DAC(1), DMA(1),
         SYST(1){
             @Override
             public int colWidth() { return 60; }
@@ -76,11 +79,12 @@ public class Device {
     private static List<String> extPairNames;
     private static EPairNames[] prodPairs = {
             EPairNames.ADC, EPairNames.IWDG, EPairNames.PWR, EPairNames.SYST, EPairNames.WWDG,
-            EPairNames.CPU,
+            EPairNames.COMP,
+            EPairNames.CPU, EPairNames.CAN
     };
     private static List<String> prodPairNames;
     private static EPairNames[] testPairs = {
-            EPairNames.BKP, EPairNames.COMP, EPairNames.DAC, EPairNames.DMA, EPairNames.MPU,
+            EPairNames.BKP, EPairNames.DAC, EPairNames.DMA, EPairNames.MPU,
             EPairNames.TMR, EPairNames.USB,
     };
     private static List<String> testPairNames;
