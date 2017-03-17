@@ -593,6 +593,7 @@ public class MCUPinsController extends BasicController
 			if (value.contains("ADC") || reset && prev.contains("ADC")) {
 				tpaneMap.get("ADC").setExpanded(true);
 				int ind = Integer.parseInt((reset ? prev : value).substring(3,4));
+				if (!ccbMap.get("ADC-2").getCheckModel().isChecked(ind))
 				switchCCB("ADC-1", reset, ind);
 //				switchCCB("ADC-2", reset, ind);
 			}
