@@ -1,6 +1,7 @@
 package milandr_ex.model;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -448,8 +449,33 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return lastPair;
 	}
 
+	private boolean[] cboxChecked = {false, false, false, false, false};
+	private Map<String, String> pinSelected = Maps.newHashMap();
+	protected boolean isCboxChecked(int index) {
+		if (index <0 || index >= cboxChecked.length) return false;
+		return cboxChecked[index];
+	}
+	protected String getPinSelected(String pinName) {
+		if (!pinSelected.containsKey(pinName)) return "";
+		String value = pinSelected.get(pinName);
+		if (value.contains(" ")) value = value.split("\\s")[1];
+		return value;
+	}
+	protected int getPinSelectedInd(String pinName) {
+		String value = getPinSelected(pinName).trim();
+		if (value.isEmpty()) return -1;
+		if (!value.matches("\\w{2}\\d+")) return 0;
+		return Integer.parseInt(value.substring(2));
+	}
 	protected void checkSelectedPin(String comboKey, String value) {
 		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
+		if (comboKey.matches("c-" + getDevicePair().name() + "-\\d")) {
+			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
+			cboxChecked[Integer.parseInt(ind) - 1] = Boolean.parseBoolean(value);
+			getScene().genKind(getScene().genKind());
+		} else if (comboKey.startsWith(getDevicePair().name())) {
+			pinSelected.put(comboKey, value);
+		}
 	}
 	protected void saveSelectedPin(String comboKey, String value) {
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
