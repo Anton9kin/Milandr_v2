@@ -101,6 +101,7 @@ public class MCUAdcController extends BasicController {
 			"источник синхросигнала",
 			"выбор запуска",
 			"номер канала преобразования",
+			"переключение каналов",
 			"источник опорного",
 			"коэффициент деления частоты",
 	};
@@ -149,6 +150,8 @@ public class MCUAdcController extends BasicController {
 				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
 				int mref = getConfPropInt("base_power", adcIndex);
 				int sample = getConfPropInt("start_kind", adcIndex);
+				int adcSwCh = getConfPropInt("sw_chn");
+				
 				String chnLst = getConfPropStr("lst_chn", adcIndex);
 				String chnsLst = cleanChannelsList(chnLst);
 				String chnCmt = "";
@@ -156,11 +159,10 @@ public class MCUAdcController extends BasicController {
 				MDR_ADC.get().arr(comments);
 				int chn = 0;
 				int chns = 0;
-				int chnOfs = 4;
 
 				if (chnsLst.length() > 1) {
 					chn = 1;
-					chnOfs = 9;
+					adcSwCh = 1;
 				} else chn = chnsLst.isEmpty() ? 0 : Integer.parseInt(chnsLst);
 				for(int chni = 0; chni < 16; chni++) {
 					if (!chnsLst.contains(chni + "")) continue;
@@ -169,8 +171,8 @@ public class MCUAdcController extends BasicController {
 				}
 				if (chn >= 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
-							.set(1, syncSrc - 1, sample, chn, mref, adcSrcDiv)
-							.shift(0, 2, 3, chnOfs, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+							.set(1, syncSrc - 1, sample, chn, adcSwCh,mref, adcSrcDiv)
+							.shift(0, 2, 3, 4, 9, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5, 6).build(oldCode);
 				}
 				if (chns > 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CHSEL : Param.ADC1_CHSEL)
