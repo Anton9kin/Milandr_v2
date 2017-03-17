@@ -365,8 +365,14 @@ public class MCUClockController extends MCUExtPairController
 		clock.addRestriction("ADC-CLK", "< 14000000");
 		clock.addRestriction("HCLK", "< 80000000");
 		clock.addRestriction("CPU-CLK", "< 80000000");
+		// disable HSE/2, HSI/2 for usb and cpu
+		selectClockCBoxes("CPU-C1", 0, 30, 31, "IN-2", "/ 2","/ 2");
+		selectClockCBoxes("USB-C1", 30, 31, "/ 2","/ 2");
+		disableCBox("k-CPU-C1-30", true);
+		disableCBox("k-CPU-C1-31", true);
+		disableCBox("k-USB-C1-30", true);
+		disableCBox("k-USB-C1-31", true);
 		// make cpu default
-		selectClockCBoxes("CPU-C1", 0, 30, "IN-2","/ 2");
 		selectClockCBoxes("CPU-C2", 0, 30, "IN-2","* 2");
 		selectClockCBoxes("HCLK", 0, 30, "IN-2","/ 2");
 		// make usb 48 MHz
@@ -397,6 +403,9 @@ public class MCUClockController extends MCUExtPairController
 	@SuppressWarnings("unchecked")
 	private void selectCBox(String comboKey, String value) {
 		clkMap.get(comboKey).getSelectionModel().select(value);
+	}
+	private void disableCBox(String comboKey, boolean value) {
+		clkMap.get(comboKey).setDisable(value);
 	}
 
 	private void makeClockGridItem(String caption, String combostr, int col, int row) {
