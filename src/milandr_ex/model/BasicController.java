@@ -53,6 +53,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return (T) this;
 	}
 
+	private class WrapValue {
+		int wrapped = 0;
+	}
 	/**
 	 * Пост инициализация контроллера
 	 * @return self instance
@@ -62,9 +65,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getParentController() != null) {
 			getParentController().addChildController(this);
 		}
+//		final WrapValue wrapper = new WrapValue();
 		changeCallback = new ChangeCallBackImpl(this) {
 			@Override
 			public void callListener(String key, String prev, String value) {
+//				wrapper.wrapped = Integer.parseInt(value);
 				checker.callListener(key, prev, value);
 			}
 			@Override

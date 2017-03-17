@@ -204,22 +204,27 @@ public class GuiUtils {
 	}
 
 	public static TextField findTextFromGrid(GridPane grid, int row, int col) {
+		if (grid == null) return null;
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof TextField ? (TextField)node : null;
 	}
 	public static HBox findHBTextFromGrid(GridPane grid, int row, int col) {
+		if (grid == null) return null;
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof HBox? (HBox) node : null;
 	}
 	public static Label findLabelFromGrid(GridPane grid, int row, int col) {
+		if (grid == null) return null;
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof Label ? (Label)node : null;
 	}
 	public static GridPane findGridFromGrid(GridPane grid, int row, int col) {
+		if (grid == null) return null;
 		Node node = findNodeFromGrid(grid, row, col);
 		return node instanceof GridPane ? (GridPane)node : null;
 	}
 	public static Node findNodeFromGrid(GridPane grid, int row, int col) {
+		if (grid == null) return null;
 		if (row < 0 || col < 0) return null;
 		Node input = null;
 		for (Node node : grid.getChildren()) {
