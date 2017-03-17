@@ -16,9 +16,8 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class MCUAdcControllerTest extends BasicControllerTest {
 	private static String defaultCodeResult = "voidADC_init(void){" +
-			"MDR_RST_CLK->ADC_MCO_CLOCK=((0<<0)|(0<<4)|(0<<8)|(1<<13));" +
-			"MDR_RST_CLK->PER_CLOCK|=((1<<17));MDR_PORTD->OE&=~((1<<0));" +
-			"MDR_PORTD->ANALOG&=~((1<<0));}";
+			"MDR_RST_CLK->ADC_MCO_CLOCK=((0x0<<0)|(0x0<<4)|(0x0<<8)|(0x1<<13));" +
+			"MDR_RST_CLK->PER_CLOCK|=((0x1<<17));}";
 
 	private MCUAdcController adcController;
 
@@ -29,11 +28,11 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 	}
 
 	@Test
-	public void testDefaultPowerParams() {
+	public void testDefaultAdcParams() {
 		List<String> oldCodeList = Lists.newArrayList();
 		assertEquals("[]", String.valueOf(oldCodeList));
 		List<String> newCodeList = adcController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
-		testCodeResult(defaultCodeResult, 10, 9, 22, newCodeList);
+		testCodeResult(defaultCodeResult, 8, 7, 16, newCodeList);
 	}
 }

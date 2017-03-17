@@ -16,7 +16,8 @@ import static org.junit.Assert.assertNotEquals;
  * Created by lizard2k1 on 15.03.2017.
  */
 public class MCUPowerControllerTest extends BasicControllerTest {
-	private static String defaultCodeResult = "voidPWR_init(void){MDR_RST_CLK->PER_CLOCK|=((1<<11));MDR_POWER->PVDCS=((0<<3)|(0<<1));}";
+	private static String defaultCodeResult = "voidPWR_init(void){MDR_RST_CLK->PER_CLOCK|=((0x1<<11));MDR_POWER->PVDCS=((0x0<<3)|(0x0<<1));}";
+	private static String simpleCodeResult = "voidPWR_init(void){MDR_RST_CLK->PER_CLOCK|=((1<<11));MDR_POWER->PVDCS=((0<<3)|(0<<1));}";
 
 	private MCUPowerController powerController;
 
@@ -41,6 +42,6 @@ public class MCUPowerControllerTest extends BasicControllerTest {
 		assertEquals("[]", String.valueOf(oldCodeList));
 		List<String> newCodeList = powerController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
-		testCodeResult(defaultCodeResult, 6, 5, 10, newCodeList);
+		testCodeResult(simpleCodeResult, 6, 5, 10, newCodeList);
 	}
 }
