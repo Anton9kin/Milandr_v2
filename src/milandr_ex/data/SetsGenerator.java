@@ -1,14 +1,13 @@
 package milandr_ex.data;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static milandr_ex.data.Constants.comboTexts;
 import static milandr_ex.data.Constants.keyToText;
@@ -28,30 +27,52 @@ public class SetsGenerator {
 		return FXCollections.observableArrayList(genArrList(setName, false));
 	}
 	public List<String> genArrList(String setName, boolean cust) {
+		return genArrList(setName, "", cust);
+	}
+	public List<String> genArrList(String setName, String skipName, boolean cust) {
 		if (cust && setName.startsWith("ADC")) {
 			List<String> adcList = Lists.newArrayList();
 			for(int i=0; i < 32; i++) adcList.add(i + "");
 			return adcList;
 		} else if (cust && setName.startsWith("COMP")) {
-			if (!pairItems.containsKey(setName)) {
-				String[] compItms = {"RESET"};
-				switch (setName) {
-					case "COMP-00" :
-						compItms = new String[]{"RESET", "COMP1_IN1 PE2", "COMP1_REF+ PE4"};
-						break;
-					case "COMP-01" :
-						compItms = new String[]{"RESET", "COMP2_IN1 PE2", "COMP2_IN2 PE3", "COMP2_IN3 PE8", "COMP2_REF- PE5"};
-						break;
-					case "COMP-02" :
-						compItms = new String[]{"RESET", "COMP3_OUT PB8", "COMP3_OUT PB11"};
-						break;
-				}
-				pairItems.put(setName, Lists.newArrayList(compItms));
+			if (!pairItems.containsKey(setName) || !skipName.isEmpty()) {
+				pairItems.put(setName, genCompItems(setName, skipName));
 			}
 			return Lists.newArrayList(pairItems.get(setName));
 		}
-		return genArrList(setName, "");
+		return genArrList(setName, skipName);
 	}
+
+	private List<String> genCompItems(String setName) {
+		return genCompItems(setName, "");
+	}
+	private List<String> genCompItems(String setName, String skip) {
+		String[] compItms = {"RESET"};
+		switch (setName) {
+			case "COMP-00" :
+				compItms = new String[]{"RESET", "COMP1_IN1 PE2", "COMP1_REF+ PE4"};
+				break;
+			case "COMP-01" :
+				compItms = new String[]{"RESET", "COMP2_IN1 PE2", "COMP2_IN2 PE3", "COMP2_IN3 PE8", "COMP2_REF- PE5"};
+				break;
+			case "COMP-02" :
+				compItms = new String[]{"RESET", "COMP3_OUT PB8", "COMP3_OUT PB11"};
+				break;
+		}
+		ArrayList<String> list = Lists.newArrayList(compItms);
+		if (!skip.isEmpty()) Iterators.removeIf(list.iterator(),
+				s->{
+					if (s == null) return true;
+					if (s.equals("RESET")) return false;
+					if (skip.startsWith(setName) && s.contains(skip)) return false;
+					else {
+						String[] spl = s.split("\\s");
+						return !(skip.contains(spl[1]) || !skip.contains(spl[0].split("_")[1]));
+					}
+				});
+		return list;
+	}
+
 	public ObservableList<String> genObsList(String setName, String skipName) {
 		return genObsList(genArrList(setName, skipName));
 	}
@@ -95,7 +116,10 @@ public class SetsGenerator {
 
 	private void fillInputs(List<String> pairs, List<Integer> numbers, String sName, String skipName) {
 		if (sName.startsWith("SPI")) sName = "SSP" + (sName.length() > 3 ? sName.substring(3) : "");
-		if (sName.startsWith("COMP")) sName = "COMP";
+//		if (sName.startsWith("COMP")) {
+//			pairs.addAll(genCompItems(sName, skipName));
+//			return;
+//		}
 		if (sName.startsWith("I2C")) {
 			sName = "SDA" + (sName.length() > 3 ? sName.substring(3) : "");
 			findInputs(pairs, numbers, sName, skipName);

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotEquals;
  * Created by lizard2k1 on 15.03.2017.
  */
 public class MCUAdcControllerTest extends BasicControllerTest {
+	private static String emptyCodeResult = "voidADC_init(void){MDR_ADC->PER_CLOCK|=((0x1<<17));}";
 	private static String defaultCodeResult = "voidADC_init(void){" +
 			"MDR_RST_CLK->ADC_MCO_CLOCK=((0x0<<0)|(0x0<<4)|(0x0<<8)|(0x1<<13));" +
 			"MDR_RST_CLK->PER_CLOCK|=((0x1<<17));}";
@@ -33,6 +34,7 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 		assertEquals("[]", String.valueOf(oldCodeList));
 		List<String> newCodeList = adcController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
-		testCodeResult(defaultCodeResult, 8, 7, 16, newCodeList);
+		testCodeResult(emptyCodeResult, 4, 3, 7, newCodeList);
+//		testCodeResult(defaultCodeResult, 8, 7, 16, newCodeList);
 	}
 }

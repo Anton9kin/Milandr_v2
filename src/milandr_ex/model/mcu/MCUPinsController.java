@@ -379,6 +379,8 @@ public class MCUPinsController extends BasicController
 //			saveSelectedPin(comboKey, value);
 			selectAdcObjects("cb", comboMap, val);
 			return;
+		} else if (comboKey.startsWith("COMP")) {
+
 		} else if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;
@@ -586,6 +588,10 @@ public class MCUPinsController extends BasicController
 		if (key.matches("\\w{3}-\\d-\\d{2}")) {
 			String link = key.substring(0, 7);
 			refillLinkedPairCombos(key, link, value);
+		} else if (key.matches("\\w{4}-\\d{2}")) {
+			if (value.equals("RESET")) return;
+			String link = key.substring(0, 6);
+			refillLinkedPairCombos(key, link, value);
 		} else if (key.matches("\\w{4}-\\d-\\d{2}")) {
 			String link = key.substring(0, 8);
 			refillLinkedPairCombos(key, link, value);
@@ -610,6 +616,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	private void refillLinkedPairCombos(String key, String link, String value) {
+		log_debug(log, String.format("#refillLinkedPairCombos[%d](%s, %s -> %s)", refillInProgress, key, link, value));
 		List<ComboBox> tempCb = Lists.newArrayList();
 		List<String> tempVals = Lists.newArrayList();
 		List<String> cbVals = Lists.newArrayList();
@@ -639,7 +646,8 @@ public class MCUPinsController extends BasicController
 			String skp = skip.replaceAll("," + keep, "")
 					.replaceAll(keep + ",", "")
 					.replaceAll(",,", ",");
-			int linkLen2 = link.length() / 2;
+//			int linkLen2 = link.length() / 2;
+			int linkLen2 = link.indexOf("-");
 			cb.setItems(getScene().getSetsGenerator().genObsList(key.substring(0, linkLen2)
 					+ key.substring(linkLen2 + 1, linkLen2 + 2), skp));
 			if (itm == null || itm.isEmpty() || itm.equals("null")) {
