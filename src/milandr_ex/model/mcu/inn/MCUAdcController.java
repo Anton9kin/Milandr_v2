@@ -123,7 +123,7 @@ public class MCUAdcController extends BasicController {
 				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build(oldCode);
 				MDR_PORTD.get();
 				String chnlLst = getConfPropStr("lst_chn", 0) + getConfPropStr("lst_chn", 1);
-				chnlLst = chnlLst.replaceAll("[\\s\\,\\[\\]]","").replace("RESET", "");
+				chnlLst = cleanChannelsList(chnlLst);
 				Integer[] vals = new Integer[chnlLst.length()];
 				Integer[] ofst = new Integer[chnlLst.length()];
 				Arrays.fill(vals, 1);
@@ -144,21 +144,39 @@ public class MCUAdcController extends BasicController {
 				int mref = getConfPropInt("base_power", adcIndex);
 				int sample = getConfPropInt("start_kind", adcIndex);
 				String chnLst = getConfPropStr("lst_chn", adcIndex);
+				String chnsLst = cleanChannelsList(chnLst);
+				String chnCmt = "";
 
 				MDR_ADC.get().arr(comments);
 				int chn = 0;
-				for(int chni = 0; chni < 32; chni++) {
-					if (!chnLst.contains(chni + "")) continue;
-					chn |= 1 << chni;
+				int chns = 0;
+				int chnOfs = 4;
+
+				if (chnsLst.length() > 1) {
+					chn = 1;
+					chnOfs = 9;
+				} else chn = chnsLst.isEmpty() ? 0 : Integer.parseInt(chnsLst);
+				for(int chni = 0; chni < 16; chni++) {
+					if (!chnsLst.contains(chni + "")) continue;
+					chns |= 1 << chni;
+					chnCmt += (chnCmt.length() > 0 ? "|" : "") + String.format("1 << %d", chni);
 				}
-				if (chn > 0) {
+				if (chn >= 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
 							.set(1, syncSrc - 1, sample, chn, mref, adcSrcDiv)
-							.shift(0, 2, 3, 4, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+							.shift(0, 2, 3, chnOfs, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+				}
+				if (chns > 0) {
+					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CHSEL : Param.ADC1_CHSEL)
+							.set(chns)).cmt(chnCmt).build(oldCode);
 				}
 				break;
 		}
 		return oldCode;
+	}
+
+	private String cleanChannelsList(String chnlLst) {
+		return chnlLst.replaceAll("[\\s\\,\\[\\]]","").replace("RESET", "");
 	}
 
 	@Override
