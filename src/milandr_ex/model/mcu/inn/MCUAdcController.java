@@ -146,11 +146,15 @@ public class MCUAdcController extends BasicController {
 				String chnLst = getConfPropStr("lst_chn", adcIndex);
 
 				MDR_ADC.get().arr(comments);
-				for(int chn = 0; chn < 32; chn++) {
-					if (!chnLst.contains(chn + "")) continue;
+				int chn = 0;
+				for(int chni = 0; chni < 32; chni++) {
+					if (!chnLst.contains(chni + "")) continue;
+					chn |= 1 << chni;
+				}
+				if (chn > 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
 							.set(1, syncSrc - 1, sample, chn, mref, adcSrcDiv)
-							.shift(0, 2, 3, 4, 11, 12)).args(chn).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
+							.shift(0, 2, 3, 4, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5).build(oldCode);
 				}
 				break;
 		}
@@ -169,24 +173,18 @@ public class MCUAdcController extends BasicController {
 
 		generateCode(oldCode, 1);
 
-		if (adcChecked[0]) generateCode(oldCode, 2);
-		if (adcChecked[1]) generateCode(oldCode, 3);
+		if (isCboxChecked(0)) generateCode(oldCode, 2);
+		if (isCboxChecked(1)) generateCode(oldCode, 3);
 
 		return super.generateCode(device, oldCode);
 	}
 
-	private boolean[] adcChecked = {false, false};
 	@Override
 	protected void checkSelectedPin(String comboKey, String value) {
 		super.checkSelectedPin(comboKey, value);
 		if (comboKey.matches(getDevicePair().name() + "-\\d")) {
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
 			setModelProp("lst_chn", Integer.parseInt(ind) - 1, value);
-		}
-		if (comboKey.matches("c-" + getDevicePair().name() + "-\\d")) {
-			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
-			adcChecked[Integer.parseInt(ind) - 1] = Boolean.parseBoolean(value);
-			getScene().genKind(getScene().genKind());
 		}
 	}
 }
