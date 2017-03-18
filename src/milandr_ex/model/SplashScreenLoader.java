@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import milandr_ex.MilandrEx;
@@ -39,8 +40,12 @@ public class SplashScreenLoader extends Preloader {
 		splashScreen.show();
 	}
 
-	public static void makeFadeSplash(final Stage stage) {
-		Parent splashLayout = stage.getScene().getRoot();
+	public static void makeFadeSplash(final Stage stage, Parent splashLayout) {
+		if (stage == null || splashLayout == null) return;
+		if (stage.getScene() == null) {
+			stage.hide();
+			return;
+		}
 		FadeTransition fadeSplash = new FadeTransition(Duration.seconds(5), splashLayout);
 		fadeSplash.setFromValue(1.0);
 		fadeSplash.setToValue(0.0);
@@ -65,9 +70,12 @@ public class SplashScreenLoader extends Preloader {
 			Application app = ((StateChangeNotification) notification).getApplication();
 			if (app instanceof MilandrEx) {
 				MilandrEx mApp = (MilandrEx) app;
-				((MilandrEx) app).getScene().setSplashStage(splashScreen);
+				if (splashScreen != null) {
+					((MilandrEx) app).getScene().setSplashStage(splashScreen);
+					((MilandrEx) app).getScene().setSplashLayout((AnchorPane) splashScreen.getScene().getRoot());
+				}
 				if (!mApp.getScene().isSetupInProcess()) {
-					makeFadeSplash(splashScreen);
+					makeFadeSplash(splashScreen, splashScreen.getScene().getRoot());
 				}
 			}
 		}

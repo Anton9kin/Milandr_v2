@@ -339,6 +339,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (firstCANInit && key.startsWith("CAN") && value.equals("RESET")) {
 			firstCANInit = false;
 			firstCANInitialized = true;
+			SplashScreenLoader.makeFadeSplash(getScene().getSplashStage(), getScene().getSplashLayout());
 			getScene().getAppStage().show();
 		}
 		//do nothing by default
