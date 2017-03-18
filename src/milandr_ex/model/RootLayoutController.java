@@ -55,6 +55,8 @@ public class RootLayoutController extends BasicController {
 	@FXML
 	private Menu mnuTmr;
 	@FXML
+	private Menu mnuOpts;
+	@FXML
 	private Menu mnuHelp;
 	@FXML
 	private Menu mnuExit;
@@ -82,6 +84,7 @@ public class RootLayoutController extends BasicController {
 			mnuPins.setVisible(false);
 			mnuClk.setVisible(false);
 			mnuTmr.setVisible(false);
+			mnuOpts.setVisible(false);
 			mnuExit.setVisible(false);
 		}
 		if (!scene.isEditMode()) {
