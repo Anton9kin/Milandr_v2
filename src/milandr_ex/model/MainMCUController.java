@@ -114,6 +114,10 @@ public class MainMCUController extends BasicController {
 	private Parent mcuUsb;
 	@FXML
 	private MCUUsbController mcuUsbController;
+	@FXML
+	private Parent mcuOtherS;
+	@FXML
+	private MCUOtherSController mcuOtherSController;
 
 	@FXML
 	private VBox cfg_vbox_in;
@@ -134,6 +138,7 @@ public class MainMCUController extends BasicController {
 				mcuBkpController, mcuEbcController, mcuUsbController, mcuDmaController, mcuMpuController,
 				mcuCpuController, mcuI2CController, mcuSpiController, mcuUartController,
 				mcuGpioController, mcuDacController, mcuTimerController, mcuCompController,
+				mcuOtherSController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
 
 		makeListeners(cfg_vbox_in.getChildren());

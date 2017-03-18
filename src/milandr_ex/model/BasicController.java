@@ -109,6 +109,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		iterateSubs(controllers, (c) -> initSubController(c));
 	}
 	protected void initSubController(BasicController subController) {
+		if (subController == null) return;
 		subController.setParentController(this);
 		subController.setScene(scene);
 		subController.postInit();

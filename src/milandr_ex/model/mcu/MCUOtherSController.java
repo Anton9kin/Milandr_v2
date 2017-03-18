@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
 
 /**
@@ -22,6 +23,6 @@ public class MCUOtherSController extends BasicController {
 
 	@Override
 	protected void postInit(AppScene scene) {
-
+		setDevicePair(Device.EPairNames.NON);
 	}
 }
