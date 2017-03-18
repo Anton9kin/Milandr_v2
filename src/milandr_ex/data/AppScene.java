@@ -149,6 +149,9 @@ public class AppScene extends Scene {
 	}
 
 	public AnchorPane getSplashLayout() {
+		if (splashLayout == null && splashStage != null) {
+			splashLayout = (AnchorPane) splashStage.getScene().getRoot();
+		}
 		return splashLayout;
 	}
 

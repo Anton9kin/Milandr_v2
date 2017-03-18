@@ -37,6 +37,7 @@ public class SplashScreenLoader extends Preloader {
 	public void start(Stage stage) throws Exception {
 		splashScreen = stage;
 		splashScreen.setScene(createScene());
+		splashScreen.setAlwaysOnTop(true);
 		splashScreen.show();
 	}
 
@@ -61,6 +62,7 @@ public class SplashScreenLoader extends Preloader {
 
 	public Scene createScene() {
 		FXMLLoader rootLoader = LoaderUtils.loadLayout(null, "Splash");
+		LoaderUtils.setSplashStage(splashScreen);
 		return new Scene(rootLoader.getRoot(), 300, 300);
 	}
 

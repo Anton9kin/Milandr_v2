@@ -30,6 +30,12 @@ public class LoaderUtils {
 	}
 
 
+	private static Stage splashStage;
+
+	public static void setSplashStage(Stage splashStage) {
+		LoaderUtils.splashStage = splashStage;
+	}
+
 	public static FXMLLoader loadLayout(ResourceBundle bundle, String viewName) {
 		if (bundle == null) bundle = Constants.loadBundle("messages", "ru");
 		try{
@@ -50,6 +56,7 @@ public class LoaderUtils {
 		AppScene scene = new AppScene(rootLayout);
 		stage.setScene(scene);
 		scene.setAppStage(stage);
+		scene.setSplashStage(splashStage);
 		scene.setBundle(bundle);
 		scene.getStylesheets().add("milandr_ex/css/" + cssName + ".css");
 		return scene;
