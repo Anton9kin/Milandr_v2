@@ -618,15 +618,25 @@ public class MCUPinsController extends BasicController
 		} else icm.check(ind);
 	}
 
-	private void refillLinkedPairCustomCombos(String key, String link, int ind, String[] values) {
-		log_debug(log, String.format("#refillLinkedPairCustomCombos[%d](%s, %s [%d]-> %s)",
-				refillInProgress, key, link, ind, Arrays.toString(values)));
-
+	private void refillLinkedPairCustomCombos(String key, String link, String newValue, int ind, String[] values) {
+		log_debug(log, String.format("#refillLinkedPairCustomCombos[%d](%s, %s, %s, [%d]-> %s)",
+				refillInProgress, key, link, newValue, ind, Arrays.toString(values)));
+		if (link.equals("COMP") && !newValue.equals("RESET")) {
+			if (ind > 1) return;
+			int invInd = ind == 0 ? 1 : 0;
+			String targetValue = values[invInd];
+			if (targetValue!= null && targetValue.contains(newValue.split("_")[1])) {
+				String newKey = link + "-0" + invInd;
+//				comboMap.get().getSelectionModel().select(values[ind]);
+				comboMap.get(newKey).getSelectionModel().clearSelection();
+			}
+		}
 	}
 	private void refillLinkedPairCombos(String key, String link, String value) {
 		if (!firstCANInitialized) firstCANInit = true;
 		log_debug(log, String.format("#refillLinkedPairCombos[%d](%s, %s -> %s)", refillInProgress, key, link, value));
-		if (key.startsWith("COMP")) {
+		String pairName = link.substring(0, link.length() - 2);
+		if (Device.pairCustom(pairName)) {
 			int ind = 0;
 			String[] values = new String[10];
 			for(int i = 0; i < 10; i++) {
@@ -635,7 +645,7 @@ public class MCUPinsController extends BasicController
 				if (cb == null) continue;
 				values[i] = (String) cb.getSelectionModel().getSelectedItem();
 			}
-			refillLinkedPairCustomCombos(key, link.substring(0, link.length() - 2), ind + 1, values);
+			refillLinkedPairCustomCombos(key, pairName, value, ind, values);
 			return;
 		}
 		List<ComboBox> tempCb = Lists.newArrayList();
