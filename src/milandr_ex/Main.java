@@ -9,6 +9,12 @@ import milandr_ex.model.SplashScreenLoader;
  */
 public class Main {
 	public static void main(String[] args) {
+		for(String arg: args) {
+			if (arg.equals("debug")) {
+				MilandrEx.main(args);
+				return;
+			}
+		}
 		MilandrEx.setSavedArgs(args);
 		LauncherImpl.launchApplication(MilandrEx.class, SplashScreenLoader.class, args);
 	}
