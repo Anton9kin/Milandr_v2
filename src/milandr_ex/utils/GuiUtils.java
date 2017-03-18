@@ -110,9 +110,10 @@ public class GuiUtils {
 	}
 	public static void makeListener(final String key, CheckComboBox newCombo, ChangeCallback callback) {
 		CheckComboBoxSkin skin = (CheckComboBoxSkin)newCombo.getSkin();
-		if (skin == null) return;
-		ComboBox combo = (ComboBox)skin.getChildren().get(0);
-		makeListener(key, combo.valueProperty(), callback);
+		if (skin != null) {
+			ComboBox combo = (ComboBox)skin.getChildren().get(0);
+			makeListener(key, combo.valueProperty(), callback);
+		}
 		makeListener(key, newCombo.getCheckModel().getCheckedItems(), callback);
 	}
 
@@ -302,6 +303,7 @@ public class GuiUtils {
 		iterateObjects(pref, nodeMap, (key, node) -> ((ComboBox) node).getSelectionModel().select("RESET"));
 	}
 	public static void selectAdcObjects(String pref, Map<String, ? extends Node> nodeMap, String inValue) {
+		if (inValue == null) return;
 		List<String> checks = Lists.newArrayList(inValue.replaceAll("[\\s\\[\\]]","").split(","));
 		selectObjects(pref, nodeMap, key -> true,
 				(key, node) -> key != null && key.startsWith("ADC"),
