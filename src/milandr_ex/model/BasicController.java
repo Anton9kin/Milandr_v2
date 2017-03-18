@@ -354,6 +354,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return pairKey;
 	}
 
+	private List<String> listenCodeChanges(Device.EPairNames pair) {
+		getScene().getCodeGenerator().listenPinsChanges(getScene().getDevice(), pair, getScene().getPinoutsModel());
+		return pair.model().getCodeList();
+	}
 	public void updateCodeGenerator(String pairKey) {
 	 	if (pairKey.startsWith("cb")) return;
 //		String pairKey = getPairForComboKey(comboKey);
@@ -362,6 +366,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			Device.EPairNames pair = Device.EPairNames.valueOf(pairKey);
 //			regenerateCode(pair);
 			List<String> code = pair.model().getCodeList();
+			if (code.isEmpty()) {
+				code = listenCodeChanges(pair);
+			}
 			SyntaxHighlighter.set(getScene(), code);
 		}
 	}
