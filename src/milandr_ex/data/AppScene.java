@@ -27,6 +27,7 @@ public class AppScene extends Scene {
 	}
 
 	private Stage appStage;
+	private Stage splashStage;
 	private BorderPane rootLayout;
 	private AnchorPane mainLayout;
 	private PinoutsModel pinoutsModel;
@@ -136,6 +137,14 @@ public class AppScene extends Scene {
 
 	public Stage getAppStage() {
 		return appStage;
+	}
+
+	public Stage getSplashStage() {
+		return splashStage;
+	}
+
+	public void setSplashStage(Stage splashStage) {
+		this.splashStage = splashStage;
 	}
 
 	public McuType getMcuMain() {
