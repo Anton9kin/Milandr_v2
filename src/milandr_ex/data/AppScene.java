@@ -77,7 +77,7 @@ public class AppScene extends Scene {
 	}
 
 	public boolean isTestMode() {
-		return testMode;
+		return testMode || debugMode;
 	}
 
 	public void setTestMode(boolean testMode) {
