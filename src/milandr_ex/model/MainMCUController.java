@@ -139,6 +139,7 @@ public class MainMCUController extends BasicController {
 		makeListeners(cfg_vbox_in.getChildren());
 		makeListeners(cfg_vbox_ex.getChildren());
 		cfg_vbox_ad.getChildren().add(new VBox(SyntaxHighlighter.get(getScene())));
+		scene.stopSetupProcess();
 		log.debug("#postInit - initialized");
 	}
 

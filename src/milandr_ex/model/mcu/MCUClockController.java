@@ -310,6 +310,8 @@ public class MCUClockController extends MCUExtPairController
 	}
 
 	private static final String[] cpuProps = {"hsi", "hse", "lsi", "lse", "-", "adc_clk", "cpu_clk", "usb_clk", "hclk"};
+
+	private boolean clockInitialized = false;
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.CPU);
@@ -318,6 +320,9 @@ public class MCUClockController extends MCUExtPairController
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
 		fillCpuConfProperties();
+		clockInitialized = true;
+		setupInitalClockValues(scene.getPinoutsModel().getClockModel());
+		log.debug("#postInit - initialized");
 	}
 
 	private void fillCpuConfProperties() {
@@ -326,6 +331,7 @@ public class MCUClockController extends MCUExtPairController
 			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
 		}
 		AppScene scene = getScene();
+		if (scene.isSetupInProcess()) return;
 		scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getDevicePair(), scene.getPinoutsModel());
 	}
 
@@ -360,6 +366,9 @@ public class MCUClockController extends MCUExtPairController
 		PinoutsModel model = getScene().getPinoutsModel();
 		ClockModel clock = ClockModel.get(model.getSelectedBody(), blocks);
 		model.setClockModel(clock);
+	}
+
+	private void setupInitalClockValues(ClockModel clock) {
 		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
 		clock.addRestriction("USB-CLK", "= 48000000");
 		clock.addRestriction("ADC-CLK", "< 14000000");
@@ -510,16 +519,18 @@ public class MCUClockController extends MCUExtPairController
 				clock.setFactor(subKey, factors.indexOf(subInd), value, selIndex);
 				break;
 		}
-		log_debug(log, clock.calc().toStr(subKey));
+		clock.calc();
+//		log_debug(log, clock.calc().toStr(subKey));
 	}
 
 	@Override
 	public void callGuiListener(String comboKey, String prev, String value) {
-		if (comboKey == null) return;
+		if (!clockInitialized) return;
+		if (comboKey == null || value == null) return;
+		// do not valid values for clock combo-boxes
+		if (value.equals("null") || value.equals("RESET")) return;
 		super.callGuiListener(comboKey, prev, value);
-		if (value != null && !value.equals("null") && !value.equals("RESET")) {
-			log_debug(log, String.format("#callGuiListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
-		}
+		log_debug(log, String.format("#callGuiListener[%d](%s, %s -> %s)", 0, comboKey, prev, value));
 		ComboBox comboBox = clkMap.get(comboKey);
 		String preKey = comboKey.substring(0, comboKey.lastIndexOf("-"));
 		String subKey = preKey.substring(2);

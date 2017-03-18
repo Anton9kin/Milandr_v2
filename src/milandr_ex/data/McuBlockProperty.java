@@ -326,6 +326,7 @@ public class McuBlockProperty {
 		obsNode = node;
 		obsValue = property;
 		property.addListener((e, t1, t2) -> {
+			if (scene.isSetupInProcess()) return;
 			log_debug(String.format("#listen(%s) %s -> %s", getMsgTxt(), t1, t2));
 			String t2s = String.valueOf(t2);
 			if (t2s.equals("null")) t2s = "";

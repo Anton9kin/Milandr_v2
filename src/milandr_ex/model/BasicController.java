@@ -70,10 +70,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			@Override
 			public void callListener(String key, String prev, String value) {
 //				wrapper.wrapped = Integer.parseInt(value);
+//				if (getScene().isSetupInProcess()) return;
 				checker.callListener(key, prev, value);
 			}
 			@Override
 			public void callGuiListener(String key, String prev, String value) {
+//				if (getScene().isSetupInProcess()) return;
 				checker.callGuiListener(key, prev, value);
 			}
 		};
@@ -81,7 +83,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		postInit(getScene());
 		Platform.runLater(()->initLater(getScene()));
 		initProps(getDevicePair());
-		getScene().stopSetupProcess();
+//		getScene().stopSetupProcess();
 		return (T) this;
 	}
 	protected BasicController parentController;
@@ -658,7 +660,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new selected value
 	 */
 	protected void checkSelectedPin(String comboKey, String value) {
+		checkSelectedPin(comboKey, value, false);
+	}
+	protected void checkSelectedPin(String comboKey, String value, boolean force) {
 		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
+		if (!force && getScene().isSetupInProcess()) return;
+		if (value.equals("RESET")) return;
 		if (comboKey.matches("c-" + getDevicePair().name() + "-\\d")) {
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
 			cboxChecked[Integer.parseInt(ind) - 1] = Boolean.parseBoolean(value);
