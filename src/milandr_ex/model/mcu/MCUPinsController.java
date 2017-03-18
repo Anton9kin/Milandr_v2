@@ -616,6 +616,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	private void refillLinkedPairCombos(String key, String link, String value) {
+		if (!firstCANInitialized) firstCANInit = true;
 		log_debug(log, String.format("#refillLinkedPairCombos[%d](%s, %s -> %s)", refillInProgress, key, link, value));
 		List<ComboBox> tempCb = Lists.newArrayList();
 		List<String> tempVals = Lists.newArrayList();

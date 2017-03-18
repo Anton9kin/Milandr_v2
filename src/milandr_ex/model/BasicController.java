@@ -327,6 +327,8 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		getScene().setMainController(this);
 		updateCodeGenerator(key);
 	}
+	protected boolean firstCANInit = false;
+	protected boolean firstCANInitialized = false;
 	/**
 	 * GUI method called from auto-created listeners of pinouts|clock tabs
 	 * @param key key of selected combo-box
@@ -334,6 +336,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value of combo
 	 */
 	public void callGuiListener(String key, String prev, String value) {
+		if (firstCANInit && key.startsWith("CAN") && value.equals("RESET")) {
+			firstCANInit = false;
+			firstCANInitialized = true;
+			getScene().getAppStage().show();
+		}
 		//do nothing by default
 		getScene().setMainController(this);
 		Boolean inValue = value != null && value.equals("true");
