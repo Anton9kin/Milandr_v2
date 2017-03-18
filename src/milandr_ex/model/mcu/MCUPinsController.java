@@ -147,6 +147,9 @@ public class MCUPinsController extends BasicController
 	}
 
 	private ObservableList<String> getComboPxList(String key, String sKey) {
+		if (key.startsWith("ADC") && sKey.equals(key)) {
+			return FXCollections.emptyObservableList();
+		}
 		if (key.startsWith("COMP") && !sKey.equals(key)) {
 			pxList.put(sKey, genCustList(sKey));
 			return pxList.get(sKey);
@@ -369,10 +372,10 @@ public class MCUPinsController extends BasicController
 			return;
 		} else if (comboKey.startsWith("ADC")) {
 			if (value == null || value.equals("RESET")) return;
-			String val, val1, val2;
+			String val = null, val1, val2;
 			if (ccbMap.containsKey("ADC")) {
 				val = String.valueOf(ccbMap.get("ADC").getCheckModel().getCheckedItems());
-			} else {
+			} else if (ccbMap.containsKey("ADC-1")) {
 				val1 = String.valueOf(ccbMap.get("ADC-1").getCheckModel().getCheckedItems());
 				val2 = String.valueOf(ccbMap.get("ADC-2").getCheckModel().getCheckedItems());
 				val = val1 + "," + val2;
@@ -618,11 +621,11 @@ public class MCUPinsController extends BasicController
 		} else icm.check(ind);
 	}
 
-	private void refillLinkedPairCustomCombos(String key, String link, String newValue, int ind, String[] values) {
+	private boolean refillLinkedPairCustomCombos(String key, String link, String newValue, int ind, String[] values) {
 		log_debug(log, String.format("#refillLinkedPairCustomCombos[%d](%s, %s, %s, [%d]-> %s)",
 				refillInProgress, key, link, newValue, ind, Arrays.toString(values)));
-		if (link.equals("COMP") && !newValue.equals("RESET")) {
-			if (ind > 1) return;
+		if (link.equals("COMP")) {
+			if (newValue.equals("RESET") || ind > 1) return true;
 			int invInd = ind == 0 ? 1 : 0;
 			String targetValue = values[invInd];
 			if (targetValue!= null && targetValue.contains(newValue.split("_")[1])) {
@@ -630,7 +633,9 @@ public class MCUPinsController extends BasicController
 //				comboMap.get().getSelectionModel().select(values[ind]);
 				comboMap.get(newKey).getSelectionModel().clearSelection();
 			}
+			return true;
 		}
+		return false;
 	}
 	private void refillLinkedPairCombos(String key, String link, String value) {
 		if (!firstCANInitialized) firstCANInit = true;
