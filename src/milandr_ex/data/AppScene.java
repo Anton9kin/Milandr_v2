@@ -30,6 +30,7 @@ public class AppScene extends Scene {
 	private Stage splashStage;
 	private BorderPane rootLayout;
 	private AnchorPane mainLayout;
+	private AnchorPane splashLayout;
 	private PinoutsModel pinoutsModel;
 	private McuType mcuMain = null;
 	private ResourceBundle bundle;// = ResourceBundle.getBundle("resourse/messages", locale);
@@ -145,6 +146,14 @@ public class AppScene extends Scene {
 
 	public void setSplashStage(Stage splashStage) {
 		this.splashStage = splashStage;
+	}
+
+	public AnchorPane getSplashLayout() {
+		return splashLayout;
+	}
+
+	public void setSplashLayout(AnchorPane splashLayout) {
+		this.splashLayout = splashLayout;
 	}
 
 	public McuType getMcuMain() {
