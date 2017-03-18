@@ -2,6 +2,8 @@ package milandr_ex.utils;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
@@ -12,12 +14,22 @@ import milandr_ex.data.Constants;
 import milandr_ex.model.BasicController;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
  * Created by lizard on 21.02.17 at 16:36.
  */
 public class LoaderUtils {
+	public static void loadImage(Class clazz, ImageView target, String source) {
+		Image image;URL imageUrl = clazz.getClassLoader().getResource("resourse/" + source);
+		if (imageUrl != null) {
+			image = new Image(imageUrl.toString());
+			target.setImage(image);
+		}
+	}
+
+
 	public static FXMLLoader loadLayout(ResourceBundle bundle, String viewName) {
 		if (bundle == null) bundle = Constants.loadBundle("messages", "ru");
 		try{

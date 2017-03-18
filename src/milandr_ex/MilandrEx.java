@@ -44,6 +44,7 @@ public class MilandrEx extends Application {
 
 	@Override
 	public void start(Stage primStage) {
+		preInit(false, true, false);
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
 //		setUserAgentStylesheet(STYLESHEET_CASPIAN);
 //		setUserAgentStylesheet(STYLESHEET_MODENA);
