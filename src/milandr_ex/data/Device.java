@@ -125,6 +125,9 @@ public class Device {
         }
         return pairsSet.contains(name);
     }
+    public static boolean pairCustom(String name) {
+        return pairExists(name) && EPairNames.valueOf(name).custom();
+    }
     public enum EPortNames {
         A, B, C, D, E, F
     }
