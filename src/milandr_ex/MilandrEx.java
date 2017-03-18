@@ -45,6 +45,7 @@ public class MilandrEx extends Application {
 	@Override
 	public void start(Stage primStage) {
 		preInit(false, true, false);
+		setArgs(savedArgs);
 //		this.primaryStage.getIcons().add(new Image("file:resourses/images/recept1.png"));
 //		setUserAgentStylesheet(STYLESHEET_CASPIAN);
 //		setUserAgentStylesheet(STYLESHEET_MODENA);
@@ -104,12 +105,19 @@ public class MilandrEx extends Application {
 			setArg(arg);
 		}
 	}
+	private static String[] savedArgs;
+
+	public static void setSavedArgs(String[] savedArgs) {
+		MilandrEx.savedArgs = savedArgs;
+	}
+
 	public static void main(String[] args) {
 //		preInit(true, false, false);
 //		preInit(false, false, false);
 //		preInit(false, false, true);
 		preInit(false, true, false);
 		setArgs(args);
+		setArgs(savedArgs);
 //		preInit(false, true, true);
 		launch(args);
 	}

@@ -9,6 +9,7 @@ import milandr_ex.model.SplashScreenLoader;
  */
 public class Main {
 	public static void main(String[] args) {
+		MilandrEx.setSavedArgs(args);
 		LauncherImpl.launchApplication(MilandrEx.class, SplashScreenLoader.class, args);
 	}
 }
