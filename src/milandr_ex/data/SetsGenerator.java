@@ -23,8 +23,8 @@ public class SetsGenerator {
 
 	private static Map<String, List<String>> pairItems = Maps.newHashMap();
 	private static Map<String, Integer[]> pairNumbers = Maps.newHashMap();
-	public ObservableList<String> genObsList(String setName) {
-		return FXCollections.observableArrayList(genArrList(setName, false));
+	public ObservableList<String> genObsList(String setName, boolean cust) {
+		return FXCollections.observableArrayList(genArrList(setName, cust));
 	}
 	public List<String> genArrList(String setName, boolean cust) {
 		return genArrList(setName, "", cust);
@@ -47,29 +47,32 @@ public class SetsGenerator {
 		return genCompItems(setName, "");
 	}
 	private List<String> genCompItems(String setName, String skip) {
+		setName = setName.substring(0, 4) + setName.substring(setName.length() - 1);
 		String[] compItms = {"RESET"};
 		switch (setName) {
-			case "COMP-00" :
+			case "COMP0" :
 				compItms = new String[]{"RESET", "COMP1_IN1 PE2", "COMP1_REF+ PE4"};
 				break;
-			case "COMP-01" :
+			case "COMP1" :
 				compItms = new String[]{"RESET", "COMP2_IN1 PE2", "COMP2_IN2 PE3", "COMP2_IN3 PE8", "COMP2_REF- PE5"};
 				break;
-			case "COMP-02" :
+			case "COMP2" :
 				compItms = new String[]{"RESET", "COMP3_OUT PB8", "COMP3_OUT PB11"};
 				break;
 		}
 		ArrayList<String> list = Lists.newArrayList(compItms);
-		if (!skip.isEmpty()) Iterators.removeIf(list.iterator(),
-				s->{
-					if (s == null) return true;
-					if (s.equals("RESET")) return false;
-					if (skip.startsWith(setName) && s.contains(skip)) return false;
-					else {
-						String[] spl = s.split("\\s");
-						return !(skip.contains(spl[1]) || !skip.contains(spl[0].split("_")[1]));
-					}
-				});
+//		if (!skip.isEmpty()) Iterators.removeIf(list.iterator(),
+//				s->{
+//					if (s == null) return true;
+//					if (s.equals("RESET")) return false;
+////					if (skip.startsWith(setName) && s.contains(skip)) return false;
+////					else {
+////						String[] spl = s.split("\\s");
+////						return !(skip.contains(spl[1]) || !skip.contains(spl[0].split("_")[1]));
+////					}
+//					return false;
+//				});
+//		Collections.sort(list);
 		return list;
 	}
 
@@ -108,18 +111,20 @@ public class SetsGenerator {
 		if (!sName.startsWith("ADC")) {
 			fillInputs(pairs, numbers, sName, skipName);
 		}
-		Collections.sort(pairs);
-		pairs.add(0, "RESET");
+		if (!setName.startsWith("COMP")) {
+			Collections.sort(pairs);
+		}
+		if (!pairs.contains("RESET")) pairs.add(0, "RESET");
 		pairNumbers.put(setName, numbers.toArray(new Integer[]{}));
 		return pairs;
 	}
 
 	private void fillInputs(List<String> pairs, List<Integer> numbers, String sName, String skipName) {
 		if (sName.startsWith("SPI")) sName = "SSP" + (sName.length() > 3 ? sName.substring(3) : "");
-//		if (sName.startsWith("COMP")) {
-//			pairs.addAll(genCompItems(sName, skipName));
-//			return;
-//		}
+		if (sName.startsWith("COMP")) {
+			pairs.addAll(genCompItems(sName, skipName));
+			return;
+		}
 		if (sName.startsWith("I2C")) {
 			sName = "SDA" + (sName.length() > 3 ? sName.substring(3) : "");
 			findInputs(pairs, numbers, sName, skipName);

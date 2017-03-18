@@ -239,7 +239,7 @@ public class MCUPinsController extends BasicController
 				HBox hBox =new HBox(cBox, cBtn);
 				cboxMap.put(pName, cBox);
 				blockModel.addCheckBox(cBox);
-				VBox vBox = makePairs(blockModel, pairName + (j), pName, ePair.getSize());
+				VBox vBox = makePairs(blockModel, ePair, pairName + (j), pName, ePair.getSize());
 				vvBox.getChildren().add(hBox);
 				vvBox.getChildren().add(vBox);
 //				GridPane.setColumnIndex(tPane, l);
@@ -277,16 +277,16 @@ public class MCUPinsController extends BasicController
 	}
 
 	private VBox makePairs(McuBlockModel blockModel, String key) {
-		return makePairs(blockModel, key, key, 1);
+		return makePairs(blockModel, Device.EPairNames.NON, key, key, 1);
 	}
-	private VBox makePairs(McuBlockModel blockModel, String sub, String key, int pairCnt) {
+	private VBox makePairs(McuBlockModel blockModel, Device.EPairNames pair, String sub, String key, int pairCnt) {
 		if (!key.startsWith("cb")) {
 			//filter pair combos items by not existing pin combos
 //			if (text.contains(" ")) {
 //				String cbKey = textToKey(text.split("\\s")[1]);
 //				if (!comboMap.containsKey(cbKey) || !comboMap.get(cbKey).isVisible()) continue;
 //			}
-			pxList.put(key, getScene().getSetsGenerator().genObsList(sub));
+			pxList.put(key, getScene().getSetsGenerator().genObsList(sub, pair.custom()));
 		}
 		List<Node> result = Lists.newArrayList();
 		Integer pxSize = getComboPxList(key, key).size();
@@ -368,6 +368,7 @@ public class MCUPinsController extends BasicController
 			selectObjects("cb", comboMap, inValue);
 			return;
 		} else if (comboKey.startsWith("ADC")) {
+			if (value == null || value.equals("RESET")) return;
 			String val, val1, val2;
 			if (ccbMap.containsKey("ADC")) {
 				val = String.valueOf(ccbMap.get("ADC").getCheckModel().getCheckedItems());
@@ -380,7 +381,10 @@ public class MCUPinsController extends BasicController
 			selectAdcObjects("cb", comboMap, val);
 			return;
 		} else if (comboKey.startsWith("COMP")) {
-
+			if (value == null || value.equals("RESET")) {
+				comboBox.getSelectionModel().clearSelection();
+				return;
+			}
 		} else if (comboKey.startsWith("c-")) {
 			switchObjects(subKey, vboxMap, inValue, true);
 			return;
@@ -589,7 +593,6 @@ public class MCUPinsController extends BasicController
 			String link = key.substring(0, 7);
 			refillLinkedPairCombos(key, link, value);
 		} else if (key.matches("\\w{4}-\\d{2}")) {
-			if (value.equals("RESET")) return;
 			String link = key.substring(0, 6);
 			refillLinkedPairCombos(key, link, value);
 		} else if (key.matches("\\w{4}-\\d-\\d{2}")) {
@@ -615,9 +618,26 @@ public class MCUPinsController extends BasicController
 		} else icm.check(ind);
 	}
 
+	private void refillLinkedPairCustomCombos(String key, String link, int ind, String[] values) {
+		log_debug(log, String.format("#refillLinkedPairCustomCombos[%d](%s, %s [%d]-> %s)",
+				refillInProgress, key, link, ind, Arrays.toString(values)));
+
+	}
 	private void refillLinkedPairCombos(String key, String link, String value) {
 		if (!firstCANInitialized) firstCANInit = true;
 		log_debug(log, String.format("#refillLinkedPairCombos[%d](%s, %s -> %s)", refillInProgress, key, link, value));
+		if (key.startsWith("COMP")) {
+			int ind = 0;
+			String[] values = new String[10];
+			for(int i = 0; i < 10; i++) {
+				if ((link + i).equals(key)) ind = i;
+				ComboBox cb = comboMap.get(link + i);
+				if (cb == null) continue;
+				values[i] = (String) cb.getSelectionModel().getSelectedItem();
+			}
+			refillLinkedPairCustomCombos(key, link.substring(0, link.length() - 2), ind + 1, values);
+			return;
+		}
 		List<ComboBox> tempCb = Lists.newArrayList();
 		List<String> tempVals = Lists.newArrayList();
 		List<String> cbVals = Lists.newArrayList();
@@ -637,7 +657,7 @@ public class MCUPinsController extends BasicController
 		}
 		for (String itm: tempVals){
 			if (itm == null || itm.isEmpty()) continue;
-			if (itm.equals("RESET")) continue;
+			if (itm.equals("null") || itm.equals("RESET")) continue;
 			skip += "," + itm;
 		}
 		for(ComboBox cb: tempCb) {
@@ -647,8 +667,8 @@ public class MCUPinsController extends BasicController
 			String skp = skip.replaceAll("," + keep, "")
 					.replaceAll(keep + ",", "")
 					.replaceAll(",,", ",");
-//			int linkLen2 = link.length() / 2;
-			int linkLen2 = link.indexOf("-");
+			int linkLen2 = link.length() / 2;
+//			int linkLen2 = link.indexOf("-") + 1;// may be lastIndexOf ?
 			cb.setItems(getScene().getSetsGenerator().genObsList(key.substring(0, linkLen2)
 					+ key.substring(linkLen2 + 1, linkLen2 + 2), skp));
 			if (itm == null || itm.isEmpty() || itm.equals("null")) {
