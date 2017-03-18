@@ -22,6 +22,9 @@
 		<!--<Tab text="Timer Configuration">-->
 			<!--<AnchorPane fx:id="tmrPane" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0"/>-->
 		<!--</Tab>-->
+		<Tab text="Others">
+			<fx:include fx:id="mcuOther" source="OtherS.fxml" />
+		</Tab>
 		<Tab text="Configuration">
 			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 				<GridPane alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="731.0"
