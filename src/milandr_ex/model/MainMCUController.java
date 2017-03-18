@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -33,6 +35,8 @@ public class MainMCUController extends BasicController {
 	private GridPane clckCont;
 	@FXML
 	private AnchorPane tmrPane;
+	@FXML
+	private TabPane mcuTabPane;
 
 	@FXML
 	private Parent mcuPins;
@@ -115,6 +119,8 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private MCUUsbController mcuUsbController;
 	@FXML
+	private Tab mcuOtherSTab;
+	@FXML
 	private Parent mcuOtherS;
 	@FXML
 	private MCUOtherSController mcuOtherSController;
@@ -140,6 +146,12 @@ public class MainMCUController extends BasicController {
 				mcuGpioController, mcuDacController, mcuTimerController, mcuCompController,
 				mcuOtherSController,
 				mcuAdcController, mcuCanController, mcuIwdgController, mcuWwdgController);
+		if (!scene.isTestMode()) {
+			mcuTabPane.getTabs().remove(mcuOtherSTab);
+		}
+		if (!scene.isDebugMode()) {
+			mcuOtherSTab.setDisable(true);
+		}
 
 		makeListeners(cfg_vbox_in.getChildren());
 		makeListeners(cfg_vbox_ex.getChildren());

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="786.0" prefWidth="1195.0" xmlns="http://javafx.com/javafx/8.0.112"
 			xmlns:fx="http://javafx.com/fxml/1" fx:controller="milandr_ex.model.MainMCUController">
-	<TabPane layoutX="14.0" layoutY="14.0" prefHeight="740.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE"
+	<TabPane fx:id="mcuTabPane" layoutX="14.0" layoutY="14.0" prefHeight="740.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE"
 			 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
 			 AnchorPane.topAnchor="0.0">
 		<Tab text="Pinout">
@@ -22,7 +22,7 @@
 		<!--<Tab text="Timer Configuration">-->
 			<!--<AnchorPane fx:id="tmrPane" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0"/>-->
 		<!--</Tab>-->
-		<Tab text="Others">
+		<Tab fx:id="mcuOtherSTab" text="Others">
 			<fx:include fx:id="mcuOtherS" source="OtherS.fxml" />
 		</Tab>
 		<Tab text="Configuration">
