@@ -3,10 +3,14 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Label?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 			fx:controller="milandr_ex.model.SplashScreenLoader">
 	<VBox alignment="CENTER" prefHeight="300.0" prefWidth="300.0" spacing="10.0">
 		<ImageView fx:id="splashIm" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true"
 				   preserveRatio="true"/>
+		<Label fx:id="progressText" />
+		<ProgressBar fx:id="loadProgress" />
 	</VBox>
 </AnchorPane>
