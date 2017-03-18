@@ -60,10 +60,13 @@ public class LoaderUtils {
 	}
 
 	public static void initStage(Stage stage, int width, int height) {
+		initStage(stage, width, height, true);
+	}
+	public static void initStage(Stage stage, int width, int height, boolean show) {
 		stage.setWidth(width);
 		stage.setHeight(height);
 		stage.centerOnScreen();
-		stage.show();
+		if (show) stage.show();
 	}
 
 	public static BorderPane initRootLayout(Stage stage) {
@@ -72,25 +75,28 @@ public class LoaderUtils {
 		AppScene scene = (AppScene) stage.getScene();
 		stage.setTitle(scene.getBundle().getString("main.title"));
 		BasicController bc = addSceneToController(loader, scene).preInit();
-		initStage(stage, 800, 600);
+		initStage(stage, 800, 600, false);
 		scene.setRootController(bc.postInit());
 		return scene.getRootLayout();
 	}
 
 	public static Region initAnyLayout(AppScene scene, String viewName, String titleKey) {
+		return initAnyLayout(scene, viewName, titleKey, true);
+	}
+	public static Region initAnyLayout(AppScene scene, String viewName, String titleKey, boolean show) {
 		scene.clearObservers();
 		ResourceBundle bundle = scene.getBundle();
 		FXMLLoader loader = loadLayout(bundle, viewName);
 		scene.getAppStage().setTitle(bundle.getString(titleKey));
 		BasicController bc = addSceneToController(loader, scene).preInit();
-		setupNewLayout(scene, loader);
+		setupNewLayout(scene, loader, show);
 		bc.postInit();
 		return scene.getRootLayout();
 	}
 
-	private static void setupNewLayout(AppScene scene, FXMLLoader loader) {
+	private static void setupNewLayout(AppScene scene, FXMLLoader loader, boolean show) {
 		scene.setBundle(loader.getResources());
-		initStage(scene.getAppStage(), 800, 600);
+		initStage(scene.getAppStage(), 800, 600, show);
 		BorderPane rootLayout = scene.getRootLayout();
 		AnchorPane mainLayout = loader.getRoot();
 		rootLayout.setCenter(mainLayout);
