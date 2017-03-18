@@ -105,9 +105,9 @@ public class RootLayoutController extends BasicController {
 				getScene().setPinoutsModel(PinoutsModel.get(mcu));
 				getScene().getPinoutsModel().getSelectedPins().clear();
 			}
-			LoaderUtils.initAnyLayout(getScene(), "mainMCU", "main.title");
+			LoaderUtils.initAnyLayout(getScene(), "mainMCU", "main.title", false);
 			getScene().observe("pinouts");
-			LoaderUtils.initStage(getScene().getAppStage(), 1200, 800);
+			LoaderUtils.initStage(getScene().getAppStage(), 1200, 800, false);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class RootLayoutController extends BasicController {
 			model.setHasUnsavedChanges(false);
 			model.getSelectedPins().clear();
 		}
-		LoaderUtils.initAnyLayout(getScene(), "Main", "main.title");
+		LoaderUtils.initAnyLayout(getScene(), "Main", "main.title", false);
 	}
 
 	@FXML
