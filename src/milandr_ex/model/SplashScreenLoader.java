@@ -39,7 +39,7 @@ public class SplashScreenLoader extends Preloader {
 		splashScreen.show();
 	}
 
-	private void makeFadeSplash(final Stage stage) {
+	public static void makeFadeSplash(final Stage stage) {
 		Parent splashLayout = stage.getScene().getRoot();
 		FadeTransition fadeSplash = new FadeTransition(Duration.seconds(5), splashLayout);
 		fadeSplash.setFromValue(1.0);
@@ -65,6 +65,7 @@ public class SplashScreenLoader extends Preloader {
 			Application app = ((StateChangeNotification) notification).getApplication();
 			if (app instanceof MilandrEx) {
 				MilandrEx mApp = (MilandrEx) app;
+				((MilandrEx) app).getScene().setSplashStage(splashScreen);
 				if (!mApp.getScene().isSetupInProcess()) {
 					makeFadeSplash(splashScreen);
 				}
