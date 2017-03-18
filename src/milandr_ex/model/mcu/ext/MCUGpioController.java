@@ -25,6 +25,7 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	public boolean filterGpio(String key, String item) {
 		if (item != null && !item.contains(" ") && !item.equals("-") && item.length() > 3) {
+			if (textToKey(item).substring(0, 3).startsWith("TMR")) return false;
 			if (textToKey(item).substring(0, 3).startsWith("ADC")) return false;
 			if (textToKey(item).substring(0, 4).startsWith("COMP")) return false;
 			if (Device.extPairNames().contains(textToKey(item).substring(0, 3)) ||
