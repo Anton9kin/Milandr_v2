@@ -55,6 +55,11 @@ public class Device {
                 if (pair.equals(this)) return true;
             return false;
         }
+        public boolean custom() {
+            for(EPairNames pair: customPairs)
+                if (pair.equals(this)) return true;
+            return false;
+        }
         public boolean real() {
             return ordinal() >= ADC.ordinal();
         }
@@ -76,6 +81,7 @@ public class Device {
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
+    private static EPairNames[] customPairs = {EPairNames.ADC, EPairNames.COMP };
     private static List<String> extPairNames;
     private static EPairNames[] prodPairs = {
             EPairNames.ADC, EPairNames.IWDG, EPairNames.PWR, EPairNames.SYST, EPairNames.WWDG,
