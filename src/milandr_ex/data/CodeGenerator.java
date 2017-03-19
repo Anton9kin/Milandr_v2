@@ -139,7 +139,7 @@ public class CodeGenerator {
 		for(int i = firstI + 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
 			if (i == (firstI + 1)) indent++;
-			if (checkValueForZero(value)) continue; // skip zero values
+			if (checkValueForZero(values[i])) continue; // skip zero values
 			if (comments.length > i) addCodeStr(codeList,"// " + pref + comments[i]);
 			value = values[i];
 			if (shifts != null && shifts.length > i) value += " << " + shifts[i];
