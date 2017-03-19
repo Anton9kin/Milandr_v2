@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import static milandr_ex.data.McuBlockProperty.istList;
 import static milandr_ex.utils.GuiUtils.bcDef;
 import static milandr_ex.utils.GuiUtils.bcTxt;
+import static milandr_ex.utils.GuiUtils.makeListener;
 
 /**
  * Базовая реализация для всех контроллеров
@@ -251,7 +252,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		children.clear();
 		return children;
 	}
-	protected Node getPropsForGpio(VBox vbox, String pinName) {
+	protected Node getPropsForGpio(TitledPane parent, VBox vbox, String pinName) {
 		vbox.getChildren().add(new Label(pinName));
 		return vbox;
 	}
@@ -260,15 +261,23 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			ObservableList<Node> children = clearGpioProps();
 			List<String> pinList = getPinList();
 			for(String pin: pinList) {
-				Node gpioProps = getPropsForGpio(new VBox(), pin);
-				TitledPane label = new TitledPane(Constants.keyToText(pin), gpioProps);
-				label.setMinSize(160.0, 20.0);
-				label.setExpanded(false);
+				TitledPane label = makeTitledPane(pin);
 				children.add(label);
 				GridPane.setRowIndex(label, pinList.indexOf(pin));
 				makeUI(getDevicePair(), pin);
 			}
 		}
+	}
+
+	private TitledPane makeTitledPane(String pin) {
+		TitledPane label = new TitledPane();
+		Node gpioProps = getPropsForGpio(label, new VBox(), pin);
+		label.setText(Constants.keyToText(pin));
+		label.setContent(gpioProps);
+		label.setMinSize(160.0, 20.0);
+		label.setExpanded(false);
+		GuiUtils.makeListener("gp-" + pin, label, changeCallback);
+		return label;
 	}
 
 	/**
@@ -378,6 +387,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		getScene().setMainController(this);
 		Boolean inValue = value != null && value.equals("true");
 		if (inValue || !key.startsWith("t-")) updateCodeGenerator(key);
+	}
+
+	protected void collapseOtherTPanes(Map<String, TitledPane> tpaneMap, String subKey, Boolean inValue) {
+		if (inValue) for(String tKey: tpaneMap.keySet()) {
+			if (tKey.equals(subKey)) continue;
+			tpaneMap.get(tKey).setExpanded(false);
+		}
 	}
 
 	protected String getPairForComboKey(String comboKey) {
