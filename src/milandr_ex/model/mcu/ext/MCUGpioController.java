@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 
+import java.util.List;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.textToKey;
@@ -23,6 +24,9 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
+		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"}, "each", (List) null, null, null, null);
+		addModelProps(new String[]{"gpio_ifin", "gpio_filt"}, "each", "BB");
+		addModelProps(new String[]{"gpio_spd"}, "each", (List) null);
 	}
 
 	@Override
