@@ -203,6 +203,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	private void changePropsAreaHeight(Pane propsPane, int pairCnt, int propsSize) {
 		Pane parent = (Pane)propsPane.getParent();
+		if (parent == null) parent = propsPane;
 		parent.setMinWidth(pairCnt * 25 + propsSize * 25 + 25);
 		parent.setPrefHeight(pairCnt * 25 + propsSize * 25 + 25);
 		parent.setMaxHeight(pairCnt * 25 + propsSize * 25 + 25);
@@ -265,6 +266,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 				label.setExpanded(false);
 				children.add(label);
 				GridPane.setRowIndex(label, pinList.indexOf(pin));
+				makeUI(getDevicePair(), pin);
 			}
 		}
 	}
