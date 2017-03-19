@@ -1,16 +1,23 @@
 package milandr_ex.model.mcu.ext;
 
+import com.google.common.collect.Maps;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
+
+import java.util.Map;
 
 import static milandr_ex.data.Constants.textToKey;
 
 public class MCUGpioController extends MCUExtPairController {
 	@FXML
 	private GridPane gpio_gpio;
+	private Map<String, VBox> gpio_vbox;
 
 	@Override
 	protected void postInit(AppScene scene) {
@@ -33,5 +40,18 @@ public class MCUGpioController extends MCUExtPairController {
 		}
 		return key != null && key.startsWith("cb")
 				&& item != null && !item.equals("RESET");
+	}
+
+	@Override
+	protected ObservableList<Node> clearGpioProps() {
+		getDevicePair().model().getProps();
+		return super.clearGpioProps();
+	}
+
+	@Override
+	protected Node getPropsForGpio(VBox vbox, String pinName) {
+		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
+		gpio_vbox.put(pinName, vbox);
+		return super.getPropsForGpio(vbox, pinName);
 	}
 }
