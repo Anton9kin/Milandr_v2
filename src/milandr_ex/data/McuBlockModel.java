@@ -96,12 +96,13 @@ public class McuBlockModel {
 		for (McuBlockProperty item : groups.get(group)) {
 			clone.add(item.clone());
 		}
+
 		return clone;
 	}
 
 	public List<McuBlockProperty> getGroup(String group) {
 		if (!groups.containsKey(group)) {
-			return cloneGroup("each");
+			groups.put(group, cloneGroup("each"));
 		}
 		return groups.get(group);
 	}
