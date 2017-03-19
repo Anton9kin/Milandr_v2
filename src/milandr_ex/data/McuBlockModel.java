@@ -90,8 +90,19 @@ public class McuBlockModel {
 		return this;
 	}
 
+	private List<McuBlockProperty> cloneGroup(String group) {
+		List<McuBlockProperty> clone = Lists.newArrayList();
+		if (!groups.containsKey(group)) return clone;
+		for (McuBlockProperty item : groups.get(group)) {
+			clone.add(item.clone());
+		}
+		return clone;
+	}
+
 	public List<McuBlockProperty> getGroup(String group) {
-		if (!groups.containsKey(group)) return getProps();
+		if (!groups.containsKey(group)) {
+			return cloneGroup("each");
+		}
 		return groups.get(group);
 	}
 
