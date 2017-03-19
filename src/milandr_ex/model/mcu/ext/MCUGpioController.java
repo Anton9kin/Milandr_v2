@@ -24,7 +24,8 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
-		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"}, "each", (List) null, null, null, null);
+		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"},
+				"each", (List) null, null, null, null);
 		addModelProps(new String[]{"gpio_ifin", "gpio_filt"}, "each", "BB");
 		addModelProps(new String[]{"gpio_spd"}, "each", (List) null);
 	}
@@ -49,7 +50,11 @@ public class MCUGpioController extends MCUExtPairController {
 
 	@Override
 	protected ObservableList<Node> clearGpioProps() {
-		getDevicePair().model().getProps();
+//		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
+//		for(String key: gpio_vbox.keySet()) {
+//			getDevicePair().model().clearProps(key);
+//		}
+//		gpio_vbox.clear();
 		return super.clearGpioProps();
 	}
 
@@ -62,6 +67,7 @@ public class MCUGpioController extends MCUExtPairController {
 
 	@Override
 	protected Pane getPropControl(String group) {
+		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
 		if (!gpio_vbox.containsKey(group)) return getPropControl();
 		return gpio_vbox.get(group);
 	}
