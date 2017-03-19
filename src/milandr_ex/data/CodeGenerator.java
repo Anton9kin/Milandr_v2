@@ -98,6 +98,7 @@ public class CodeGenerator {
 		setCodeParameter(codeList, comment, param, value, "");
 	}
 	public void setCodeParameter(List<String> codeList, String comment, String param, String value, String opp) {
+		if (value.equals("0") || value.equals("0x0")) return; // skip zero values
 		if (!comment.trim().isEmpty()) addCodeStr(codeList,"// " + comment);
 		String opp1 = opp == null || opp.isEmpty() ? "" : opp.charAt(0) + "";
 		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
@@ -118,17 +119,22 @@ public class CodeGenerator {
 	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments,
 								  String[] values, Integer[] shifts, String opp) {
 		if (values.length < 1) return;
-		if (comments.length > 0 && !comments[0].isEmpty()) {
-			addCodeStr(codeList,"// " + pref + comments[0]);
+		int firstI = 0;
+		while (firstI < values.length && ( values[firstI].equals("0")
+				|| values[firstI].equals("0x0"))) firstI++;
+		if (firstI >= values.length) return;
+		if (comments.length > firstI && !comments[firstI].isEmpty()) {
+			addCodeStr(codeList,"// " + pref + comments[firstI]);
 		}
-		String value = values[0];
-		if (shifts != null && shifts.length > 0) value += " << " + shifts[0];
+		String value = values[firstI];
+		if (shifts != null && shifts.length > 0) value += " << " + shifts[firstI];
 		String opp1 = opp == null || opp.isEmpty() ? "" : opp.charAt(0) + "";
 		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
 		String lastLine = String.format("%s %s=%s ((%s)", param, opp1, opp2, value);
-		for(int i = 1; i < values.length; i++) {
+		for(int i = firstI + 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
-			if (i == 1) indent++;
+			if (i == (firstI + 1)) indent++;
+			if (value.equals("0") || value.equals("0x0")) continue; // skip zero values
 			if (comments.length > i) addCodeStr(codeList,"// " + pref + comments[i]);
 			value = values[i];
 			if (shifts != null && shifts.length > i) value += " << " + shifts[i];
