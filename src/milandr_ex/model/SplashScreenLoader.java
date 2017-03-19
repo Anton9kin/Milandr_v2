@@ -47,9 +47,9 @@ public class SplashScreenLoader extends Preloader {
 			stage.hide();
 			return;
 		}
-		FadeTransition fadeSplash = new FadeTransition(Duration.seconds(5), splashLayout);
+		FadeTransition fadeSplash = new FadeTransition(Duration.seconds(3), splashLayout);
 		fadeSplash.setFromValue(1.0);
-		fadeSplash.setToValue(0.0);
+		fadeSplash.setToValue(0.5);
 		fadeSplash.setOnFinished(actionEvent -> stage.hide());
 		fadeSplash.play();
 	}
