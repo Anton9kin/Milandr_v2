@@ -117,8 +117,10 @@ public class CodeGenerator {
 		setCodeParameters(codeList, param, pref, comments, values, shifts, "");
 	}
 	private boolean checkValueForZero(String value) {
-		return value == null || value.isEmpty() ||
-				value.equals("0") || value.equals("0x0");
+		if (value == null) return true;
+		value = value.trim();
+		return value.isEmpty() || value.equals("0")
+				|| value.equals("0x0") || value.equals("0x00");
 	}
 	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments,
 								  String[] values, Integer[] shifts, String opp) {
