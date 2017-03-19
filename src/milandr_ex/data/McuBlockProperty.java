@@ -86,6 +86,7 @@ public class McuBlockProperty {
 	}
 
 	private String alias;
+	private String group;
 	private final String name;
 	private String msgKey;
 	private String msgTxt;
@@ -128,6 +129,19 @@ public class McuBlockProperty {
 
 	public McuBlockProperty setAlias(String alias) {
 		this.alias = alias;
+		return this;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public boolean hasGroup() {
+		return group != null && !group.isEmpty();
+	}
+
+	public McuBlockProperty setGroup(String group) {
+		this.group = group;
 		return this;
 	}
 

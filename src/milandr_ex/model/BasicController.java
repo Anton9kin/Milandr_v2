@@ -257,9 +257,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param lists array of lists of values for combo-boxes
 	 */
 	 protected void addModelProps(String[] props, List<String>... lists){
+	 	addModelProps(props, "", lists);
+	 }
+	 protected void addModelProps(String[] props, String group, List<String>... lists){
 		int ind = 0;
 		for(String prop: props) {
-			getDevicePair().model().addModelProp(McuBlockProperty.getC(getDevicePair(), prop, lists[ind++]));
+			McuBlockProperty blockProp = McuBlockProperty.getC(getDevicePair(), prop, lists[ind++]);
+			getDevicePair().model().addModelProp(blockProp.setGroup(group));
 		}
 	 }
 
@@ -269,7 +273,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param types defined types of new properties
 	 * @param args default values of new properties
 	 */
-	 protected void addModelProps(String[] props, String types, Object... args){
+	 protected void addModelProps(String[] props, String group, String types, Object... args){
 		int ind = 0;
 		Device.EPairNames pair = getDevicePair();
 		McuBlockProperty mprop;
@@ -284,7 +288,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 				case "S": default: if (arg == null) arg = "";
 					mprop = McuBlockProperty.get(pair, prop, String.valueOf(arg)); break;
 			}
-			getDevicePair().model().addModelProp(mprop);
+			getDevicePair().model().addModelProp(mprop.setGroup(group));
 		}
 	 }
 
@@ -293,7 +297,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param props list of properties names
 	 */
 	 protected void addModelProps(String... props){
-	 	addModelProps(props, false);
+		 addModelProps(props, false);
+	 }
+	protected void addModelProps(String group, String... props){
+		addModelProps(group, props, false);
 	 }
 	/**
 	 * Add new string properties to current block's model
@@ -301,9 +308,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param ro set true for create read-only properties
 	 */
 	 protected void addModelProps(String[] props, boolean ro){
+	 	addModelProps("", props, ro);
+	 }
+	 protected void addModelProps(String group, String[] props, boolean ro){
 		 Device.EPairNames pair = getDevicePair();
 		for(String prop: props) {
-			getDevicePair().model().addModelProp(McuBlockProperty.get(pair, prop, "", ro));
+			McuBlockProperty blockProp = McuBlockProperty.get(pair, prop, "", ro);
+			getDevicePair().model().addModelProp(blockProp.setGroup(group));
 		}
 	 }
 

@@ -256,7 +256,7 @@ public class MCUCompController extends BasicController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.COMP);
-		addModelProps(new String[]{"inv_out", "intrp"}, "BB");
+		addModelProps(new String[]{"inv_out", "intrp"}, "","BB");
 		addModelProps(new String[]{"bounds", "res_deps"}, (List)null, null);
 	}
 }

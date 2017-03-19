@@ -27,7 +27,7 @@ public class MCUMpuController extends BasicController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.MPU);
 		addModelProps(new String[]{"base_power", "start_kind"}, opUList, typeStartList);
-		addModelProps(new String[]{"sw_chn", "temp_sens", "lst_chn"}, "BBS");
+		addModelProps(new String[]{"sw_chn", "temp_sens", "lst_chn"}, "","BBS");
 	}
 
 	@Override

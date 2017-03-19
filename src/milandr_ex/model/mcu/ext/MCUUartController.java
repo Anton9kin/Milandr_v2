@@ -24,9 +24,9 @@ public class MCUUartController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.UART);
-		addModelProps("-");
+		addModelProps(new String[]{"-"}, true);
 		addModelProps(new String[]{"pre_div", "speed"}, div128List, uartList);
-		addModelProps(new String[]{"-", "word_len", "odd_chk", "stp_bit", "-", "r_speed", "error"}, "-SBB-SS");
+		addModelProps(new String[]{"-", "word_len", "odd_chk", "stp_bit", "-", "r_speed", "error"}, "", "-SBB-SS");
 //		addModelProps(new String[]{"-", "word_len", "odd_chk", "stp_bit", "-", "r_speed", "error"}, "-SBB-SS",
 //				"", "", true, true, "", "", "");
 	}

@@ -24,7 +24,7 @@ public class MCUUsbController extends MCUExtPairController {
 		//noinspection unchecked
 		addModelProps(new String[]{"usb_mode", "usb_len", "usb_sph", "usb_spo"},
 				usbModeList, usbSpeedList, usbPolarList, usbPushPullList);
-		addModelProps(new String[]{"usb_txd"}, "B", true);
+		addModelProps(new String[]{"usb_txd"}, "", "B", true);
 	}
 
 	@Override

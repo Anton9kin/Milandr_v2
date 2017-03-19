@@ -30,7 +30,7 @@ public class MCUCanController extends MCUExtPairController {
 		setDevicePair(Device.EPairNames.CAN);
 		//noinspection unchecked
 		addModelProps(new String[]{"pre_div", "speed"}, div128List, speedList);
-		addModelProps(new String[]{"-", "quants", "seg1", "seg2", "pseg"}, "-SIII");
+		addModelProps(new String[]{"-", "quants", "seg1", "seg2", "pseg"}, "","-SIII");
 		addModelProps(new String[]{"-", "r_speed", "error"}, true);
 	}
 

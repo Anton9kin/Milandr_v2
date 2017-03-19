@@ -1,19 +1,19 @@
 package milandr_ex.data;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import milandr_ex.model.BasicController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-import static milandr_ex.data.Constants.textToKey;
-
 /**
+ * Mcu Block Model
  * Created by lizard2k1 on 28.02.2017.
  */
 public class McuBlockModel {
@@ -27,6 +27,7 @@ public class McuBlockModel {
 	private BasicController controller;
 	private ResourceBundle bundle;
 	private final List<String> codeList;
+	private final Map<String, List<McuBlockProperty>> groups;
 
 	public McuBlockModel(Device.EPairNames pair) {
 		this.pair = pair;
@@ -35,6 +36,7 @@ public class McuBlockModel {
 		cbKeys = Lists.newArrayList();
 		props = Lists.newArrayList();
 		codeList = Lists.newArrayList();
+		groups = Maps.newHashMap();
 	}
 
 	public Device.EPairNames getPair() {
@@ -73,7 +75,23 @@ public class McuBlockModel {
 				}
 			}
 		}
+		if (!prop.hasGroup()) prop.setGroup(pair.name());
+		addPropToGroup(prop);
 		return this;
+	}
+
+	private void addPropToGroup(McuBlockProperty prop) {
+		String group = prop.getGroup();
+		if (!groups.containsKey(group)) {
+			groups.put(group, Lists.newArrayList());
+		}
+		List<McuBlockProperty> props = groups.get(group);
+		props.add(prop);
+	}
+
+	public List<McuBlockProperty> getGroup(String group) {
+		if (!groups.containsKey(group)) return getProps();
+		return groups.get(group);
 	}
 
 	public McuBlockModel setPropsPane(Pane propsPane) {
@@ -90,7 +108,8 @@ public class McuBlockModel {
 	}
 
 	public List<McuBlockProperty> getProps() {
-		return props;
+		if (props.isEmpty()) return props;
+		return getGroup(pair.name());
 	}
 
 	public McuBlockProperty getProp(String name) {
