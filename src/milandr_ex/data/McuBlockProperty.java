@@ -1,5 +1,6 @@
 package milandr_ex.data;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -12,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import jfxtras.scene.control.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
+ * Mcu Block Property implementation
  * Created by lizard on 01.03.17 at 12:37.
  */
-public class McuBlockProperty {
+public class McuBlockProperty implements Cloneable {
 	private static final Logger log	= LoggerFactory.getLogger(McuBlockProperty.class);
 	public static ObservableList<String> opUList = FXCollections.observableArrayList("Внутренее", "Внешнее");
 	public static ObservableList<String> typeStartList = FXCollections.observableArrayList("Одиночное", "Последовательное");
@@ -356,6 +357,53 @@ public class McuBlockProperty {
 	private static void log_debug(String text) {
 		log.debug(text);
 //		System.out.println(text);
+	}
+
+	@Override
+	protected McuBlockProperty clone() {
+		McuBlockProperty clone = new McuBlockProperty(name, kind);
+		clone.setGroup(getGroup());
+		clone.setAlias(alias);
+		clone.setMsgKey(msgKey);
+		clone.setMsgTxt(msgTxt);
+//		private List<McuBlockProperty> subProps;
+//		clone.setSubItems(subItems.clone());
+		clone.setIntDefValue(intDefValue);
+		clone.setStrDefValue(strDefValue);
+		clone.setMinValue(minValue);
+		clone.setMaxValue(maxValue);
+//		private List<PropValue> values;
+		clone.setValueInd(valueInd);
+//		private Node obsNode;
+//		private ObservableValue obsValue;
+		clone.setPair(pair);
+		clone.setRO(readOnly);
+		return clone;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		McuBlockProperty that = (McuBlockProperty) o;
+		return intDefValue == that.intDefValue &&
+				minValue == that.minValue &&
+				maxValue == that.maxValue &&
+				readOnly == that.readOnly &&
+				Objects.equal(alias, that.alias) &&
+				Objects.equal(group, that.group) &&
+				Objects.equal(name, that.name) &&
+				Objects.equal(msgKey, that.msgKey) &&
+				Objects.equal(msgTxt, that.msgTxt) &&
+				kind == that.kind &&
+				Objects.equal(strDefValue, that.strDefValue) &&
+				pair == that.pair;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(alias, group, name, msgKey, msgTxt, kind,
+				intDefValue, strDefValue, minValue, maxValue, pair, readOnly);
 	}
 
 	@Override
