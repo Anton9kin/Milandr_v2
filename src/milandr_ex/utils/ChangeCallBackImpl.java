@@ -9,16 +9,14 @@ import java.util.Map;
  */
 public abstract class ChangeCallBackImpl implements ChangeCallback {
 	protected ChangeCallbackOwner checker;
-	private Map<String, ? extends Node> nodeMap;
 
 	public ChangeCallBackImpl(ChangeCallbackOwner owner) {
 		this.checker = owner;
-		this.nodeMap = owner.nodeMap();
 	}
 
 	@Override
 	public Map<String, ? extends Node> nodeMap() {
-		return nodeMap;
+		return checker.nodeMap();
 	}
 
 	@Override
