@@ -98,7 +98,7 @@ public class CodeGenerator {
 		setCodeParameter(codeList, comment, param, value, "");
 	}
 	public void setCodeParameter(List<String> codeList, String comment, String param, String value, String opp) {
-		if (value.equals("0") || value.equals("0x0")) return; // skip zero values
+		if (checkValueForZero(value)) return; // skip zero values
 		if (!comment.trim().isEmpty()) addCodeStr(codeList,"// " + comment);
 		String opp1 = opp == null || opp.isEmpty() ? "" : opp.charAt(0) + "";
 		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
@@ -116,14 +116,17 @@ public class CodeGenerator {
 								  String[] values, Integer[] shifts) {
 		setCodeParameters(codeList, param, pref, comments, values, shifts, "");
 	}
+	private boolean checkValueForZero(String value) {
+		return value == null || value.isEmpty() ||
+				value.equals("0") || value.equals("0x0");
+	}
 	public void setCodeParameters(List<String> codeList, String param, String pref, String[] comments,
 								  String[] values, Integer[] shifts, String opp) {
 		if (values.length < 1) return;
 		int firstI = 0;
-		while (firstI < values.length && ( values[firstI].equals("0")
-				|| values[firstI].equals("0x0"))) firstI++;
+		while (firstI < values.length && checkValueForZero(values[firstI])) firstI++;
 		if (firstI >= values.length) return;
-		if (comments.length > firstI && !comments[firstI].isEmpty()) {
+		if (comments.length > firstI && comments[firstI] != null && !comments[firstI].isEmpty()) {
 			addCodeStr(codeList,"// " + pref + comments[firstI]);
 		}
 		String value = values[firstI];
@@ -134,7 +137,7 @@ public class CodeGenerator {
 		for(int i = firstI + 1; i < values.length; i++) {
 			addCodeStr(codeList, lastLine);
 			if (i == (firstI + 1)) indent++;
-			if (value.equals("0") || value.equals("0x0")) continue; // skip zero values
+			if (checkValueForZero(value)) continue; // skip zero values
 			if (comments.length > i) addCodeStr(codeList,"// " + pref + comments[i]);
 			value = values[i];
 			if (shifts != null && shifts.length > i) value += " << " + shifts[i];
