@@ -156,7 +156,7 @@ public class McuBlockModel {
 			if (model != null && model.getSelectedIndex() >= 0) {
 				String item = (String) model.getSelectedItem();
 				if (!controller.filterGpio(key, item)) continue;
-				boolean hasSpace = item.contains(" ");
+				boolean hasSpace = item.contains(" ") && !item.startsWith("IO");
 				keys.add(hasSpace ? item //Constants.textToKey(item.split("\\s")[1])
 						:  Constants.keyToText(key) + " " + item);
 			}
