@@ -128,7 +128,7 @@ public class McuBlockModel {
 	}
 	public McuBlockModel clearProps(String group) {
 		if (props.isEmpty()) return this;
-		if (!groups.containsKey(group)) clearProps();
+		if (!groups.containsKey(group)) return this;
 		if (group.equals("all")) {
 			groups.clear();
 			props.clear();
