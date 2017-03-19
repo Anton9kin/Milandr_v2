@@ -236,13 +236,23 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return item != null && item.contains(" ");
 	}
 
+	protected ObservableList<Node> clearGpioProps() {
+		ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();
+		getDevicePair().model().clearProps("gpio");
+		children.clear();
+		return children;
+	}
+	protected Node getPropsForGpio(VBox vbox, String pinName) {
+		vbox.getChildren().add(new Label(pinName));
+		return vbox;
+	}
 	protected void fillGpio() {
 		if (getGPIOControl() != null) {
-			ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();
-			children.clear();
+			ObservableList<Node> children = clearGpioProps();
 			List<String> pinList = getPinList();
 			for(String pin: pinList) {
-				TitledPane label = new TitledPane(Constants.keyToText(pin), new Label());
+				Node gpioProps = getPropsForGpio(new VBox(), pin);
+				TitledPane label = new TitledPane(Constants.keyToText(pin), gpioProps);
 				label.setMinSize(160.0, 20.0);
 				label.setExpanded(false);
 				children.add(label);
