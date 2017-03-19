@@ -80,13 +80,14 @@ public class McuBlockModel {
 		return this;
 	}
 
-	private void addPropToGroup(McuBlockProperty prop) {
+	private McuBlockModel addPropToGroup(McuBlockProperty prop) {
 		String group = prop.getGroup();
 		if (!groups.containsKey(group)) {
 			groups.put(group, Lists.newArrayList());
 		}
 		List<McuBlockProperty> props = groups.get(group);
 		props.add(prop);
+		return this;
 	}
 
 	public List<McuBlockProperty> getGroup(String group) {
@@ -103,10 +104,26 @@ public class McuBlockModel {
 		return controller;
 	}
 
-	public void setController(BasicController controller) {
+	public McuBlockModel setController(BasicController controller) {
 		this.controller = controller;
+		return this;
 	}
 
+	public McuBlockModel clearProps() {
+		return clearProps(pair.name());
+	}
+	public McuBlockModel clearAllProps() {
+		return clearProps("all");
+	}
+	public McuBlockModel clearProps(String group) {
+		if (!groups.containsKey(group)) clearProps();
+		if (group.equals("all")) {
+			groups.clear();
+			props.clear();
+		}
+		getGroup(group).clear();
+		return this;
+	}
 	public List<McuBlockProperty> getProps() {
 		if (props.isEmpty()) return props;
 		return getGroup(pair.name());
