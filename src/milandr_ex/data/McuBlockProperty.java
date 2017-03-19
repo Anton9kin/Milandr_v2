@@ -197,14 +197,17 @@ public class McuBlockProperty implements Cloneable {
 	}
 
 	public void setValueInd(int valueInd) {
+		setValueInd(valueInd, false);
+	}
+	public void setValueInd(int valueInd, boolean inner) {
 		this.valueInd = valueInd;
 		switch (kind) {
-			case INT: setIntValue(getIntValue()); break;
-			default: setStrValue(getStrValue()); break;
+			case INT: setIntValue(getIntValue(), inner); break;
+			default: setStrValue(getStrValue(), inner); break;
 		}
 		if (subProps == null || subProps.isEmpty()) return;
 		for(McuBlockProperty sProp: subProps) {
-			sProp.setValueInd(valueInd);
+			sProp.setValueInd(valueInd, inner);
 		}
 	}
 
@@ -461,7 +464,7 @@ public class McuBlockProperty implements Cloneable {
 				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
 			}
 			node.setDisable(readOnly);
-			setValueInd(0);
+			setValueInd(0, true);
 		}
 		return this;
 	}
