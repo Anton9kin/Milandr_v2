@@ -428,6 +428,7 @@ public class McuBlockProperty implements Cloneable {
 	}
 
 	public McuBlockProperty makeUI(AppScene scene, Pane pane, int gridIndex) {
+		if (obsNode != null) return this;
 		Node node = null;
 		switch (kind) {
 			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(scene, pane, gridIndex++); break;
