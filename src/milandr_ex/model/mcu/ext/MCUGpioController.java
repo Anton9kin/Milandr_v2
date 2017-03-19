@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
@@ -53,5 +54,11 @@ public class MCUGpioController extends MCUExtPairController {
 		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
 		gpio_vbox.put(pinName, vbox);
 		return super.getPropsForGpio(vbox, pinName);
+	}
+
+	@Override
+	protected Pane getPropControl(String group) {
+		if (!gpio_vbox.containsKey(group)) return getPropControl();
+		return gpio_vbox.get(group);
 	}
 }
