@@ -137,9 +137,9 @@ public class CodeGenerator {
 		String opp2 = opp == null || opp.length() < 2 ? "" : opp.charAt(1) + "";
 		String lastLine = String.format("%s %s=%s ((%s)", param, opp1, opp2, value);
 		for(int i = firstI + 1; i < values.length; i++) {
+			if (checkValueForZero(values[i])) continue; // skip zero values
 			addCodeStr(codeList, lastLine);
 			if (i == (firstI + 1)) indent++;
-			if (checkValueForZero(values[i])) continue; // skip zero values
 			if (comments.length > i) addCodeStr(codeList,"// " + pref + comments[i]);
 			value = values[i];
 			if (shifts != null && shifts.length > i) value += " << " + shifts[i];
