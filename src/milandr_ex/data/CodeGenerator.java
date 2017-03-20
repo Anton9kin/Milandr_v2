@@ -3,6 +3,7 @@ package milandr_ex.data;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import milandr_ex.data.code.CommentKind;
+import milandr_ex.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +144,9 @@ public class CodeGenerator {
 			if (checkValueForZero(values[i])) continue; // skip zero values
 			addCodeStr(codeList, lastLine);
 			if (i == (firstI + 1)) indent++;
-			if (comments.length > i) addCodeStr(codeList,"// " + pref + comments[i]);
+			if (comments.length > i && !comments[i].isEmpty()) {
+				addCodeStr(codeList,"// " + pref + comments[i]);
+			}
 			value = values[i];
 			if (shifts != null && shifts.length > i) value += " << " + shifts[i];
 			lastLine = String.format("| (%s)", value);
@@ -253,14 +256,21 @@ public class CodeGenerator {
 		public CodeExpressionBuilder setComments(Integer[] idxs, Object... args) {
 			if (commentsArr == null || idxs == null) return this;
 			for(Integer idx: idxs) {
-				if (idx == null || idx > commentsArr.length) continue;
+				if (idx == null || idx >= commentsArr.length) continue;
 				if (args == null) {
 					addComment(commentsArr[idx]);
 					continue;
 				}
+				String comment = commentsArr[idx];
 				boolean oneArg = args.length >= commentsArr.length;
-				if (oneArg) addComment(commentsArr[idx], args[idx]);
-				 else addComment(commentsArr[idx], args);
+				if (oneArg) {
+					int matches = StringUtils.countMatches(comment, "%s");
+					if (matches > 1 && args.length >= idx + matches){
+						Object[] holder = new Object[matches];
+						System.arraycopy(args, idx, holder, 0, matches);
+						addComment(comment, holder);
+					} else addComment(comment, args[idx]);
+				} else addComment(comment, args);
 			}
 			return this;
 		}
@@ -343,8 +353,20 @@ public class CodeGenerator {
 			return setWhileCommand("", param, suff, cond);
 		}
 		public CodeExpressionBuilder setWhileCommand(String comment, String param, String suff, String cond) {
+			setAnyCommand("while %s((%s & (%s)) %s);", comment, "", param, suff, cond);
+			return this;
+		}
+		public CodeExpressionBuilder setForICommand(String param, String suff, String cond) {
+			return setForICommand("", param, suff, cond);
+		}
+		public CodeExpressionBuilder setForICommand(String comment, String param, String suff, String cond) {
+			setAnyCommand("for (i = 0; i < %s; i++) %s %s (%s);", comment, suff, param, "=", cond);
+			return this;
+		}
+		public CodeExpressionBuilder setAnyCommand(String commandf, String comment, String value,
+												   String param, String suff, String cond) {
 			setComments(comment).setParam(param);
-			setCommand(String.format("while ((%s & (%s)) %s);", getFullParam(), suff, cond));
+			setCommand(String.format(commandf, value, getFullParam(), suff, cond));
 			return this;
 		}
 
@@ -365,8 +387,9 @@ public class CodeGenerator {
 			validate();
 			String value = values.get(0);
 			if (shifts != null && !shifts.isEmpty()) value += " << " + shifts.get(0);
-			CodeGenerator.this.setCodeParameter(codeList, commentPref + comments.get(0),
-					getFullParam(), value, opp);
+			String crComment = comments.get(0).trim();
+			if (!crComment.isEmpty()) crComment = commentPref + crComment;
+			CodeGenerator.this.setCodeParameter(codeList, crComment, getFullParam(), value, opp);
 			clear();
 		}
 
@@ -393,8 +416,9 @@ public class CodeGenerator {
 
 		public void buildCommand(List<String> codeList) {
 			validate();
-			CodeGenerator.this.execCodeCommand(codeList, commentPref + comments.get(0),
-					command, values.toArray(new String[]{}));
+			String crComment = comments.get(0).trim();
+			if (!crComment.isEmpty()) crComment = commentPref + crComment;
+			CodeGenerator.this.execCodeCommand(codeList, crComment, command, values.toArray(new String[]{}));
 			clear();
 		}
 	}
