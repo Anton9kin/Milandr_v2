@@ -21,7 +21,7 @@ public class Constants {
     public static boolean USE_AQUA_STYLE = Boolean.TRUE;
     public static boolean USE_FLAT_STYLE = Boolean.TRUE;
     public static boolean USE_HOVERED_STYLE = Boolean.FALSE;
-    public static String[] exclusivePairs = {"IO", "DATA", "READY", "nSIR", "EXT", "ADC", "ADDR"};
+    public static String[] exclusivePairs = {"IO", "DATA", "READY", "nSIR", "EXT", "ADC", "ADDR", "OSC"};
     public static List<String> exclusiveList = Lists.newArrayList(exclusivePairs);
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
