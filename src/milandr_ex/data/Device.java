@@ -1,53 +1,55 @@
 package milandr_ex.data;
 
 import com.google.common.collect.Sets;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import io.swagger.models.auth.In;
-import javafx.beans.property.StringProperty;
-import javafx.scene.control.ComboBox;
 import milandr_ex.McuType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.awt.*;
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
+ * Basic container for properties of separate bodies (devices)
  * Created by lizard on 14.02.17 at 16:25.
  */
 public class Device {
     public enum EPairNames {
         NON(0), GPIO(0), CPU(0),
-        ADC(1) {
+        ADC(1, 5) {
             @Override
             public void set(Device device, int val) {
                 device.setAdc(val);
             }
-            @Override
-            public int colWidth() { return 50; }
         }, COMP(3){
             @Override
             public void set(Device device, int val) {
                 device.setComporator(val);
             }
         },
-        USB(1), UART(2), CAN(2){
-            @Override
-            public int colWidth() { return 50; }
-        }, SPI(4), I2C(2), DAC(1), DMA(1),
-        SYST(1){
-            @Override
-            public int colWidth() { return 60; }
-        }, MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
+        USB(1, 5), UART(2), CAN(2, 5), SPI(4), I2C(2), DAC(1), DMA(1),
+        SYST(1, 6), MPU(1), BKP(1), PWR(1), EBC(1), IWDG(1), WWDG(1),
         TMR(3);
 
         private final int size;
+        private int colW = 70;
+        /**
+         * Create device pair with pre-defined percentage of configuration's column width (70)
+         * @param size pair size for any device
+         */
         EPairNames(int size) {
             this.size = size;
+        }
+
+        /**
+         * Create device pair with defined percentage of configuration's column width in *10 value
+         * @param size pair size for any device
+         * @param colW configuration column width (will be factored to 10)
+         */
+        EPairNames(int size, int colW) {
+            this.size = size;
+            this.colW = colW * 10;
         }
 
         public boolean ext() {
@@ -77,7 +79,7 @@ public class Device {
         	if (model == null) model = new McuBlockModel(this);
         	return model;
 		}
-		public int colWidth() { return 70;  }
+		public int colWidth() { return colW;  }
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
