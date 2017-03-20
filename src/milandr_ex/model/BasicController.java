@@ -13,15 +13,12 @@ import milandr_ex.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static milandr_ex.data.McuBlockProperty.istList;
 import static milandr_ex.utils.GuiUtils.bcDef;
 import static milandr_ex.utils.GuiUtils.bcTxt;
-import static milandr_ex.utils.GuiUtils.makeListener;
 
 /**
  * Базовая реализация для всех контроллеров
@@ -618,6 +615,8 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();
 	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
+		oldCode = Lists.newArrayList();
+		generateCode(oldCode, 0);
 		return generateCode(device, oldCode, methodName());
 	}
 	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
