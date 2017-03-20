@@ -89,6 +89,58 @@ public class MCUAdcController extends BasicController {
 				g().addCodeStr(oldCode, "/*коэффициент деления частоты*/");
 				g().addCodeStr(oldCode, "|(" + adcSrcDiv + " << 12)); ");
 				break;
+			case 4:
+				g().addCodeStr(oldCode, "// ADC value = 1700 @ 25C = 1.36996V - from milandr demo project");
+				g().addCodeStr(oldCode, "#define FACTORY_ADC_TEMP25     1700         ");
+
+				g().addCodeStr(oldCode, "// 1.38393 @ 26C. 1.34-1.52, 1.43 V typical @ factory delta_calib");
+				g().addCodeStr(oldCode, "#define FACTORY_VTEMP25        1.36996      ");
+
+				g().addCodeStr(oldCode, "// ADC delta value @ 1C, from milandr demo project");
+				g().addCodeStr(oldCode, "#define FACTORY_ADC_AVG_SLOPE  6            ");
+
+				g().addCodeStr(oldCode, "// 4.0-4.6, 4.3 mV/C typical @ factory delta_calib");
+				g().addCodeStr(oldCode, "#define FACTORY_AVG_SLOPE      0.004835     ");
+
+				g().addCodeStr(oldCode, "// расчёт в int");
+				g().addCodeStr(oldCode, "temperature_C = (adc_value - FACTORY_ADC_TEMP25)/FACTORY_ADC_AVG_SLOPE + FACTORY_TEMP25;");
+
+				g().addCodeStr(oldCode, "// расчёт в float");
+				g().addCodeStr(oldCode, "temperature_C = ((Vtemp - Vtemp25) / Avg_Slope) + FACTORY_TEMP25;");
+                    /* 1 строка */
+				g().addCodeStr(oldCode, "void TS_init( void ){");
+
+
+
+				g().addCodeStr(oldCode, "/* выбор для оцифровки датчика температуры */");
+				g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CFG ");
+				if (isCboxChecked(0))
+					g().addCodeStr(oldCode, "|= ");
+				else
+					g().addCodeStr(oldCode, "= ");
+
+				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
+				g().addCodeStr(oldCode, " ((1 << 19) ");
+				g().addCodeStr(oldCode, "                          |(1 << 18) ");
+				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
+				g().addCodeStr(oldCode, "                          |(1 << 17) ");
+
+				if (getConfPropInt("sw_chn") > 0)
+				{
+					g().addCodeStr(oldCode, "/*включено переключение каналов*/");
+					g().addCodeStr(oldCode, "                          |(1 << 9)); ");
+					g().addCodeStr(oldCode, "/*выбор каналов для переключения*/");
+					g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CHSEL = (( 1 << 31) | ( 1 << " + NUMCH + "));");
+				}
+				else
+				{
+					g().addCodeStr(oldCode, "/*номер канала преобразования*/");
+					g().addCodeStr(oldCode, "                          |(31 << 4)); ");
+				}
+
+                    /* 11 строка */
+				g().addCodeStr(oldCode, "//void TS_init");
+				break;
 		}
 		return oldCode;
 	}
@@ -201,6 +253,7 @@ public class MCUAdcController extends BasicController {
 
 		if (isCboxChecked(0)) generateCode(oldCode, 2);
 		if (isCboxChecked(1)) generateCode(oldCode, 3);
+		generateCode(oldCode, 4);
 
 		return super.generateCode(device, oldCode);
 	}
