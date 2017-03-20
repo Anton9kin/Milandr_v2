@@ -78,9 +78,9 @@ public enum Module {
 			if (lastSize > 1) {
 				Integer[] idxs = new Integer[lastSize];
 				Object[] args = new Object[cmtIndx + lastSize];
-				Arrays.fill(args, null);
+				Arrays.fill(args, 0);
 				for(int i = 0; i < lastSize; i++) {
-					args[cmtIndx] = this.args[i];
+					args[cmtIndx] = this.args.length > i ? this.args[i] : 0;
 					idxs[i] = cmtIndx++;
 				}
 				return args(args).cmt(idxs);
