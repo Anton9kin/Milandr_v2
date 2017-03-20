@@ -11,10 +11,13 @@ import java.util.List;
 public enum Module {
 	SysTick(), MDR_EEPROM(), MDR_RST_CLK(), MDR_BKP(),
 	MDR_PORTA, MDR_PORTB, MDR_PORTC, MDR_PORTD, MDR_PORTE, MDR_PORTF,
-	MDR_ADC, MDR_DAC, MDR_IWDG, MDR_WWDG, MDR_POWER,
+	MDR_ADC, MDR_DAC, MDR_IWDG, MDR_WWDG, MDR_POWER, MDR_USB,
 	MDR_ERR();
 	private final CodeGenerator.CodeExpressionBuilder builder;
+
 	private Object[] args;
+	private List<String> codeList;
+	private int cmtIndx;
 
 	Module() {
 		builder = CodeGenerator.instance().builder();
@@ -24,6 +27,8 @@ public enum Module {
 		builder.setModule(name());
 		param = null;
 		command = null;
+		codeList = null;
+		cmtIndx = 0;
 		return this;
 	}
 	public Module arr(String[] array) {
@@ -38,6 +43,10 @@ public enum Module {
 	public Module set(Command command) {
 		this.param = null;
 		this.command = command;
+		return this;
+	}
+	public Module set(List<String> codeList) {
+		this.codeList = codeList;
 		return this;
 	}
 	public Module pre(Integer... prefixes) {
@@ -55,6 +64,15 @@ public enum Module {
 	public Module pre(String prefix) {
 		builder.setCommentPref(prefix);
 		return this;
+	}
+	public Module cmt() {
+		return cmt(cmtIndx++);
+	}
+	public Module end(Object... args) {
+		return args(args).end();
+	}
+	public Module end() {
+		return cmt().build();
 	}
 	public Module cmt(Integer... comments) {
 		if (param != null) param.comment(comments, args);
@@ -77,7 +95,11 @@ public enum Module {
 	private Command command;
 	private Param param;
 
+	public Module build() {
+		return build(codeList);
+	}
 	public Module build(List<String> codeList) {
+		if (codeList == null) return this;
 		if (param != null) param.build(codeList);
 		if (command != null) command.build(codeList);
 		return this;
