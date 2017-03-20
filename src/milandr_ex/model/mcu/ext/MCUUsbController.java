@@ -126,12 +126,13 @@ public class MCUUsbController extends MCUExtPairController {
 		"источник для USB_C2",
 		"источник для USB_C3 (USB_CLK)",
 		"вкл. PLL_USB | коэф. умножения = %s",
-	},{
 		"ждем когда PLL_USB выйдет в раб. режим",
+	},{
 		"программный сброс контроллера USB",
 		"рабочий режим контроллера USB",
 		"режим работы - %s",
 		"TX - %s | RX - включен",
+		"",
 		"Управление подтяжкой - %s",
 		"cкорость = %s | полярность = %s",
 	}};
@@ -166,12 +167,9 @@ public class MCUUsbController extends MCUExtPairController {
 			MDR_RST_CLK.sete(Param.PLL_CONTROL.set(1, (pllusbmul - 1)).shift(0, 4), pllusbmul);
 			MDR_RST_CLK.sete(Command.WHILE.set(Param.CLOCK_STATUS, "0x01", "!= 0x01"));
 		}
-		// 9 строка
-		g().addCodeStr(oldCode, "//программный сброс контроллера USB");
-		g().addCodeStr(oldCode, "for (i = 0; i < 20; i++) MDR_USB->HSCR = (1 << 1); ");
-		g().addCodeStr(oldCode, "");
 
 		MDR_USB.get().arr(comments[1]).set(oldCode);
+		MDR_USB.sete(Command.FOR.set(Param.HSCR, "20", "1 << 1"));
 		MDR_USB.sete(Param.HSCR.seti(1, 1, "!~"));
 		MDR_USB.sete(Param.HSCR.seti(usbHost, 0), usbMode);
 		MDR_USB.sete(Param.HSCR.set(entx, 1).shift(2, 3).opp("|"), ustr[entx]);
