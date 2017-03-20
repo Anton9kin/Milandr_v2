@@ -272,17 +272,21 @@ public class MCUAdcController extends BasicController {
 	}
 
 	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateADCCode(%s)", device));
+	protected String[] methodNames() {
+		return new String[]{"ADC", "TS"};
+	}
 
 		//, Color\.\w+,\sFontStyle\.\w+,\s\w+
-		oldCode.addAll(generateCode(device, Lists.newArrayList(), "ADC"));
-		if (getConfPropInt("temp_sens") > 0) {
-			oldCode.addAll(generateCode(device, Lists.newArrayList(), "TS"));
+	@Override
+	protected boolean methodNeeded(String methodName) {
+		switch (methodName) {
+			case "ADC":
+				return true;
+			case "TS":
+				return getConfPropInt("temp_sens") > 0;
+			default:
+				return false;
 		}
-
-		return oldCode;
 	}
 
 	@Override
