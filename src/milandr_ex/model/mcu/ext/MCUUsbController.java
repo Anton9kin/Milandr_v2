@@ -6,6 +6,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
+import milandr_ex.data.code.Command;
+import milandr_ex.data.code.Module;
+import milandr_ex.data.code.Param;
 
 import java.util.List;
 
@@ -112,6 +115,76 @@ public class MCUUsbController extends MCUExtPairController {
 			g().addCodeStrL(oldCode, "//cкорость = " + usbSpeed + " | полярность = " + usbPol + " | вкл. окон. точек");
 			g().addCodeStr(oldCode, "MDR_USB->SC |= ((" + usbLen + " << 5) | (" + usbPl + " << 4) | 1); ");
 		}
+		return super.generateSimpleCodeStep(oldCode, codeStep);
+	}
+
+	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	private Module MDR_USB = Module.MDR_USB.get();
+	private static String[][] comments = {{
+		"тактирование USB",
+		"есть тактовая частота",
+		"источник для USB_C1",
+		"источник для USB_C2",
+		"источник для USB_C3 (USB_CLK)",
+		"вкл. PLL_USB | коэф. умножения = %s",
+	},{
+		"ждем когда PLL_USB выйдет в раб. режим",
+		"программный сброс контроллера USB",
+		"рабочий режим контроллера USB",
+		"режим работы - %s",
+		"TX - %s | RX - включен",
+		"Управление подтяжкой - %s",
+		"cкорость = %s | полярность = %s",
+	}};
+
+	@Override
+	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		// 2 строка
+		g().addCodeStr(oldCode, "    unsigned char i = 0;");
+
+		MDR_RST_CLK.get().arr(comments[0]).set(oldCode);
+		MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 2, "|")).end();
+		MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 8)).end();
+		if (isCboxChecked(0)) MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 0, "|")).end();
+		if (isCboxChecked(1)) MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 2, "|")).end();
+
+		int usbclksel = getClockProp("USB-C2.S");
+		MDR_RST_CLK.set(Param.USB_CLOCK.seti((usbclksel - 1), 4, "|")).end();
+
+		int pllusbmul = 1;
+		if (pllusbmul > 0)
+		{
+			MDR_RST_CLK.set(Param.PLL_CONTROL.set(1, (pllusbmul - 1)).shift(0, 4)).end(pllusbmul);
+			MDR_RST_CLK.set(Command.WHILE.set(Param.CLOCK_STATUS, "0x01", "!= 0x01")).end();
+		}
+		// 9 строка
+		g().addCodeStr(oldCode, "//программный сброс контроллера USB");
+		g().addCodeStr(oldCode, "for (i = 0; i < 20; i++) MDR_USB->HSCR = (1 << 1); ");
+		g().addCodeStr(oldCode, "");
+
+		MDR_USB.get().arr(comments[1]).set(oldCode);
+		MDR_USB.set(Param.HSCR.seti(1, 1, "!~")).end();
+
+		// 11 строка
+		String usbMode = getConfPropStr("usb_mode");
+		int  usbHost = getConfPropInt("usb_mode");
+		MDR_USB.set(Param.HSCR.seti(usbHost, 0)).end(usbMode);
+
+		// 12 строка
+		int entx = getConfPropInt("usb_txd");
+		MDR_USB.set(Param.HSCR.set(entx, 1).shift(2, 3).opp("|")).end(ustr[entx]);
+
+		// 13 строка
+		String usbUp = getConfPropStr("usb_spo");
+		int  usbPull = getConfPropInt("usb_spo");
+		MDR_USB.set(Param.HSCR.set(usbPull).opp("|")).end(usbUp);
+
+		String usbSpeed = getConfPropStr("usb_len");
+		int  usbLen = getConfPropInt("usb_len");
+		String usbPol = getConfPropStr("usb_len");
+		int  usbPl = getConfPropInt("usb_len");
+		if (usbHost == 1) MDR_USB.set(Param.HTXLC.set(usbLen, usbPl).shift(4, 3).opp("|")).end(usbSpeed, usbPol);
+		else MDR_USB.set(Param.SC.set(usbLen, usbPl, 1).shift(4, 3, 0).opp("|")).end(usbSpeed, usbPol + " | вкл. окон. точек");
 		return super.generateSimpleCodeStep(oldCode, codeStep);
 	}
 
