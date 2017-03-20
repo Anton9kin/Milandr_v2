@@ -49,16 +49,25 @@ public enum Param {
 		builder.setComments(values, args);
 		return this;
 	}
+	private int lastValuesSize = 0;
+
+	public int lastSize() {
+		return lastValuesSize;
+	}
+
 	public Param set(Integer... values) {
 		builder.setValues(values);
+		lastValuesSize = values.length;
 		return this;
 	}
 	public Param set(String... values) {
 		builder.setValues(values);
+		lastValuesSize = values.length;
 		return this;
 	}
 	public Param seti(Integer[] values, Integer[] shifts, String opp) {
 		builder.setValues(values).setShifts(shifts);
+		lastValuesSize = values.length;
 		return opp(opp);
 	}
 	public Param seti(Integer value, Integer shift) {
@@ -66,6 +75,7 @@ public enum Param {
 	}
 	public Param seti(Integer value, Integer shift, String opp) {
 		builder.setValues(value).setShifts(shift);
+		lastValuesSize = 1;
 		return opp(opp);
 	}
 	public Param sets(String value, Integer shift) {
@@ -73,6 +83,7 @@ public enum Param {
 	}
 	public Param sets(String value, Integer shift, String opp) {
 		builder.setValues(value).setShifts(shift);
+		lastValuesSize = 1;
 		return opp(opp);
 	}
 	public Param add(String value, Object args) {
