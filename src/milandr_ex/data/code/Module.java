@@ -2,6 +2,7 @@ package milandr_ex.data.code;
 
 import milandr_ex.data.CodeGenerator;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,10 +36,16 @@ public enum Module {
 		builder.setCommentsArr(array);
 		return this;
 	}
+	public Module sete(Param param, Object... args) {
+		return set(param).end(args);
+	}
 	public Module set(Param param) {
 		this.param = param;
 		this.command = null;
 		return this;
+	}
+	public Module sete(Command command, Object... args) {
+		return set(command).end(args);
 	}
 	public Module set(Command command) {
 		this.param = null;
@@ -66,6 +73,19 @@ public enum Module {
 		return this;
 	}
 	public Module cmt() {
+		if (param != null) {
+			int lastSize = param.lastSize();
+			if (lastSize > 1) {
+				Integer[] idxs = new Integer[lastSize];
+				Object[] args = new Object[cmtIndx + lastSize];
+				Arrays.fill(args, null);
+				for(int i = 0; i < lastSize; i++) {
+					args[cmtIndx] = this.args[i];
+					idxs[i] = cmtIndx++;
+				}
+				return args(args).cmt(idxs);
+			}
+		}
 		return cmt(cmtIndx++);
 	}
 	public Module end(Object... args) {
@@ -85,7 +105,7 @@ public enum Module {
 		return this;
 	}
 	public Module args(Object... args) {
-		this.args = args;
+		if (args != null && args.length > 0) this.args = args;
 		return this;
 	}
 	public Module cmt(String... comments) {
