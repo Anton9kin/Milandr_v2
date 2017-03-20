@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.ext;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -115,7 +114,7 @@ public class MCUUsbController extends MCUExtPairController {
 			g().addCodeStrL(oldCode, "//cкорость = " + usbSpeed + " | полярность = " + usbPol + " | вкл. окон. точек");
 			g().addCodeStr(oldCode, "MDR_USB->SC |= ((" + usbLen + " << 5) | (" + usbPl + " << 4) | 1); ");
 		}
-		return super.generateSimpleCodeStep(oldCode, codeStep);
+		return oldCode;
 	}
 
 	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
@@ -139,23 +138,33 @@ public class MCUUsbController extends MCUExtPairController {
 
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
+		int pllusbmul = 1;
+		int usbclksel = getClockProp("USB-C2.S");
+		String usbMode = getConfPropStr("usb_mode");
+		int  usbHost = getConfPropInt("usb_mode");
+		int entx = getConfPropInt("usb_txd");
+		String usbUp = getConfPropStr("usb_spo");
+		int  usbPull = getConfPropInt("usb_spo");
+		String usbSpeed = getConfPropStr("usb_len");
+		int  usbLen = getConfPropInt("usb_len");
+		String usbPol = getConfPropStr("usb_len");
+		int  usbPl = getConfPropInt("usb_len");
+
 		// 2 строка
 		g().addCodeStr(oldCode, "    unsigned char i = 0;");
 
 		MDR_RST_CLK.get().arr(comments[0]).set(oldCode);
-		MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 2, "|")).end();
-		MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 8)).end();
-		if (isCboxChecked(0)) MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 0, "|")).end();
-		if (isCboxChecked(1)) MDR_RST_CLK.set(Param.USB_CLOCK.seti(1, 2, "|")).end();
+		MDR_RST_CLK.sete(Param.PER_CLOCK.seti(1, 2, "|"));
+		MDR_RST_CLK.sete(Param.USB_CLOCK.seti(1, 8));
+		if (isCboxChecked(0)) MDR_RST_CLK.sete(Param.USB_CLOCK.seti(1, 0, "|"));
+		if (isCboxChecked(1)) MDR_RST_CLK.sete(Param.USB_CLOCK.seti(1, 2, "|"));
 
-		int usbclksel = getClockProp("USB-C2.S");
-		MDR_RST_CLK.set(Param.USB_CLOCK.seti((usbclksel - 1), 4, "|")).end();
+		MDR_RST_CLK.sete(Param.USB_CLOCK.seti((usbclksel - 1), 4, "|"));
 
-		int pllusbmul = 1;
 		if (pllusbmul > 0)
 		{
-			MDR_RST_CLK.set(Param.PLL_CONTROL.set(1, (pllusbmul - 1)).shift(0, 4)).end(pllusbmul);
-			MDR_RST_CLK.set(Command.WHILE.set(Param.CLOCK_STATUS, "0x01", "!= 0x01")).end();
+			MDR_RST_CLK.sete(Param.PLL_CONTROL.set(1, (pllusbmul - 1)).shift(0, 4), pllusbmul);
+			MDR_RST_CLK.sete(Command.WHILE.set(Param.CLOCK_STATUS, "0x01", "!= 0x01"));
 		}
 		// 9 строка
 		g().addCodeStr(oldCode, "//программный сброс контроллера USB");
@@ -163,35 +172,17 @@ public class MCUUsbController extends MCUExtPairController {
 		g().addCodeStr(oldCode, "");
 
 		MDR_USB.get().arr(comments[1]).set(oldCode);
-		MDR_USB.set(Param.HSCR.seti(1, 1, "!~")).end();
+		MDR_USB.sete(Param.HSCR.seti(1, 1, "!~"));
+		MDR_USB.sete(Param.HSCR.seti(usbHost, 0), usbMode);
+		MDR_USB.sete(Param.HSCR.set(entx, 1).shift(2, 3).opp("|"), ustr[entx]);
+		MDR_USB.sete(Param.HSCR.set(usbPull).opp("|"), usbUp);
 
-		// 11 строка
-		String usbMode = getConfPropStr("usb_mode");
-		int  usbHost = getConfPropInt("usb_mode");
-		MDR_USB.set(Param.HSCR.seti(usbHost, 0)).end(usbMode);
-
-		// 12 строка
-		int entx = getConfPropInt("usb_txd");
-		MDR_USB.set(Param.HSCR.set(entx, 1).shift(2, 3).opp("|")).end(ustr[entx]);
-
-		// 13 строка
-		String usbUp = getConfPropStr("usb_spo");
-		int  usbPull = getConfPropInt("usb_spo");
-		MDR_USB.set(Param.HSCR.set(usbPull).opp("|")).end(usbUp);
-
-		String usbSpeed = getConfPropStr("usb_len");
-		int  usbLen = getConfPropInt("usb_len");
-		String usbPol = getConfPropStr("usb_len");
-		int  usbPl = getConfPropInt("usb_len");
-		if (usbHost == 1) MDR_USB.set(Param.HTXLC.set(usbLen, usbPl).shift(4, 3).opp("|")).end(usbSpeed, usbPol);
-		else MDR_USB.set(Param.SC.set(usbLen, usbPl, 1).shift(4, 3, 0).opp("|")).end(usbSpeed, usbPol + " | вкл. окон. точек");
-		return super.generateSimpleCodeStep(oldCode, codeStep);
-	}
-
-	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		generateCode(oldCode, 0);
-		return super.generateCode(device, oldCode);
+		if (usbHost == 1) MDR_USB.set(
+				Param.HTXLC.set(usbLen, usbPl).shift(4, 3).opp("|"))
+				.end(usbSpeed, usbPol);
+		else MDR_USB.set(
+				Param.SC.set(usbLen, usbPl, 1).shift(4, 3, 0).opp("|"))
+				.end(usbSpeed, usbPol + " | вкл. окон. точек");
+		return oldCode;
 	}
 }

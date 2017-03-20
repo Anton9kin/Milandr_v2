@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.inn;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -53,6 +52,7 @@ public class MCUSystickController extends BasicController {
 	}
 
 	private String[] comments = {
+			"",
 			"стартовое значение загружаемое в регистр VAL",
 			"включение таймера", "%s прерывания",
 			"источник синхросигнала = %s",
@@ -107,10 +107,10 @@ public class MCUSystickController extends BasicController {
 		b().setCommentsArr(comments).setModule("SysTick");
 
 		b().setParam("LOAD").setValues(hexRR).buildParam(oldCode);
-		b().setCommentParamValue(0, "VAL", "0x00").buildParam(oldCode);
+		b().setCommentParamValue(1, "VAL", "0x00").buildParam(oldCode);
 		g().addCodeStr(oldCode,"");
 
-		b().addComment(1).addComment(2, g().EN_INT[interrupt]).addComment(3, g().EN_IST[source]);
+		b().addComment(2).addComment(3, g().EN_INT[interrupt]).addComment(4, g().EN_IST[source]);
 		b().setParam("CTRL").setValues(0, interrupt, source).setShifts(0, 1, 2).buildParams(oldCode);
 		g().addCodeStr(oldCode,"");
 		return oldCode;
@@ -126,24 +126,10 @@ public class MCUSystickController extends BasicController {
 		log.debug(String.format("#generateSystCode(%d) %d, %d, %d, %d", codeStep, reloadReg, interrupt, source, mode));
 		String hexRR = "0x" + Integer.toString(reloadReg, 16);
 		String a1 = g().EN_INT[interrupt], a2= g().EN_IST[source];
-		SysTick.get().arr(comments);
-
-		SysTick.set(Param.LOAD.set(hexRR)).build(oldCode);
-		SysTick.cmt(0).set(Param.VAL.set("0x00")).build(oldCode);
-		SysTick.args(0, a1, a2).cmt(1,2,3).set(
-				Param.CTRL.set(0, interrupt, source).shift(0, 1, 2)
-		).build(oldCode);
+		SysTick.get().arr(comments).set(oldCode);
+		SysTick.sete(Param.LOAD.set(hexRR));
+		SysTick.sete(Param.VAL.set("0x00"));
+		SysTick.args(0, a1, a2).sete(Param.CTRL.set(0, interrupt, source).shift(0, 1, 2));
 		return oldCode;
-	}
-
-	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		log.debug(String.format("#generateDACCode(%s)", device));
-
-		//code block generation
-		oldCode = Lists.newArrayList();
-		generateCode(oldCode, 0);
-
-		return super.generateCode(device, oldCode);
 	}
 }
