@@ -90,23 +90,7 @@ public class MCUAdcController extends BasicController {
 				g().addCodeStr(oldCode, "|(" + adcSrcDiv + " << 12)); ");
 				break;
 			case 4:
-				g().addCodeStr(oldCode, "// ADC value = 1700 @ 25C = 1.36996V - from milandr demo project");
-				g().addCodeStr(oldCode, "#define FACTORY_ADC_TEMP25     1700         ");
-
-				g().addCodeStr(oldCode, "// 1.38393 @ 26C. 1.34-1.52, 1.43 V typical @ factory delta_calib");
-				g().addCodeStr(oldCode, "#define FACTORY_VTEMP25        1.36996      ");
-
-				g().addCodeStr(oldCode, "// ADC delta value @ 1C, from milandr demo project");
-				g().addCodeStr(oldCode, "#define FACTORY_ADC_AVG_SLOPE  6            ");
-
-				g().addCodeStr(oldCode, "// 4.0-4.6, 4.3 mV/C typical @ factory delta_calib");
-				g().addCodeStr(oldCode, "#define FACTORY_AVG_SLOPE      0.004835     ");
-
-				g().addCodeStr(oldCode, "// расчёт в int");
-				g().addCodeStr(oldCode, "temperature_C = (adc_value - FACTORY_ADC_TEMP25)/FACTORY_ADC_AVG_SLOPE + FACTORY_TEMP25;");
-
-				g().addCodeStr(oldCode, "// расчёт в float");
-				g().addCodeStr(oldCode, "temperature_C = ((Vtemp - Vtemp25) / Avg_Slope) + FACTORY_TEMP25;");
+				if (getConfPropInt("temp_sens") <= 0) break;
                     /* 1 строка */
 				g().addCodeStr(oldCode, "void TS_init( void ){");
 
@@ -145,10 +129,10 @@ public class MCUAdcController extends BasicController {
 		return oldCode;
 	}
 
-	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
-	Module MDR_PORTD = Module.MDR_PORTD.get();
-	Module MDR_ADC = Module.MDR_ADC.get();
-	String[] comments = {
+	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	private Module MDR_PORTD = Module.MDR_PORTD.get();
+	private Module MDR_ADC = Module.MDR_ADC.get();
+	private static String[] comments = {
 			"начало преобразования %s канала",
 			"источник синхросигнала",
 			"выбор запуска",
@@ -157,6 +141,30 @@ public class MCUAdcController extends BasicController {
 			"источник опорного",
 			"коэффициент деления частоты",
 	};
+
+	@Override
+	protected List<String> generateDefines(Device device, List<String> oldCode) {
+		if (getConfPropInt("temp_sens") <= 0) return oldCode;
+		g().addCodeStr(oldCode, "// ADC value = 1700 @ 25C = 1.36996V - from milandr demo project");
+		g().addCodeStr(oldCode, "#define FACTORY_ADC_TEMP25     1700         ");
+
+		g().addCodeStr(oldCode, "// 1.38393 @ 26C. 1.34-1.52, 1.43 V typical @ factory delta_calib");
+		g().addCodeStr(oldCode, "#define FACTORY_VTEMP25        1.36996      ");
+
+		g().addCodeStr(oldCode, "// ADC delta value @ 1C, from milandr demo project");
+		g().addCodeStr(oldCode, "#define FACTORY_ADC_AVG_SLOPE  6            ");
+
+		g().addCodeStr(oldCode, "// 4.0-4.6, 4.3 mV/C typical @ factory delta_calib");
+		g().addCodeStr(oldCode, "#define FACTORY_AVG_SLOPE      0.004835     ");
+
+		g().addCodeStr(oldCode, "// расчёт в int");
+		g().addCodeStr(oldCode, "temperature_C = (adc_value - FACTORY_ADC_TEMP25)/FACTORY_ADC_AVG_SLOPE + FACTORY_TEMP25;");
+
+		g().addCodeStr(oldCode, "// расчёт в float");
+		g().addCodeStr(oldCode, "temperature_C = ((Vtemp - Vtemp25) / Avg_Slope) + FACTORY_TEMP25;");
+		return super.generateDefines(device, oldCode);
+	}
+
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
 		// xtodo implement using each selected adc channel
@@ -167,8 +175,8 @@ public class MCUAdcController extends BasicController {
 				int adcC2 = getClockProp("ADC-C2.S");
 				int adcDiv = getClockProp("ADC-C2-O.S");
 
-				int adcCLKSrc = isCboxChecked(0) == true ? getConfPropInt("adc_src", 0) : 1; 
-				adcCLKSrc += isCboxChecked(1) == true ? getConfPropInt("adc_src", 1) : 1;
+				int adcCLKSrc = isCboxChecked(0) ? getConfPropInt("adc_src", 0) : 1;
+				adcCLKSrc += isCboxChecked(1) ? getConfPropInt("adc_src", 1) : 1;
 				
 				if (adcCLKSrc != 2){
 				
@@ -209,7 +217,7 @@ public class MCUAdcController extends BasicController {
 				String chnCmt = "";
 
 				MDR_ADC.get().arr(comments);
-				int chn = 0;
+				int chn;
 				int chns = 0;
 
 				if (chnsLst.length() > 1) {
@@ -231,12 +239,36 @@ public class MCUAdcController extends BasicController {
 							.set(chns)).cmt(chnCmt).build(oldCode);
 				}
 				break;
+			case 4:
+				int NUMCH = 0; // channels indexes for switching
+
+				g().addCodeStr(oldCode, "/* выбор для оцифровки датчика температуры */");
+				g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CFG ");
+				if (isCboxChecked(0)) {
+					g().addCodeStr(oldCode, "|= ");
+				} else g().addCodeStr(oldCode, "= ");
+
+				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
+				g().addCodeStr(oldCode, " ((1 << 19) |(1 << 18) ");
+				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
+				g().addCodeStr(oldCode, "|(1 << 17) ");
+
+				if (getConfPropInt("sw_chn") > 0) {
+					g().addCodeStr(oldCode, "/*включено переключение каналов*/");
+					g().addCodeStr(oldCode, "                          |(1 << 9)); ");
+					g().addCodeStr(oldCode, "/*выбор каналов для переключения*/");
+					g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CHSEL = (( 1 << 31) | ( 1 << " + NUMCH + "));");
+				} else {
+					g().addCodeStr(oldCode, "/*номер канала преобразования*/");
+					g().addCodeStr(oldCode, "|(31 << 4)); ");
+				}
+				break;
 		}
 		return oldCode;
 	}
 
 	private String cleanChannelsList(String chnlLst) {
-		return chnlLst.replaceAll("[\\s\\,\\[\\]]","").replace("RESET", "");
+		return chnlLst.replaceAll("[\\s,\\[\\]]","").replace("RESET", "");
 	}
 
 	@Override
@@ -245,17 +277,29 @@ public class MCUAdcController extends BasicController {
 		log.debug(String.format("#generateADCCode(%s)", device));
 
 		//, Color\.\w+,\sFontStyle\.\w+,\s\w+
+		oldCode.addAll(generateCode(device, Lists.newArrayList(), "ADC"));
+		if (getConfPropInt("temp_sens") > 0) {
+			oldCode.addAll(generateCode(device, Lists.newArrayList(), "TS"));
+		}
 
-		int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
-		if (syncSrc == 2) generateCode(oldCode, 0);
+		return oldCode;
+	}
 
-		generateCode(oldCode, 1);
-
-		if (isCboxChecked(0)) generateCode(oldCode, 2);
-		if (isCboxChecked(1)) generateCode(oldCode, 3);
-		generateCode(oldCode, 4);
-
-		return super.generateCode(device, oldCode);
+	@Override
+	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
+		switch (methodName) {
+			case "ADC":
+				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
+				if (syncSrc == 2) generateCode(oldCode, 0);
+				generateCode(oldCode, 1);
+				if (isCboxChecked(0)) generateCode(oldCode, 2);
+				if (isCboxChecked(1)) generateCode(oldCode, 3);
+				return super.generateCode(device, oldCode, methodName);
+			case "TS":
+				generateCode(oldCode, 4);
+				return super.generateCode(device, oldCode, methodName);
+		}
+		return oldCode;
 	}
 
 	@Override
