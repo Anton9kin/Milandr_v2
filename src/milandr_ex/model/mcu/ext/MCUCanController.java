@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.ext;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
@@ -86,14 +85,6 @@ public class MCUCanController extends MCUExtPairController {
 		g().addCodeStr(oldCode, " //разрешение работы %s", canBlock);
 		g().addCodeStr(oldCode, "    MDR_%s->CONTROL = (1 << 0);", canBlock);
 		g().addCodeStr(oldCode, "");
-	}
-
-	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateCANCode(%s)", device));
-		generateCode(oldCode, 0);
-		return super.generateCode(device, oldCode);
 	}
 
 	@Override

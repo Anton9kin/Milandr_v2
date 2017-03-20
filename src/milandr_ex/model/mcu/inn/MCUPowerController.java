@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.inn;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -48,9 +47,9 @@ public class MCUPowerController extends BasicController {
 		return oldCode;
 	}
 
-	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
-	Module MDR_POWER = Module.MDR_POWER.get();
-	String[] comments = {
+	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	private Module MDR_POWER = Module.MDR_POWER.get();
+	private static String[] comments = {
 			"сравнение с Ucc ( %s )",
 			"сравнение с BUcc ( %s )",
 	};
@@ -65,12 +64,5 @@ public class MCUPowerController extends BasicController {
 		MDR_POWER.set(Param.PVDCS.set(ucc, bucc).shift(3, 1)
 			).cmta(0, uccList.get(ucc)).cmta(1, buccList.get(bucc)).build(oldCode);
 		return oldCode;
-	}
-
-	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		generateCode(oldCode, 0);
-		return super.generateCode(device, oldCode);
 	}
 }

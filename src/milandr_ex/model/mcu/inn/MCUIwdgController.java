@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.inn;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -72,8 +71,8 @@ public class MCUIwdgController extends BasicController {
 			"значение перегрузки IWDG",
 			"запускаем IWDG",
 	};
-	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
-	Module MDR_IWDG = Module.MDR_IWDG.get();
+	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	private Module MDR_IWDG = Module.MDR_IWDG.get();
 
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
@@ -91,13 +90,5 @@ public class MCUIwdgController extends BasicController {
 		MDR_IWDG.set(Param.RLR.set(irlr)).cmt(4).build(oldCode);
 		MDR_IWDG.set(Param.KR.set("0xCCCC")).cmt(5).build(oldCode);
 		return oldCode;
-	}
-
-	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
-		oldCode = Lists.newArrayList();
-		log.debug(String.format("#generateWDGCode(%s)", device));
-		generateCode(oldCode, 0);
-		return super.generateCode(device, oldCode);
 	}
 }
