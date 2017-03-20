@@ -254,7 +254,13 @@ public class CodeGenerator {
 			if (commentsArr == null || idxs == null) return this;
 			for(Integer idx: idxs) {
 				if (idx == null || idx > commentsArr.length) continue;
-				addComment(commentsArr[idx], args);
+				if (args == null) {
+					addComment(commentsArr[idx]);
+					continue;
+				}
+				boolean oneArg = args.length >= commentsArr.length;
+				if (oneArg) addComment(commentsArr[idx], args[idx]);
+				 else addComment(commentsArr[idx], args);
 			}
 			return this;
 		}
