@@ -605,6 +605,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return oldCode;
 	}
 
+	protected String methodName() {
+		return getDevicePair().name();
+	}
 	/**
 	 * Main method for start code generation
 	 *
@@ -615,15 +618,21 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	public List<String> generateCode(Device device, List<String> oldCode) {
 		Device.EPairNames pairBlock = getDevicePair();
 	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
+		return generateCode(device, oldCode, methodName());
+	}
+	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
 	 	int lineInd = 0;
 	 	g().resetIndent();
-		g().addCodeStr(lineInd++, oldCode, String.format("// code block for %s module", pairBlock.name()));
-		for(String codeStr: generateDefines(device, Lists.newArrayList())) {
-			g().addCodeStr(lineInd++, oldCode, codeStr);
+		g().addCodeStr(lineInd++, oldCode, String.format("// code block for %s module", methodName));
+		if (methodName.equals(getDevicePair().name())) {
+			for(String codeStr: generateDefines(device, Lists.newArrayList())) {
+				g().addCodeStr(lineInd++, oldCode, codeStr);
+			}
+			g().addCodeStr(lineInd++, oldCode, "");
 		}
-		g().addCodeStr(lineInd, oldCode, String.format("void %s_init( void ){", pairBlock.name()));
-		g().addCodeStr(oldCode, "} //void %s_init", pairBlock.name());
-		g().addCodeStr(oldCode, "// end of code block for %s module", pairBlock.name());
+		g().addCodeStr(lineInd, oldCode, String.format("void %s_init( void ){", methodName));
+		g().addCodeStr(oldCode, "} //void %s_init", methodName);
+		g().addCodeStr(oldCode, "// end of code block for %s module", methodName);
 	 	return oldCode;
 	}
 
