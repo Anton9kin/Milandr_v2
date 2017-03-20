@@ -117,6 +117,9 @@ public class CodeGenerator {
 		setCodeParameters(codeList, param, pref, comments, values, shifts, "");
 	}
 	private boolean checkValueForZero(String value) {
+		return value == null;
+	}
+	private boolean _checkValueForZero(String value) {
 		if (value == null) return true;
 		value = value.trim();
 		return value.isEmpty() || value.equals("0")
