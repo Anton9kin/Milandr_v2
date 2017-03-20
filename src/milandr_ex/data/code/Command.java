@@ -9,6 +9,7 @@ import java.util.List;
  * Created by lizard on 14.03.17 at 12:17.
  */
 public enum Command {
+	FOR(),
 	WHILE();
 	private final CodeGenerator.CodeExpressionBuilder builder;
 
@@ -39,11 +40,17 @@ public enum Command {
 		return this;
 	}
 	public Command set(Param param, String suff, String cond) {
-		builder.setWhileCommand(param.name(), suff, cond);
-		return this;
+		return set(param.name(), suff, cond);
 	}
 	public Command set(String param, String suff, String cond) {
-		builder.setWhileCommand(param, suff, cond);
+		switch (this) {
+			case FOR:
+				builder.setForICommand(param, suff, cond);
+				break;
+			case WHILE:
+				builder.setWhileCommand(param, suff, cond);
+				break;
+		}
 		return this;
 	}
 	public Command build(List<String> codeLines) {
