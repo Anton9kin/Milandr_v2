@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -29,6 +27,9 @@ public class SyntaxHighlighter {
 	private SyntaxHighlighter() {
 	}
 	private static SyntaxHighlighter instance;
+	private static final String[] WARNINGS = new String[] {
+			"warn", "warni", "warnin", "warning", "alar", "alarm",
+	};
 	private static final String[] KEYWORDS = new String[] {
 			"out", "err", "define",
 			"abstract", "assert", "boolean", "break", "byte",
@@ -44,6 +45,7 @@ public class SyntaxHighlighter {
 	};
 
 	private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+	private static final String WARNING_PATTERN = "\\b(" + String.join("|", WARNINGS) + ")\\b";
 	private static final String PAREN_PATTERN = "\\(|\\)";
 	private static final String BRACE_PATTERN = "\\{|\\}";
 	private static final String BRACKET_PATTERN = "\\[|\\]";
@@ -59,6 +61,9 @@ public class SyntaxHighlighter {
 			+ "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
 			+ "|(?<STRING>" + STRING_PATTERN + ")"
 			+ "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+	);
+	private static final Pattern WARN_PATT = Pattern.compile(
+			"(?<WARNING>" + WARNING_PATTERN + ")"
 	);
 
 	private Parent coder;
@@ -113,12 +118,24 @@ public class SyntaxHighlighter {
 					matcher.group("STRING") != null ? "string" :
 					matcher.group("COMMENT") != null ? "comment" :
 					null; /* never happens */ assert styleClass != null;
+			styleClass = findWarningInComments(text, matcher, lastKwEnd, styleClass);
 			spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
 			spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
 			lastKwEnd = matcher.end();
 		}
 		spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
 		return spansBuilder.create();
+	}
+
+	private static String findWarningInComments(String text, Matcher matcher, int lastKwEnd, String styleClass) {
+		if (styleClass.equals("comment")) {
+			String strLine = text.substring(lastKwEnd, matcher.end());
+			Matcher mtch = WARN_PATT.matcher(strLine);
+			if (mtch.find() && mtch.group("WARNING") != null) {
+				styleClass = "warning";
+			}
+		}
+		return styleClass;
 	}
 
 	public static Parent get(Scene scene) {
