@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -58,29 +61,6 @@ public class SyntaxHighlighter {
 			+ "|(?<COMMENT>" + COMMENT_PATTERN + ")"
 	);
 
-	private static final String sampleCode = String.join("\n", new String[] {
-			"package com.example;",
-			"",
-			"import java.util.*;",
-			"",
-			"public class Foo extends Bar implements Baz {",
-			"",
-			"    /*",
-			"     * multi-line comment",
-			"     */",
-			"    public static void main(String[] args) {",
-			"        // single-line comment",
-			"        for(String arg: args) {",
-			"            if(arg.length() != 0)",
-			"                System.out.println(arg);",
-			"            else",
-			"                System.err.println(\"Warning: empty string as argument\");",
-			"        }",
-			"    }",
-			"",
-			"}"
-	});
-
 	private Parent coder;
 	private Parent getCoder(Scene scene) {
 		if (coder == null) coder = newCoder(scene);
@@ -109,13 +89,13 @@ public class SyntaxHighlighter {
 				.subscribe(change -> {
 					codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText()));
 				});
-		codeArea.replaceText(0, 0, sampleCode);
+		codeArea.replaceText(0, 0, "");
 		scene.getStylesheets().add(getClass().getClassLoader()
 				.getResource("milandr_ex/css/java-keywords.css").toExternalForm());
-		codeArea.setMinSize(600, 400);
-		codeArea.setPrefSize(800, 600);
-		codeArea.setMaxSize(1024, 768);
-		return new StackPane(new VirtualizedScrollPane<>(codeArea));
+		VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
+		StackPane stackPane = new StackPane(new AnchorPane(scrollPane));
+		GuiUtils.setAnchors(1.0, scrollPane, stackPane);
+		return stackPane;
 	}
 
 	private static StyleSpans<Collection<String>> computeHighlighting(String text) {

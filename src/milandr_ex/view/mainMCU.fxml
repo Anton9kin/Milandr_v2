@@ -27,18 +27,13 @@
 		</Tab>
 		<Tab text="Configuration">
 			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-				<GridPane alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" prefHeight="731.0"
-						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
-						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+				<GridPane prefHeight="731.0" prefWidth="967.0">
 					<columnConstraints>
 						<ColumnConstraints percentWidth="25"/>
 						<ColumnConstraints percentWidth="25"/>
 						<ColumnConstraints percentWidth="50"/>
 					</columnConstraints>
-					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_in" GridPane.columnIndex="0"
-						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
-						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
-						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_in" prefHeight="731.0" prefWidth="967.0">
 						<TitledPane fx:id="cfg_adc" text="%config.adc_setup" expanded="false"><fx:include fx:id="mcuAdc" source="mcu/MCUAdc.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_bkp" text="%config.bkp_setup" expanded="false"><fx:include fx:id="mcuBkp" source="mcu/MCUBackup.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_comp" text="%config.comp_setup" expanded="false"><fx:include fx:id="mcuComp" source="mcu/MCUComp.fxml" /></TitledPane>
@@ -51,10 +46,7 @@
 						<TitledPane fx:id="cfg_tmr" text="%config.tmr_setup" expanded="false"><fx:include fx:id="mcuTimer" source="mcu/MCUTimer.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_wwd" text="%config.wwdg_setup" expanded="false"><fx:include fx:id="mcuWwdg" source="mcu/MCUWwdg.fxml" /></TitledPane>
 					</VBox>
-					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ex" GridPane.columnIndex="1"
-						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
-						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
-						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
+					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ex" GridPane.columnIndex="1" prefHeight="731.0" prefWidth="967.0">
 						<TitledPane fx:id="cfg_cpu" text="%config.cpu_setup" expanded="false"><fx:include fx:id="mcuCpu" source="mcu/MCUCpu.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_can" text="%config.can_setup" expanded="false"><fx:include fx:id="mcuCan" source="mcu/MCUCan.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_ebc" text="%config.ebc_setup" expanded="false"><fx:include fx:id="mcuEbc" source="mcu/MCUEbc.fxml" /></TitledPane>
@@ -64,11 +56,7 @@
 						<TitledPane fx:id="cfg_usb" text="%config.usb_setup" expanded="false"><fx:include fx:id="mcuUsb" source="mcu/MCUUsb.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_gpio" text="%config.gpio_setup" expanded="false"><fx:include fx:id="mcuGpio" source="mcu/MCUGpio.fxml" /></TitledPane>
 					</VBox>
-					<VBox alignment="TOP_CENTER" fx:id="cfg_vbox_ad" GridPane.columnIndex="2"
-						  layoutX="14.0" layoutY="14.0" prefHeight="731.0"
-						  prefWidth="967.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="14.0"
-						  AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="14.0">
-					</VBox>
+					<AnchorPane fx:id="cfg_vbox_ad" prefHeight="1024.0" prefWidth="768.0" GridPane.columnIndex="2" />
 				</GridPane>
 			</AnchorPane>
 		</Tab>

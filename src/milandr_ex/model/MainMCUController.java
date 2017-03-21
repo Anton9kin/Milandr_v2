@@ -8,10 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 import milandr_ex.data.DeviceFactory;
@@ -130,7 +127,7 @@ public class MainMCUController extends BasicController {
 	@FXML
 	private VBox cfg_vbox_ex;
 	@FXML
-	private VBox cfg_vbox_ad;
+	private AnchorPane cfg_vbox_ad;
 	private Map<String, TitledPane> cfgMap = Maps.newHashMap();
 
 	public MainMCUController() {
@@ -155,7 +152,8 @@ public class MainMCUController extends BasicController {
 
 		makeListeners(cfg_vbox_in.getChildren());
 		makeListeners(cfg_vbox_ex.getChildren());
-		cfg_vbox_ad.getChildren().add(new VBox(SyntaxHighlighter.get(getScene())));
+		cfg_vbox_ad.getChildren().add(SyntaxHighlighter.get(getScene()));
+		GuiUtils.setAnchors(15.0, cfg_vbox_in, cfg_vbox_ex, cfg_vbox_ad);
 		scene.stopSetupProcess();
 		log.debug("#postInit - initialized");
 	}
