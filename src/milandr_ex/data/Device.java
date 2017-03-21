@@ -88,12 +88,12 @@ public class Device {
     private static EPairNames[] prodPairs = {
             EPairNames.ADC, EPairNames.IWDG, EPairNames.PWR, EPairNames.SYST, EPairNames.WWDG,
             EPairNames.COMP,
+            EPairNames.TMR, EPairNames.USB,
             EPairNames.CPU, EPairNames.CAN
     };
     private static List<String> prodPairNames;
     private static EPairNames[] testPairs = {
             EPairNames.BKP, EPairNames.DAC, EPairNames.DMA, EPairNames.MPU,
-            EPairNames.TMR, EPairNames.USB,
     };
     private static List<String> testPairNames;
     public static List<String> extPairNames() {
