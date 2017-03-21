@@ -243,15 +243,11 @@ public class MCUAdcController extends BasicController {
 				int NUMCH = 0; // channels indexes for switching
 
 				g().addCodeStr(oldCode, "/* выбор для оцифровки датчика температуры */");
-				g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CFG ");
-				if (isCboxChecked(0)) {
-					g().addCodeStr(oldCode, "|= ");
-				} else g().addCodeStr(oldCode, "= ");
+				g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CFG " +
+						(isCboxChecked(0) ? "|= " : "= "));
 
 				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
-				g().addCodeStr(oldCode, " ((1 << 19) |(1 << 18) ");
-				g().addCodeStr(oldCode, "/*включение вых. усилителя*/");
-				g().addCodeStr(oldCode, "|(1 << 17) ");
+				g().addCodeStr(oldCode, " ((1 << 19) |(1 << 18) |(1 << 17) ");
 
 				if (getConfPropInt("sw_chn") > 0) {
 					g().addCodeStr(oldCode, "/*включено переключение каналов*/");
