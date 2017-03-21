@@ -161,6 +161,72 @@ public class GuiUtils {
 		}
 	}
 
+	public static void setMinPrefHW(Region node, double minPrefH, double minPrefW) {
+		setMinPrefHeight(node, minPrefH);
+		setMinPrefWidth(node, minPrefW);
+	}
+	public static void setMinPrefInfHW(Region node, double minPrefH, double minPrefW) {
+		setMinPrefInfHeight(node, minPrefH);
+		setMinPrefInfWidth(node, minPrefW);
+	}
+	public static void setMinPrefInfHeight(Region node, double minPref) {
+		setMinPrefMaxHeight(node, minPref, minPref, Double.MAX_VALUE);
+	}
+	public static void setMinPrefMaxHeight(Region node, double minPrefMax) {
+		setMinPrefMaxHeight(node, minPrefMax, minPrefMax);
+	}
+	public static void setMinPrefHeight(Region node, double minPref) {
+		setMinPrefMaxHeight(node, minPref, 0.0);
+	}
+	public static void setMinPrefMaxHeight(Region node, double minPref, double max) {
+		setMinPrefMaxHeight(node, minPref, minPref, max);
+	}
+	public static void setMinPrefMaxHeight(Region node, double min, double pref, double max) {
+		node.setMinHeight(min);
+		node.setPrefHeight(pref);
+		if (max > 0.0) node.setMaxHeight(max);
+	}
+	public static void setMinPrefInfWidth(Region node, double minPref) {
+		setMinPrefMaxWidth(node, minPref, minPref, Double.MAX_VALUE);
+	}
+	public static void setMinPrefMaxWidth(Region node, double minPrefMax) {
+		setMinPrefMaxWidth(node, minPrefMax, minPrefMax);
+	}
+	public static void setMinPrefWidth(Region node, double minPref) {
+		setMinPrefMaxWidth(node, minPref, 0.0);
+	}
+	public static void setMinPrefMaxWidth(Region node, double minPref, double max) {
+		setMinPrefMaxWidth(node, minPref, minPref, max);
+	}
+	public static void setMinPrefMaxWidth(Region node, double min, double pref, double max) {
+		node.setMinWidth(min);
+		node.setPrefWidth(pref);
+		if (max > 0.0) node.setMaxWidth(max);
+	}
+	public static void setAnchors(double topBottomLeftRight, Node... nodes) {
+		for(Node node: nodes) {
+			if (node == null) return;
+			setAnchors(node, topBottomLeftRight);
+			setAnchors(node.getParent(), topBottomLeftRight);
+		}
+	}
+	public static void setAnchors(Node node, double topBottomLeftRight) {
+		setAnchors(node, topBottomLeftRight, topBottomLeftRight);
+	}
+	public static void setAnchors(Node node, double topBottom, double leftRight) {
+		setAnchors(node, topBottom, topBottom, leftRight, leftRight);
+	}
+	public static void setAnchors(Node node, double top, double bottom, double left, double right) {
+		if (node == null) return;
+		node.setLayoutX(left);
+		node.setLayoutY(top);
+		AnchorPane.setTopAnchor(node, top);
+		AnchorPane.setBottomAnchor(node, bottom);
+		AnchorPane.setLeftAnchor(node, left);
+		AnchorPane.setRightAnchor(node, right);
+	}
+
+
 	public static void initItem(Region node, int k) {
 		node.setVisible(Boolean.TRUE);
 		node.setMinWidth(100.0);
