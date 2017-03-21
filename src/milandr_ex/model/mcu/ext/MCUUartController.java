@@ -9,8 +9,7 @@ import milandr_ex.data.Device;
 
 import java.util.List;
 
-import static milandr_ex.data.McuBlockProperty.div128List;
-import static milandr_ex.data.McuBlockProperty.uartList;
+import static milandr_ex.data.McuBlockProperty.*;
 
 public class MCUUartController extends MCUExtPairController {
 	@FXML
@@ -28,47 +27,116 @@ public class MCUUartController extends MCUExtPairController {
 		setDevicePair(Device.EPairNames.UART);
 		addModelProps(new String[]{"-"}, true);
 		addModelProps(new String[]{"pre_div", "speed"}, div128List, uartList);
-		addModelProps(new String[]{"-", "word_len", "odd_chk", "stp_bit", "-", "r_speed", "error"}, "", "-SBB-SS");
+		addModelProps(new String[]{"-", "word_len"}, "", "-SBB", 0, 8);
+		addModelProps(new String[]{"odd_chk", "stp_bit"}, uartParityList, uartStopList);
+		addModelProps(new String[]{"-", "r_speed", "error"}, true);
 //		addModelProps(new String[]{"-", "word_len", "odd_chk", "stp_bit", "-", "r_speed", "error"}, "-SBB-SS",
 //				"", "", true, true, "", "", "");
 	}
 
+	private static class UartData {
+		String port;
+		int uartTx, uartRx, ufTx, ufRx, uartPer;
+
+		UartData(String port, int uartTx, int uartRx, int ufTx, int ufRx, int uartPer) {
+			this.port = port;
+			this.uartTx = uartTx;
+			this.uartRx = uartRx;
+			this.ufTx = ufTx;
+			this.ufRx = ufRx;
+			this.uartPer = uartPer;
+		}
+	}
+//            switch (uartParity.SelectedIndex)
+//	{
+//		case 0: PEN = 0; EPS = 0; SPS = 0; break;
+//		case 1: PEN = 1; EPS = 0; SPS = 0; break;
+//		case 2: PEN = 1; EPS = 1; SPS = 0; break;
+//		case 3: PEN = 1; EPS = 0; SPS = 1; break;
+//		case 4: PEN = 1; EPS = 1; SPS = 1; break;
+//	}
+	private static class UartParity {
+		int pen, eps, sps;
+		UartParity(int idx) {
+			this.pen = idx > 0 ?  1 : 0;
+			this.eps = idx == 2 || idx == 4 ?  1 : 0;
+			this.sps = idx > 2 ?  1 : 0;
+		}
+	}
 	@Override
 	protected Parent getGPIOControl() {
 		return uart_gpio;
 	}
 
+	private UartData getUartData(int indx, int port) {
+		UartData data = null;
+		switch (indx) {
+			case 0:
+				switch (port) {
+					case 0: data = new UartData("A", 7, 6, 3, 3, 21); break;
+					case 1: data = new UartData("B", 5, 6, 2, 2, 22); break;
+					case 2: data = new UartData("D", 8, 7, 3, 3, 24); break;
+					case 3: data = new UartData("E", 13, 12, 3, 3, 25); break;
+				}
+				break;
+			case 1:
+				switch (port) {
+					case 0: data = new UartData("B", 0, 1, 3, 3, 22); break;
+					case 1: data = new UartData("D", 1, 0, 2, 2, 24); break;
+					case 2: data = new UartData("F", 1, 0, 3, 3, 29); break;
+				}
+				break;
+		}
+		return data;
+	}
+
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
-		int UART_PORT = 0;
-		int UART_PER = 1;
-		int UART_TX = 2;
-		int UART_RX = 3;
-		int UF_TX = 4;
-		int UF_RX = 5;
-		int UART_CLK_EN = 6;
-		int Udiv = 7;
-		int PEN = 8, EPS = 9, STP = 10, WLEN = 11, SPS = 12;
-		String uartParity = "", uartStop = "", uartWord = "";
-		String uartDiv = "", uartlabel = "", uartSpeed = "";
+		generateSimpleCodeStep(oldCode, codeStep, 0);
+		generateSimpleCodeStep(oldCode, codeStep, 1);
+		return oldCode;
+	}
+	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep, int uartInd) {
+		boolean uartEn = isCboxChecked(uartInd);
+		if (!uartEn) return oldCode;
+		String uartDiv = getConfPropStr("pre_div", uartInd);
+		int Udiv = getConfPropInt("pre_div", uartInd);
+
+		String uartSpeed = getConfPropStr("speed", uartInd);
+		String uartWord = getConfPropStr("word_len", uartInd);
+
+		int EPS = getConfPropInt("odd_chk", uartInd);
+		int STP = getConfPropInt("stp_bit", uartInd);
+		String uartParity = getConfPropStr("odd_chk", uartInd);
+		String uartStop = getConfPropStr("stp_bit", uartInd);
+
+		int UART_CLK_EN = uartInd == 0 ? 1 : 0;
+		UartData udata = getUartData(UART_CLK_EN, 1);
+		UartParity upar = new UartParity(EPS);
+
+		String uartlabel = "";
 		int IBRD = 13, FBRD = 14;
-		boolean uart1En = true;
+
 
                 /* 2 строка */
-		g().addCodeStr(oldCode,"//тактирование порта " + UART_PORT);
-		g().addCodeStr(oldCode,"   MDR_RST_CLK->PER_CLOCK |= (1UL << " + UART_PER + "); ");
+		g().addCodeStr(oldCode,"//тактирование порта " + udata.port);
+		g().addCodeStr(oldCode,"   MDR_RST_CLK->PER_CLOCK |= (1UL << " + udata.uartPer + "); ");
 
                 /* 3 строка */
 		g().addCodeStr(oldCode,"//режим работы порта ");
-		g().addCodeStr(oldCode,"   MDR_PORT" + UART_PORT + "->FUNC   |= ((" + UF_TX + " << " + UART_TX + "*2) | (" + UF_RX + " << " + UART_RX + "*2)); ");
+		g().addCodeStr(oldCode,"   MDR_PORT" + udata.port + "->FUNC   |= ((" +
+				udata.ufTx + " << " + udata.uartTx + " * 2) | (" +
+				udata.ufRx + " << " + udata.uartRx + " * 2)); ");
 
                 /* 4 строка */
 		g().addCodeStr(oldCode,"//цифровой");
-		g().addCodeStr(oldCode,"   MDR_PORT" + UART_PORT + "->ANALOG |= ((1 << " + UART_TX + ")   | (1 << " + UART_RX + ")); ");
+		g().addCodeStr(oldCode,"   MDR_PORT" + udata.port + "->ANALOG |= ((1 << " +
+				udata.uartTx + ")   | (1 << " + udata.uartRx + ")); ");
 
                 /* 5 строка */
 		g().addCodeStr(oldCode,"//максимально быcтрый");
-		g().addCodeStr(oldCode,"   MDR_PORT" + UART_PORT + "->PWR    |= ((3 << " + UART_TX + "*2) | (3 << " + UART_RX + "*2)); ");
+		g().addCodeStr(oldCode,"   MDR_PORT" + udata.port + "->PWR    |= ((3 << " +
+				udata.uartTx + " * 2) | (3 << " + udata.uartRx + " * 2)); ");
 
                 /* 6 строка */
 		g().addCodeStr(oldCode,"//тактирование UART" + UART_CLK_EN);
@@ -76,17 +144,14 @@ public class MCUUartController extends MCUExtPairController {
 
                 /* 7 строка */
 		g().addCodeStr(oldCode," /* установка делителя для UART_CLK = HCLK" + uartDiv + " */");
-		if (uart1En)
-			g().addCodeStr(oldCode,"   MDR_RST_CLK->UART_CLOCK = ((" + Udiv + ")");
-		else
-			g().addCodeStr(oldCode,"   MDR_RST_CLK->UART_CLOCK = ((" + Udiv + " << 8)");
+		g().addCodeStr(oldCode,"   MDR_RST_CLK->UART_CLOCK |= ((" + Udiv + (uartInd == 0 ? ")" : " << 8)"));
 
                 /* 8 строка */
-		g().addCodeStr(oldCode," /* разрешение тактовой частоты UART" + UART_CLK_EN + " */");
-		g().addCodeStr(oldCode,"                            |(1 << " + (UART_CLK_EN + 23) + ")); ");
+		g().addCodeStrR(oldCode," /* разрешение тактовой частоты UART" + UART_CLK_EN + " */");
+		g().addCodeStr(oldCode,"|(1 << " + (UART_CLK_EN + 23) + ")); ");
 
                 /* 9 строка */
-		g().addCodeStr(oldCode,"   //Параметры делителя при частоте = " + uartlabel + " Гц и скорости = " + uartSpeed);
+		g().addCodeStrL(oldCode,"   //Параметры делителя при частоте = " + uartlabel + " Гц и скорости = " + uartSpeed);
 
                 /* 10 строка */
 		g().addCodeStr(oldCode," //целая часть делителя скорости");
@@ -98,27 +163,28 @@ public class MCUUartController extends MCUExtPairController {
 
                 /* 12 строка */
 		g().addCodeStr(oldCode," /* разрешение проверки четности */");
-		g().addCodeStr(oldCode,"   MDR_UART" + UART_CLK_EN + "->LCR_H = ((" + PEN + " << 1)");
+		g().addCodeStr(oldCode,"MDR_UART" + UART_CLK_EN + "->LCR_H = ((" + upar.pen + " << 1)");
 
                 /* 13 строка */
-		g().addCodeStr(oldCode," /* четность/нечетность (" + uartParity + ") */");
-		g().addCodeStr(oldCode,"                      |(" + EPS + " << 2)");
+		g().addCodeStrR(oldCode," /* четность/нечетность (" + uartParity + ") */");
+		g().addCodeStr(oldCode,"|(" + upar.eps + " << 2)");
 
                 /* 14 строка */
 		g().addCodeStr(oldCode," /* стоп-бит = " + uartStop + " */");
-		g().addCodeStr(oldCode,"                      |(" + STP + " << 3)");
+		g().addCodeStr(oldCode,"|(" + STP + " << 3)");
 
                 /* 15 строка */
 		g().addCodeStr(oldCode," /* длина слова = " + uartWord + " */");
-		g().addCodeStr(oldCode,"                      |(" + WLEN + " << 5)");
+		g().addCodeStr(oldCode,"|(" + uartWord + " << 5)");
 
                 /* 16 строка */
 		g().addCodeStr(oldCode," /* передача бита четности */");
-		g().addCodeStr(oldCode,"                      |(" + SPS + " << 7));");
+		g().addCodeStr(oldCode,"|(" + upar.sps + " << 7));");
 
                 /* 17 строка */
-		g().addCodeStr(oldCode," //передачик и приемник разрешен, разрешение приемопередатчика");
+		g().addCodeStrL(oldCode," //передачик и приемник разрешен, разрешение приемопередатчика");
 		g().addCodeStr(oldCode,"   MDR_UART" + UART_CLK_EN + "->CR = ((1 << 8)|(1 << 9)|1);");
+		g().addCodeStr(oldCode,"");
 		return super.generateSimpleCodeStep(oldCode, codeStep);
 	}
 }
