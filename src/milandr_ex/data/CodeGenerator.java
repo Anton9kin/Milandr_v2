@@ -239,6 +239,11 @@ public class CodeGenerator {
 			return this;
 		}
 
+		public int arrSize() {
+			if (commentsArr == null) return 0;
+			return commentsArr.length;
+		}
+
 		public CodeExpressionBuilder addComment(Integer ind, Object... args) {
 			if (commentsArr == null || ind >= commentsArr.length) return this;
 			return addComment(commentsArr[ind], args);
