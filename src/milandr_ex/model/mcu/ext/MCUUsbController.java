@@ -148,8 +148,8 @@ public class MCUUsbController extends MCUExtPairController {
 		int  usbPull = getConfPropInt("usb_spo");
 		String usbSpeed = getConfPropStr("usb_len");
 		int  usbLen = getConfPropInt("usb_len");
-		String usbPol = getConfPropStr("usb_len");
-		int  usbPl = getConfPropInt("usb_len");
+		String usbPol = getConfPropStr("usb_sph");
+		int  usbPl = getConfPropInt("usb_sph");
 
 		// 2 строка
 		g().addCodeStr(oldCode, "    unsigned char i = 0;");
