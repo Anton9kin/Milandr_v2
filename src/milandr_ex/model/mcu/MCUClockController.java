@@ -270,7 +270,7 @@ public class MCUClockController extends MCUExtPairController
 	}
 
 	@Override
-	public List<String> generateCode(Device device, List<String> oldCode) {
+	public List<String> generateCode(Device device, List<String> oldCode, String methodName) {
 		oldCode = Lists.newArrayList();
 		Integer hClk = getClockProp("HCLK");
 		int cpuC1Sel = getClockProp("CPU-C1.S");
@@ -280,7 +280,7 @@ public class MCUClockController extends MCUExtPairController
 		if (cpuC1Sel < 2) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
 			generateCode(oldCode, 0);
 			if (hClk > 80000000){
-				g().addCodeStr(oldCode,"//Частота > 80 МГц: работа миксросхемы не гарантируется!!!");
+				g().addCodeStr(oldCode,"// warning Частота > 80 МГц: работа миксросхемы не гарантируется!!!");
 			}
 			generateCode(oldCode, 1);
 		}
@@ -290,7 +290,7 @@ public class MCUClockController extends MCUExtPairController
 		}
 
 		generateCode(oldCode, 3);
-		return super.generateCode(device, oldCode);
+		return super.generateCode(device, oldCode, methodName);
 	}
 
 	private int getLowBKP(Integer hClk) {
