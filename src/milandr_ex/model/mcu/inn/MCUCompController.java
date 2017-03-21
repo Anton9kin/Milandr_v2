@@ -146,16 +146,23 @@ public class MCUCompController extends BasicController {
 		}
 		return codeLine;
 	}
+
+	private int checkForNoZero(int check, int pinComp1) {
+		return checkForNoZero(check, pinComp1, pinComp1);
+	}
+	private int checkForNoZero(int check, int pinComp1, int pinComp2) {
+		return pinComp1 == check || pinComp2 == check ? check : 0;
+	}
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		int pinCompInP = getPinSelectedInd("COMP-00"); // 2 or 4
 		int pinCompInM = getPinSelectedInd("COMP-01"); // 2 or 3 or 8 or 5
 		int pinCompOut = getPinSelectedInd("COMP-02"); // 8 or 11
-		int pinIn1 = pinCompInP == 2 || pinCompInM == 2 ? 2 : 0;
-		int pinIn2 = pinCompInM == 3 ? 3 : 0;
-		int pinIn3 = pinCompInM == 8 ? 8 : 0;
-		int pinRefP = pinCompInP == 4 ? 4 : 0;
-		int pinRefM = pinCompInM == 5 ? 5 : 0;
+		int pinIn1 = checkForNoZero(2, pinCompInP, pinCompInM);
+		int pinIn2 = checkForNoZero(3, pinCompInM);
+		int pinIn3 = checkForNoZero(8, pinCompInM);
+		int pinRefP = checkForNoZero(4, pinCompInP);
+		int pinRefM = checkForNoZero(5, pinCompInM);
 
 
 		//настройка COMP_OUT
