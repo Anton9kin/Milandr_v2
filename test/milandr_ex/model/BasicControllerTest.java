@@ -86,6 +86,7 @@ public class BasicControllerTest {
 	}
 
 	private String trimAndReplaceCodeStr(String codeResultStr) {
+		codeResultStr = codeResultStr.replaceAll("ff+", "0");
 		codeResultStr = codeResultStr.replaceAll("\\(0x", "(").replaceAll("\\(\\(", "(").replaceAll("\\)\\)", ")");
 		codeResultStr = codeResultStr.replaceAll("\\s", "").replaceAll("\\(0<<\\d+\\)", "").replaceAll("<<0", "");
 		codeResultStr = codeResultStr.replaceAll("\\|\\|+", "|").replaceAll("\\|;", ";").trim();
