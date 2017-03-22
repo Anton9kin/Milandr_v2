@@ -89,6 +89,7 @@ public class BasicControllerTest {
 		codeResultStr = codeResultStr.replaceAll("\\(0x", "(").replaceAll("\\(\\(", "(").replaceAll("\\)\\)", ")");
 		codeResultStr = codeResultStr.replaceAll("\\s", "").replaceAll("\\(0<<\\d+\\)", "").replaceAll("<<0", "");
 		codeResultStr = codeResultStr.replaceAll("\\|\\|+", "|").replaceAll("\\|;", ";").trim();
+		codeResultStr = codeResultStr.replaceAll("=\\|\\(", "=(");
 		return codeResultStr;
 	}
 
