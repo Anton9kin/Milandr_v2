@@ -22,7 +22,7 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 
 	private MCUAdcController adcController;
 	private static String[] adcParamNames = {"base_power", "start_kind", "adc_src", "adc_div", "sw_chn", "temp_sens", "lst_chn"};
-	private static String[] adcClockNames = {"ADC-C1.S", "ADC-C2.S", "ADC-C3-O.S"};
+	private static String[] adcClockNames = {"ADC-C1.S", "ADC-C2.S", "ADC-C2-O.S"};
 
 	@Before
 	public void initController() {
@@ -69,7 +69,8 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 		String expectedCodeResult = "voidADC_init(void){MDR_RST_CLK->ADC_MCO_CLOCK=((0<<0)|(2<<4)|(9<<8)|(1<<13));" +
 				"MDR_RST_CLK->PER_CLOCK|=(1<<17);MDR_PORTD->OE&=~(1<<7);MDR_PORTD->ANALOG&=~(1<<7);" +
 				"MDR_ADC->ADC1_CFG=(1)|(1<<2)|(1<<3)|(7<<4)|(1<<11)|(0<<12));}";
-		testCase.setValues(values).build(this);
+		String[] clockValues = {"0","2","2"};
+		testCase.setValues(values).setClockValues(clockValues).build(this);
 		List<String> newCodeList = adcController.generateCode(device, Lists.newArrayList());
 		testCase.test(this, newCodeList, expectedCodeResult);
 	}
