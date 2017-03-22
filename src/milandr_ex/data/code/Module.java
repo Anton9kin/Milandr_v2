@@ -25,7 +25,6 @@ public enum Module {
 	}
 	public Module get() {
 		builder.reset();
-		builder.setModule(name());
 		param = null;
 		command = null;
 		codeList = null;
@@ -120,6 +119,7 @@ public enum Module {
 	}
 	public Module build(List<String> codeList) {
 		if (codeList == null) return this;
+		builder.setModule(name());
 		if (param != null) param.build(codeList);
 		if (command != null) command.build(codeList);
 		return this;
