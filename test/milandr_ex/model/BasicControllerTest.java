@@ -101,6 +101,8 @@ public class BasicControllerTest {
 		for(String key: clocks.keySet()) {
 			String valueS = clocks.get(key);
 			Integer value = valueS.matches("\\d+") ? Integer.parseInt(valueS) : 0;
+			when(clockModel.hasPinIn(anyString())).thenReturn(true);
+			when(clockModel.hasPinOut(anyString())).thenReturn(true);
 			when(clockModel.getInpVal(eq(key))).thenReturn(value);
 			when(clockModel.getOutVal(eq(key))).thenReturn(value);
 			when(clockModel.getSel(eq(key))).thenReturn(value);
