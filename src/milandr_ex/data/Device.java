@@ -79,7 +79,8 @@ public class Device {
         	if (model == null) model = new McuBlockModel(this);
         	return model;
 		}
-		public int colWidth() { return colW;  }
+        public void setModel(McuBlockModel model) { this.model = model;}
+        public int colWidth() { return colW;  }
     }
     private static EPairNames[] extPairs = {EPairNames.UART, EPairNames.USB, EPairNames.CPU,
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
