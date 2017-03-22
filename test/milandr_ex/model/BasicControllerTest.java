@@ -23,6 +23,7 @@ public class BasicControllerTest {
 	@Mock
 	protected ClockModel clockModel;
 	protected Device device;
+	protected ControllerTestCase testCase;
 
 	protected void initController(BasicController controller) {
 		MockitoAnnotations.initMocks(this);
@@ -35,6 +36,16 @@ public class BasicControllerTest {
 		when(pinoutsModel.getClockModel()).thenReturn(clockModel);
 		controller.setScene(appScene);
 		controller.postInit(appScene);
+		testCase = new ControllerTestCase(controller.getDevicePair());
+		testCase.setNames(getControllerParamNames());
+	}
+
+	protected String[] getControllerParamNames() {
+		return new String[0];
+	}
+
+	protected ControllerTestCase getTestCase() {
+		return testCase;
 	}
 
 	protected void setGenKind(CodeGenerator.GenKind kind) {
@@ -55,9 +66,9 @@ public class BasicControllerTest {
 			linesCount++;
 			codeResult.append(codeLine.trim().replaceAll("\\s", ""));
 		}
-		assertEquals("expectedComments", expectedComments, commentsCount);
-		assertEquals("expectedLines", expectedLines, linesCount);
-		assertEquals("expectedSize", expectedSize, newCodeList.size());
+		if (expectedComments > 0) assertEquals("expectedComments", expectedComments, commentsCount);
+		if (expectedLines > 0) assertEquals("expectedLines", expectedLines, linesCount);
+		if (expectedSize > 0) assertEquals("expectedSize", expectedSize, newCodeList.size());
 		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
 	}
 }
