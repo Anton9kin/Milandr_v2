@@ -170,6 +170,7 @@ public class MCUAdcController extends BasicController {
 		// xtodo implement using each selected adc channel
 		MDR_RST_CLK.get().set(oldCode);
 		MDR_PORTD.get().set(oldCode);
+		int adcSrc = getConfPropInt("adc_src") == 1 ? 0 : 1;
 
 		switch (codeStep) {
 			case 0:
@@ -180,7 +181,7 @@ public class MCUAdcController extends BasicController {
 				int adcCLKSrc = isCboxChecked(0) ? getConfPropInt("adc_src", 0) : 1;
 				adcCLKSrc += isCboxChecked(1) ? getConfPropInt("adc_src", 1) : 1;
 				
-				if (adcCLKSrc != 2){
+				if (adcSrc == 1){//if (adcCLKSrc != 2){
 					MDR_RST_CLK.set(
 							Param.ADC_MCO_CLOCK.set(adcC1, adcC2, adcDiv, 1).shift(0, 4, 8, 13)
 							).pre(1, 1, 2, 4).cmt("ADC_C1", "ADC_C2", "ADC_C3", "ADC_CLK").build();
@@ -212,7 +213,6 @@ public class MCUAdcController extends BasicController {
 				int mref = getConfPropInt("base_power", adcIndex);
 				int sample = getConfPropInt("start_kind", adcIndex);
 				int adcSwCh = getConfPropInt("sw_chn");
-				int adcSrc = getConfPropInt("adc_src", adcIndex) == 1 ? 0 : 1;
 
 				String chnLst = getConfPropStr("lst_chn", adcIndex);
 				String chnsLst = cleanChannelsList(chnLst);
@@ -292,8 +292,9 @@ public class MCUAdcController extends BasicController {
 	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
 		switch (methodName) {
 			case "ADC":
-				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
-				if (syncSrc == 2) generateCode(oldCode, 0);
+//				int syncSrc = getClockProp("ADC-C1.S") % 2 == 1 ? 1 : 2;
+//				if (syncSrc == 2) generateCode(oldCode, 0);
+				generateCode(oldCode, 0);
 				generateCode(oldCode, 1);
 				if (isCboxChecked(0)) generateCode(oldCode, 2);
 				if (isCboxChecked(1)) generateCode(oldCode, 3);
