@@ -411,9 +411,11 @@ public class MCUClockController extends MCUExtPairController
 
 	@SuppressWarnings("unchecked")
 	private void selectCBox(String comboKey, String value) {
+		if (clkMap.isEmpty()) return;
 		clkMap.get(comboKey).getSelectionModel().select(value);
 	}
 	private void disableCBox(String comboKey, boolean value) {
+		if (clkMap.isEmpty()) return;
 		clkMap.get(comboKey).setDisable(value);
 	}
 
