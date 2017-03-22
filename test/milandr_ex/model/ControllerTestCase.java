@@ -3,6 +3,7 @@ package milandr_ex.model;
 import com.google.common.collect.Maps;
 import milandr_ex.data.Device;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,15 @@ import java.util.Map;
 public class ControllerTestCase {
 	private Device.EPairNames pair;
 	private Map<String, String> params = Maps.newLinkedHashMap();
+	private Map<String, String> clocks = Maps.newLinkedHashMap();
 	private String expectedCodeResult;
 	private int expectedComments;
 	private int expectedLines;
 	private int expectedSize;
 	private String[] paramNames;
 	private String[] paramValues;
+	private String[] clockNames;
+	private String[] clockValues;
 
 	public ControllerTestCase(Device.EPairNames pair) {
 		this.pair = pair;
@@ -26,6 +30,9 @@ public class ControllerTestCase {
 
 	public ControllerTestCase setNames(String[] paramNames) {
 		this.paramNames = paramNames;
+		String[] paramValues = new String[paramNames.length];
+		Arrays.fill(paramValues, "0");
+		setValues(paramValues);
 		return this;
 	}
 
@@ -34,16 +41,37 @@ public class ControllerTestCase {
 		return this;
 	}
 
+	public ControllerTestCase setClockNames(String[] clockNames) {
+		this.clockNames= clockNames;
+		String[] clockValues = new String[clockNames.length];
+		Arrays.fill(clockValues, "0");
+		setClockValues(clockValues);
+		return this;
+	}
+
+	public ControllerTestCase setClockValues(String[] clockValues) {
+		this.clockValues = clockValues;
+		return this;
+	}
+
 	public ControllerTestCase build(BasicControllerTest controller) {
 		for(int i = 0; i < paramNames.length; i++) {
 			this.addParam(paramNames[i], paramValues[i]);
 		}
-		controller.buildResults(params);
+		for(int i = 0; i < clockNames.length; i++) {
+			this.addClock(clockNames[i], clockValues[i]);
+		}
+		controller.buildResults(params, clocks);
 		return this;
 	}
 
 	public ControllerTestCase addParam(String name, String value) {
 		params.put(name, value);
+		return this;
+	}
+
+	public ControllerTestCase addClock(String name, String value) {
+		clocks.put(name, value);
 		return this;
 	}
 
