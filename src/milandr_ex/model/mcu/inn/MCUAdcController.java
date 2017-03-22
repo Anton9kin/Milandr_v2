@@ -189,7 +189,8 @@ public class MCUAdcController extends BasicController {
 			case 1:
 				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build();
 
-				String chnlLst = getConfPropStr("lst_chn", 0) + getConfPropStr("lst_chn", 1);
+				String chnlLst = (isCboxChecked(0) ? getConfPropStr("lst_chn", 0) : "" )
+								+ (isCboxChecked(1) ? getConfPropStr("lst_chn", 1) : "" );
 				chnlLst = cleanChannelsList(chnlLst);
 				Integer[] vals = new Integer[chnlLst.length()];
 				Integer[] ofst = new Integer[chnlLst.length()];
