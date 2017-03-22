@@ -1,7 +1,9 @@
 package milandr_ex.model.mcu.inn;
 
 import com.google.common.collect.Lists;
+import milandr_ex.data.Device;
 import milandr_ex.model.BasicControllerTest;
+import milandr_ex.model.ControllerTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +23,8 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 			"MDR_RST_CLK->PER_CLOCK|=((0x1<<17));}";
 
 	private MCUAdcController adcController;
+	private static String[] adcParamNames = {"base_power", "start_kind", "adc_src", "adc_div", "sw_chn", "temp_sens", "lst_chn"};
+	private static String[] adcClockNames = {"ADC-C1.S", "ADC-C2.S", "ADC-C3-O.S"};
 
 	@Before
 	public void initController() {
@@ -28,13 +32,35 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 		super.initController(adcController);
 	}
 
+	@Override
+	protected String[] getControllerParamNames() {
+		return adcParamNames;
+	}
+
+	@Override
+	protected String[] getControllerClockNames() {
+		return adcClockNames;
+	}
+
 	@Test
 	public void testDefaultAdcParams() {
 		List<String> oldCodeList = Lists.newArrayList();
 		assertEquals("[]", String.valueOf(oldCodeList));
+		String[] values = {"0", "0", "0", "0", "0", "0", "7"};
+		testCase.setValues(values).build(this);
 		List<String> newCodeList = adcController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
 		testCodeResult(emptyCodeResult, 4, 3, 7, newCodeList);
 //		testCodeResult(defaultCodeResult, 8, 7, 16, newCodeList);
+	}
+
+	@Test
+	public void testOneTestCase() {
+		String[] values = {"0", "0", "0", "0", "0", "0", "7"};
+		String expectedCodeResult = "voidADC_init(void){MDR_RST_CLK->PER_CLOCK|=(1<<17);MDR_PORTD->OE&=~(1<<7);" +
+						"MDR_PORTD->ANALOG&=~(1<<7);MDR_ADC->ADC1_CFG=(1|(0<<2)|(0<<3)|(7<<4)|(0<<11)|(0<<12));}";
+		testCase.setValues(values).build(this);
+		List<String> newCodeList = adcController.generateCode(device, Lists.newArrayList());
+		testCase.test(this, newCodeList, expectedCodeResult);
 	}
 }
