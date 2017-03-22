@@ -75,8 +75,8 @@ public class BasicControllerTest {
 			}
 			if (codeLine.trim().isEmpty()) continue;
 			linesCount++;
-			codeLine = codeLine.replaceAll("\\(0x", "(");
-			codeResult.append(codeLine.trim().replaceAll("\\s", ""));
+			codeLine = codeLine.replaceAll("\\(0x", "(").replaceAll("\\(\\(", "(").replaceAll("\\)\\)", ")");
+			codeResult.append(codeLine.trim().replaceAll("\\s", "").replaceAll("<<0", ""));
 		}
 		if (expectedComments > 0) assertEquals("expectedComments", expectedComments, commentsCount);
 		if (expectedLines > 0) assertEquals("expectedLines", expectedLines, linesCount);
@@ -84,10 +84,10 @@ public class BasicControllerTest {
 		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
 	}
 
-	public void buildResults(Map<String, String> params, Map<String, String> clocks) {
+	public void buildResults(Map<String, String[]> params, Map<String, String> clocks) {
 		for(String key: params.keySet()) {
-			String value = params.get(key);
-			when(blockModel.getProp(eq(key))).thenReturn(buildProperty(key, value));
+			String[] values = params.get(key);
+			when(blockModel.getProp(eq(key))).thenReturn(buildProperty(key, values));
 		}
 		for(String key: clocks.keySet()) {
 			String valueS = clocks.get(key);
@@ -99,16 +99,16 @@ public class BasicControllerTest {
 		}
 	}
 
-	private McuBlockProperty buildProperty(String name, final String value) {
+	private McuBlockProperty buildProperty(String name, final String... values) {
 		return new McuBlockProperty(name, McuBlockProperty.PropKind.INT){
 			@Override
 			public int getIntValue(int valueInd) {
-				if (value.matches("\\d+")) {
-					return Integer.parseInt(value);
+				if (values[valueInd].matches("\\d+")) {
+					return Integer.parseInt(values[valueInd]);
 				}
 				return 0;
 			}
-			public String getStrValue(int valueInd) { return value; }
+			public String getStrValue(int valueInd) { return values[valueInd]; }
 		};
 	}
 	private McuBlockProperty buildMockProperty(String name, final String value) {
