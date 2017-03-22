@@ -107,7 +107,7 @@ public class McuBlockProperty implements Cloneable {
 	private Device.EPairNames pair;
 	private boolean readOnly;
 
-	private McuBlockProperty(String name, PropKind kind) {
+	protected McuBlockProperty(String name, PropKind kind) {
 		this.name = name;
 		this.kind = kind;
 	}

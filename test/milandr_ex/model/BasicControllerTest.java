@@ -6,8 +6,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -70,5 +75,36 @@ public class BasicControllerTest {
 		if (expectedLines > 0) assertEquals("expectedLines", expectedLines, linesCount);
 		if (expectedSize > 0) assertEquals("expectedSize", expectedSize, newCodeList.size());
 		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
+	}
+
+	public void buildResults(Map<String, String> params) {
+		for(String key: params.keySet()) {
+			String value = params.get(key);
+			when(blockModel.getProp(eq(key))).thenReturn(buildProperty(key, value));
+		}
+	}
+
+	private McuBlockProperty buildProperty(String name, final String value) {
+		return new McuBlockProperty(name, McuBlockProperty.PropKind.INT){
+			@Override
+			public int getIntValue(int valueInd) {
+				if (value.matches("\\d+")) {
+					return Integer.parseInt(value);
+				}
+				return 0;
+			}
+			public String getStrValue(int valueInd) { return value; }
+		};
+	}
+	private McuBlockProperty buildMockProperty(String value) {
+		McuBlockProperty property = mock(McuBlockProperty.class);
+		final int anInt = value.matches("\\d+") ? Integer.parseInt(value) : 0;
+
+		when(property.getIntValue()).thenReturn(anInt);
+		when(property.getStrValue()).thenReturn(value);
+		when(property.getIntValue(anyInt())).thenReturn(anInt);
+		when(property.getStrValue(anyInt())).thenReturn(value);
+//		when(property.getProp(anyString())).thenReturn(property);
+		return property;
 	}
 }

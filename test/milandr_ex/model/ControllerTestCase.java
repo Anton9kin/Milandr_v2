@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ControllerTestCase {
 	private Device.EPairNames pair;
-	private Map<String, String> params = Maps.newHashMap();
+	private Map<String, String> params = Maps.newLinkedHashMap();
 	private String expectedCodeResult;
 	private int expectedComments;
 	private int expectedLines;
@@ -34,16 +34,21 @@ public class ControllerTestCase {
 		return this;
 	}
 
-	public ControllerTestCase build() {
+	public ControllerTestCase build(BasicControllerTest controller) {
 		for(int i = 0; i < paramNames.length; i++) {
 			this.addParam(paramNames[i], paramValues[i]);
 		}
+		controller.buildResults(params);
 		return this;
 	}
 
 	public ControllerTestCase addParam(String name, String value) {
 		params.put(name, value);
 		return this;
+	}
+
+	public Device.EPairNames getPair() {
+		return pair;
 	}
 
 	public String getExpectedCodeResult() {
@@ -86,7 +91,6 @@ public class ControllerTestCase {
 		test(controller, codeList, expectedCodeResult);
 	}
 	public void test(BasicControllerTest controller, List<String> codeList, String expectedCodeResult) {
-		this.build();
 		controller.testCodeResult(expectedCodeResult, expectedComments, expectedLines, expectedSize, codeList);
 	}
 }
