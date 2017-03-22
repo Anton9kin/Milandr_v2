@@ -75,6 +75,7 @@ public class BasicControllerTest {
 			}
 			if (codeLine.trim().isEmpty()) continue;
 			linesCount++;
+			codeLine = codeLine.replaceAll("\\(0x", "(");
 			codeResult.append(codeLine.trim().replaceAll("\\s", ""));
 		}
 		if (expectedComments > 0) assertEquals("expectedComments", expectedComments, commentsCount);
