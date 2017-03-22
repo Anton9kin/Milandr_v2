@@ -177,6 +177,7 @@ public class MCUAdcController extends BasicController {
 				int adcC1 = getClockProp("ADC-C1.S");
 				int adcC2 = getClockProp("ADC-C2.S");
 				int adcDiv = getClockProp("ADC-C2-O.S");
+				if (adcDiv > 0) adcDiv += 7;
 
 				int adcCLKSrc = isCboxChecked(0) ? getConfPropInt("adc_src", 0) : 1;
 				adcCLKSrc += isCboxChecked(1) ? getConfPropInt("adc_src", 1) : 1;
