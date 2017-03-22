@@ -1,9 +1,7 @@
 package milandr_ex.model.mcu.inn;
 
 import com.google.common.collect.Lists;
-import milandr_ex.data.Device;
 import milandr_ex.model.BasicControllerTest;
-import milandr_ex.model.ControllerTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +44,7 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 	public void testDefaultAdcParams() {
 		List<String> oldCodeList = Lists.newArrayList();
 		assertEquals("[]", String.valueOf(oldCodeList));
-		String[] values = {"0", "0", "0", "0", "0", "0", "7"};
+		String[][] values = {{"0","0","0"}, {"0","0","0"}, {"1","0","0"}, {"0","0","0"}, {"0","0","0"}, {"0","0","0"}, {"7","0","0"}};
 		testCase.setValues(values).build(this);
 		List<String> newCodeList = adcController.generateCode(device, oldCodeList);
 		assertNotEquals(oldCodeList, newCodeList);
@@ -56,9 +54,21 @@ public class MCUAdcControllerTest extends BasicControllerTest {
 
 	@Test
 	public void testOneTestCase() {
-		String[] values = {"0", "0", "0", "0", "0", "0", "7"};
+		adcController.checkSelectedPin("c-ADC-1", "true");
+		String[][] values = {{"0","0","0"}, {"0","0","0"}, {"1","0","0"}, {"0","0","0"}, {"0","0","0"}, {"0","0","0"}, {"7","0","0"}};
 		String expectedCodeResult = "voidADC_init(void){MDR_RST_CLK->PER_CLOCK|=(1<<17);MDR_PORTD->OE&=~(1<<7);" +
-						"MDR_PORTD->ANALOG&=~(1<<7);MDR_ADC->ADC1_CFG=(1|(0<<2)|(0<<3)|(7<<4)|(0<<11)|(0<<12));}";
+						"MDR_PORTD->ANALOG&=~(1<<7);MDR_ADC->ADC1_CFG=(1)|(0<<2)|(0<<3)|(7<<4)|(0<<11)|(0<<12);}";
+		testCase.setValues(values).build(this);
+		List<String> newCodeList = adcController.generateCode(device, Lists.newArrayList());
+		testCase.test(this, newCodeList, expectedCodeResult);
+	}
+	@Test
+	public void testTwoTestCase() {
+		adcController.checkSelectedPin("c-ADC-1", "true");
+		String[][] values = {{"1","0","0"}, {"1","0","0"}, {"0","0","0"}, {"0","0","0"}, {"0","0","0"}, {"0","0","0"}, {"7","0","0"}};
+		String expectedCodeResult = "voidADC_init(void){MDR_RST_CLK->ADC_MCO_CLOCK=((0<<0)|(2<<4)|(9<<8)|(1<<13));" +
+				"MDR_RST_CLK->PER_CLOCK|=(1<<17);MDR_PORTD->OE&=~(1<<7);MDR_PORTD->ANALOG&=~(1<<7);" +
+				"MDR_ADC->ADC1_CFG=(1)|(1<<2)|(1<<3)|(7<<4)|(1<<11)|(0<<12));}";
 		testCase.setValues(values).build(this);
 		List<String> newCodeList = adcController.generateCode(device, Lists.newArrayList());
 		testCase.test(this, newCodeList, expectedCodeResult);
