@@ -168,6 +168,8 @@ public class MCUAdcController extends BasicController {
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
 		// xtodo implement using each selected adc channel
+		MDR_RST_CLK.get().set(oldCode);
+		MDR_PORTD.get().set(oldCode);
 
 		switch (codeStep) {
 			case 0:
@@ -179,16 +181,14 @@ public class MCUAdcController extends BasicController {
 				adcCLKSrc += isCboxChecked(1) ? getConfPropInt("adc_src", 1) : 1;
 				
 				if (adcCLKSrc != 2){
-				
-					MDR_RST_CLK.get();
 					MDR_RST_CLK.set(
 							Param.ADC_MCO_CLOCK.set(adcC1, adcC2, adcDiv, 1).shift(0, 4, 8, 13)
-							).pre(1, 1, 2, 4).cmt("ADC_C1", "ADC_C2", "ADC_C3", "ADC_CLK").build(oldCode);
+							).pre(1, 1, 2, 4).cmt("ADC_C1", "ADC_C2", "ADC_C3", "ADC_CLK").build();
 				}
 				break;
 			case 1:
-				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build(oldCode);
-				MDR_PORTD.get();
+				MDR_RST_CLK.set(Param.PER_CLOCK.seti(1, 17, "|")).cmt("тактирование АЦП").build();
+
 				String chnlLst = getConfPropStr("lst_chn", 0) + getConfPropStr("lst_chn", 1);
 				chnlLst = cleanChannelsList(chnlLst);
 				Integer[] vals = new Integer[chnlLst.length()];
@@ -198,8 +198,8 @@ public class MCUAdcController extends BasicController {
 					ofst[i] = Integer.parseInt(chnlLst.charAt(i) + "");
 				}
 				if (chnlLst.length() > 0) {
-					MDR_PORTD.set(Param.OE.seti(vals, ofst, "&~")).cmt("вход").build(oldCode);
-					MDR_PORTD.set(Param.ANALOG.seti(vals, ofst, "&~")).cmt("аналоговый").build(oldCode);
+					MDR_PORTD.set(Param.OE.seti(vals, ofst, "&~")).cmt("вход").build();
+					MDR_PORTD.set(Param.ANALOG.seti(vals, ofst, "&~")).cmt("аналоговый").build();
 				}
 				break;
 			case 2:
@@ -216,7 +216,7 @@ public class MCUAdcController extends BasicController {
 				String chnsLst = cleanChannelsList(chnLst);
 				String chnCmt = "";
 
-				MDR_ADC.get().arr(comments);
+				MDR_ADC.get().arr(comments).set(oldCode);
 				int chn;
 				int chns = 0;
 
@@ -232,11 +232,11 @@ public class MCUAdcController extends BasicController {
 				if (chn >= 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
 							.set(1, syncSrc - 1, sample, chn, adcSwCh,mref, adcSrcDiv)
-							.shift(0, 2, 3, 4, 9, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5, 6).build(oldCode);
+							.shift(0, 2, 3, 4, 9, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5, 6).build();
 				}
-				if (chns > 0) {
+				if (adcSwCh > 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CHSEL : Param.ADC1_CHSEL)
-							.set(chns)).cmt(chnCmt).build(oldCode);
+							.set(chns)).cmt(chnCmt).build();
 				}
 				break;
 			case 4:
@@ -249,7 +249,7 @@ public class MCUAdcController extends BasicController {
 				g().addCodeStrR(oldCode, "/*включение вых. усилителя*/");
 				g().addCodeStr(oldCode, " ((1 << 19) |(1 << 18) |(1 << 17) ");
 
-				if (getConfPropInt("sw_chn") > 0) {
+				if (getConfPropInt("sw_chn") > 1) {
 					g().addCodeStr(oldCode, "/*включено переключение каналов*/");
 					g().addCodeStr(oldCode, "                          |(1 << 9)); ");
 					g().addCodeStrL(oldCode, "/*выбор каналов для переключения*/");
