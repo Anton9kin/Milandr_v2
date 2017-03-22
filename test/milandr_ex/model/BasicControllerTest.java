@@ -75,13 +75,21 @@ public class BasicControllerTest {
 			}
 			if (codeLine.trim().isEmpty()) continue;
 			linesCount++;
-			codeLine = codeLine.replaceAll("\\(0x", "(").replaceAll("\\(\\(", "(").replaceAll("\\)\\)", ")");
-			codeResult.append(codeLine.trim().replaceAll("\\s", "").replaceAll("<<0", ""));
+			codeResult.append(codeLine.trim());
 		}
+		String codeResultStr = codeResult.toString();
+		codeResultStr = trimAndReplaceCodeStr(codeResultStr);
 		if (expectedComments > 0) assertEquals("expectedComments", expectedComments, commentsCount);
 		if (expectedLines > 0) assertEquals("expectedLines", expectedLines, linesCount);
 		if (expectedSize > 0) assertEquals("expectedSize", expectedSize, newCodeList.size());
-		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
+		assertEquals("expectedCodeResult", trimAndReplaceCodeStr(expectedCodeResult), codeResultStr);
+	}
+
+	private String trimAndReplaceCodeStr(String codeResultStr) {
+		codeResultStr = codeResultStr.replaceAll("\\(0x", "(").replaceAll("\\(\\(", "(").replaceAll("\\)\\)", ")");
+		codeResultStr = codeResultStr.replaceAll("\\s", "").replaceAll("\\(0<<\\d+\\)", "").replaceAll("<<0", "");
+		codeResultStr = codeResultStr.replaceAll("\\|\\|+", "|").replaceAll("\\|;", ";").trim();
+		return codeResultStr;
 	}
 
 	public void buildResults(Map<String, String[]> params, Map<String, String> clocks) {
