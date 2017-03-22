@@ -13,14 +13,14 @@ import java.util.Map;
  */
 public class ControllerTestCase {
 	private Device.EPairNames pair;
-	private Map<String, String> params = Maps.newLinkedHashMap();
+	private Map<String, String[]> params = Maps.newLinkedHashMap();
 	private Map<String, String> clocks = Maps.newLinkedHashMap();
 	private String expectedCodeResult;
 	private int expectedComments;
 	private int expectedLines;
 	private int expectedSize;
 	private String[] paramNames;
-	private String[] paramValues;
+	private String[][] paramValues;
 	private String[] clockNames;
 	private String[] clockValues;
 
@@ -30,13 +30,13 @@ public class ControllerTestCase {
 
 	public ControllerTestCase setNames(String[] paramNames) {
 		this.paramNames = paramNames;
-		String[] paramValues = new String[paramNames.length];
-		Arrays.fill(paramValues, "0");
+		String[][] paramValues = new String[paramNames.length][3];
+		Arrays.fill(paramValues, new String[]{"0","0","0"});
 		setValues(paramValues);
 		return this;
 	}
 
-	public ControllerTestCase setValues(String[] paramValues) {
+	public ControllerTestCase setValues(String[][] paramValues) {
 		this.paramValues = paramValues;
 		return this;
 	}
@@ -65,8 +65,8 @@ public class ControllerTestCase {
 		return this;
 	}
 
-	public ControllerTestCase addParam(String name, String value) {
-		params.put(name, value);
+	public ControllerTestCase addParam(String name, String[] values) {
+		params.put(name, values);
 		return this;
 	}
 
