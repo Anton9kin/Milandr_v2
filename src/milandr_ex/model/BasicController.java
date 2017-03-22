@@ -630,7 +630,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return new String[]{methodName()};
 	}
 	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
-		if (methodName.equals(getDevicePair().name())) generateCode(oldCode, 0);
+		if (methodName.equals(getDevicePair().name())) {
+			if (methodNames().length < 2) generateCode(oldCode, 0);
+		}
 	 	int lineInd = 0;
 	 	g().resetIndent();
 		g().addCodeStr(lineInd++, oldCode, String.format("// code block for %s module", methodName));
