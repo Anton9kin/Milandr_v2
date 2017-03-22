@@ -41,11 +41,17 @@ public class BasicControllerTest {
 		when(pinoutsModel.getClockModel()).thenReturn(clockModel);
 		controller.setScene(appScene);
 		controller.postInit(appScene);
+		controller.getDevicePair().setModel(blockModel);
 		testCase = new ControllerTestCase(controller.getDevicePair());
 		testCase.setNames(getControllerParamNames());
+		testCase.setClockNames(getControllerClockNames());
 	}
 
 	protected String[] getControllerParamNames() {
+		return new String[0];
+	}
+
+	protected String[] getControllerClockNames() {
 		return new String[0];
 	}
 
@@ -77,10 +83,18 @@ public class BasicControllerTest {
 		assertEquals("expectedCodeResult", expectedCodeResult, codeResult.toString());
 	}
 
-	public void buildResults(Map<String, String> params) {
+	public void buildResults(Map<String, String> params, Map<String, String> clocks) {
 		for(String key: params.keySet()) {
 			String value = params.get(key);
 			when(blockModel.getProp(eq(key))).thenReturn(buildProperty(key, value));
+		}
+		for(String key: clocks.keySet()) {
+			String valueS = clocks.get(key);
+			Integer value = valueS.matches("\\d+") ? Integer.parseInt(valueS) : 0;
+			when(clockModel.getInpVal(eq(key))).thenReturn(value);
+			when(clockModel.getOutVal(eq(key))).thenReturn(value);
+			when(clockModel.getSel(eq(key))).thenReturn(value);
+			when(clockModel.getOut(eq(key))).thenReturn(value);
 		}
 	}
 
@@ -96,7 +110,7 @@ public class BasicControllerTest {
 			public String getStrValue(int valueInd) { return value; }
 		};
 	}
-	private McuBlockProperty buildMockProperty(String value) {
+	private McuBlockProperty buildMockProperty(String name, final String value) {
 		McuBlockProperty property = mock(McuBlockProperty.class);
 		final int anInt = value.matches("\\d+") ? Integer.parseInt(value) : 0;
 
