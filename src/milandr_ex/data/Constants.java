@@ -39,7 +39,7 @@ public class Constants {
                     "USB-C1|Sim|USB-C1|* 16|\\/ 2",
                     "",
                     "CPU-C1|Sim|USB-C1|Sim|CPU-C2|Sim|USB-C2|Sim|\\Sim",
-                    "ADC-C1|Sim|LSI|40 Khz|LSE|32 Khz|HSI|/ 256|\\/ 256",
+                    "LSE|32 Khz|LSI|40 Khz|ADC-C1|Sim|HSI|/ 256|\\/ 256",
                     "",
             }};
 
