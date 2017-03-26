@@ -12,4 +12,10 @@ public class StringUtils {
 		}
 		return count ;
 	}
+	public static boolean strHasAnySubstr(String str, String... substrs) {
+		for(String substr: substrs) {
+			if (str.contains(substr)) return true;
+		}
+		return false;
+	}
 }
