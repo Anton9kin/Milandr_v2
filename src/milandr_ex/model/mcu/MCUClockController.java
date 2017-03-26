@@ -233,7 +233,7 @@ public class MCUClockController extends MCUExtPairController
 		int lowBKP = getLowBKP(hClk);
 
 		Integer hse = getClockProp("HSE");
-		int pllMull = getClockProp("CPU-C2-1.S");
+		int pllMull = getClockProp("CPU-C2-1.S") + 1;
 		int cpuC1Sel = getClockProp("CPU-C1.S");
 
 		int cpuC2Sel = getClockProp("CPU-C2.S");
