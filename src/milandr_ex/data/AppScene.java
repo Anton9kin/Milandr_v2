@@ -40,6 +40,7 @@ public class AppScene extends Scene {
 	private SetsGenerator setsGenerator;
 	private CodeGenerator codeGenerator;
 	private boolean setupInProcess = false;
+	private boolean prodMode = false;
 	private boolean testMode = false;
 	private boolean debugMode = false;
 	private boolean editMode = false;
@@ -74,6 +75,14 @@ public class AppScene extends Scene {
 			if (!temp.equals(pair)) continue;
 			getMainController().updateCodeGenerator(pair.name());
 		}
+	}
+
+	public boolean isProdMode() {
+		return prodMode || testMode || debugMode;
+	}
+
+	public void setProdMode(boolean prodMode) {
+		this.prodMode = prodMode;
 	}
 
 	public boolean isTestMode() {

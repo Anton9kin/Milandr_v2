@@ -86,6 +86,10 @@ public class Device {
             EPairNames.I2C, EPairNames.SPI, EPairNames.EBC, EPairNames.CAN };
     private static EPairNames[] customPairs = {EPairNames.ADC, EPairNames.COMP };
     private static List<String> extPairNames;
+    private static EPairNames[] showPairs = {
+            EPairNames.ADC, EPairNames.CPU,
+    };
+    private static List<String> showPairNames;
     private static EPairNames[] prodPairs = {
             EPairNames.ADC, EPairNames.IWDG, EPairNames.PWR, EPairNames.SYST, EPairNames.WWDG,
             EPairNames.COMP,
@@ -103,6 +107,13 @@ public class Device {
             for(EPairNames pair: extPairs) extPairNames.add(pair.name());
         }
         return extPairNames;
+    }
+    public static List<String> showPairNames() {
+        if (showPairNames == null) {
+            showPairNames = Lists.newArrayList();
+            for(EPairNames pair: showPairs) showPairNames.add(pair.name());
+        }
+        return showPairNames;
     }
     public static List<String> prodPairNames() {
         if (prodPairNames == null) {

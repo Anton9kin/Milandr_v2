@@ -19,20 +19,22 @@ public class MilandrEx extends Application {
 	public MilandrEx() {
 	}
 
+	public boolean isProdMode() {
+		return prodMode;
+	}
 	public boolean isTestMode() {
 		return testMode;
 	}
-
 	public boolean isDebugMode() {
 		return debugMode;
 	}
-
 	public boolean isEditMode() {
 		return editMode;
 	}
 
 	public void setScene(AppScene scene) {
 		this.scene = scene;
+		scene.setProdMode(isProdMode());
 		scene.setTestMode(isTestMode());
 		scene.setDebugMode(isDebugMode());
 		scene.setEditMode(isEditMode());
@@ -87,14 +89,17 @@ public class MilandrEx extends Application {
 
 	private static void setArg(String arg) {
 		if (arg == null || arg.isEmpty()) return;
+		if (arg.equals("prod")) setProdMode();
 		if (arg.equals("test")) setTestMode();
 		if (arg.equals("debug")) setDebugMode();
 		if (arg.equals("edit")) setEditMode();
 	}
 
+	private static boolean prodMode = false;
 	private static boolean testMode = false;
 	private static boolean debugMode = false;
 	private static boolean editMode = false;
+	private static void setProdMode() { prodMode = true; }
 	private static void setTestMode() { testMode = true; }
 	private static void setDebugMode() { debugMode = true; }
 	private static void setEditMode() { editMode = true; }
