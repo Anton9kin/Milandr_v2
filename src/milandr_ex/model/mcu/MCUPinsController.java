@@ -221,12 +221,11 @@ public class MCUPinsController extends BasicController
 		ePairList.sort(Comparator.comparing(Enum::name));
 		Integer[] pairs = device.getPairCountsArr();
 		for(Device.EPairNames ePair: ePairList) {
-			if (!ePair.real()) {
+			String pairName = ePair.name();
+			if (!ePair.real() || checkPairForHide(pairName)) {
 				getScene().getPinoutsModel().setBlockModel(ePair.model());
 				continue;
 			}
-			String pairName = ePair.name();
-			if (checkPairForHide(pairName)) continue;
 			int pairSize = pairs[ePair.ordinal()];
 			if (pairSize < 1) continue;
 			VBox vvBox = new VBox();
