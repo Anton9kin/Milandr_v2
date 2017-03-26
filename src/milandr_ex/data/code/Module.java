@@ -79,7 +79,8 @@ public enum Module {
 				Object[] args = new Object[Math.max(builder.arrSize(), cmtIndx + lastSize)];
 				Arrays.fill(args, 0);
 				for(int i = 0; i < lastSize; i++) {
-					args[cmtIndx] = this.args.length > i ? this.args[i] : 0;
+					args[cmtIndx] = this.args != null
+							&& this.args.length > i ? this.args[i] : 0;
 					idxs[i] = cmtIndx++;
 				}
 				return args(args).cmt(idxs);
