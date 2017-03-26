@@ -338,6 +338,13 @@ public class McuBlockProperty implements Cloneable {
 		return this;
 	}
 
+	public boolean isBul() { return kind.equals(PropKind.CHK); }
+	public boolean isCmb() { return kind.equals(PropKind.CMB); }
+	public boolean isInt() { return kind.equals(PropKind.INT); }
+	public boolean isLst() { return kind.equals(PropKind.LST); }
+	public boolean isStr() { return kind.equals(PropKind.STR); }
+	public PropKind getKind() { return kind; }
+
 	public McuBlockProperty makeUI(Pane pane) {
 		return makeUI(null, pane, 0);
 	}
