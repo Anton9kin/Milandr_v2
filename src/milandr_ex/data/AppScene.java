@@ -229,10 +229,10 @@ public class AppScene extends Scene {
 	}
 
 	public CodeGenerator getCodeGenerator() {
-		return codeGenerator;
+		return codeGenerator.setScene(this);
 	}
 
 	public void setCodeGenerator(CodeGenerator codeGenerator) {
-		this.codeGenerator = codeGenerator;
+		this.codeGenerator = codeGenerator.setScene(this);
 	}
 }
