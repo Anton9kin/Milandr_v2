@@ -216,6 +216,16 @@ public class MCUClockController extends MCUExtPairController
 	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
 	Module MDR_BKP = Module.MDR_BKP.get();
 
+	private String[][] cmnts = {{ "Необходима пауза для работы Flash-памяти программ"},{
+		"вкл. HSE осцилятора (частота кварца %s)",
+		"ждем пока HSE выйдет в рабочий режим",
+		"подача частоты на блок PLL",
+		"вкл. PLL  | коэф. умножения = %s",
+		"ждем пока PLL выйдет в рабочий режим"
+	}, {
+		"режим встроенного регулятора напряжения DUcc",
+		"выбор доп.стабилизирующей нагрузки",
+	}};
 	@Override
 	protected List<String> generateModelCodeStep(List<String> oldCode, int codeStep) {
 		Integer hClk = getClockProp("HCLK");
@@ -233,40 +243,39 @@ public class MCUClockController extends MCUExtPairController
 
 		switch (codeStep) {
 			case 0:
-				MDR_EEPROM.get().arr(comments);
-				MDR_EEPROM.set(Param.CMD.set(delayEeprom).shift(3).opp("|")).cmt(0).build(oldCode);
+				MDR_EEPROM.get().arr(cmnts[0]).set(oldCode);
+				MDR_EEPROM.set(Param.CMD.set(delayEeprom).shift(3).opp("|")).end();
 				break;
 			case 1:
-				MDR_RST_CLK.get().arr(comments);
-				MDR_RST_CLK.set(Param.HS_CONTROL.set(1)).cmta(1, hse).build(oldCode);
-				MDR_RST_CLK.set(Command.WHILE.set(
-						Param.CLOCK_STATUS, "2 << 3", "== 0x45"))
-						.cmta(2, 2).build(oldCode);
+				MDR_RST_CLK.get().arr(cmnts[1]).set(oldCode);
+				MDR_RST_CLK.set(Param.HS_CONTROL.set(1)).end(makeHzText(hse));
+				MDR_RST_CLK.sete(Command.WHILE.set(Param.CLOCK_STATUS, "1 << 2", "== 0"), 2);
 				break;
 			case 2:
-				MDR_RST_CLK.set(Param.CPU_CLOCK.seti(cpuC1Sel , 0)).cmta(3, hse).build(oldCode);
-				MDR_RST_CLK.set(
-						Param.PLL_CONTROL.add("(1 << 2) | (%s << 8)",
-								(pllMull - 1))).cmta(5, pllMull).build(oldCode);
-				MDR_RST_CLK.set(Command.WHILE.set(
-						Param.CLOCK_STATUS, "0x02", "!= 0x02"))
-						.cmt(4).build(oldCode);
+				MDR_RST_CLK.set(Param.CPU_CLOCK.seti(cpuC1Sel , 0)).end(hse);
+				MDR_RST_CLK.sete(Param.PLL_CONTROL.add("(1 << 2) | (%s << 8)", (pllMull - 1)), pllMull);
+				MDR_RST_CLK.sete(Command.WHILE.set(Param.CLOCK_STATUS, "0x02", "!= 0x02"));
 				break;
 			case 3:
-				MDR_RST_CLK.set(Param.CPU_CLOCK.set(cpuC1Sel, cpuC2Sel, cpuC3Sel, hclkSel).shift(0, 2, 4, 8))
-						.pre("источник для ").cmt("CPU_C1", "CPU_C2", "CPU_C3", "HCLK").build(oldCode);
+				MDR_RST_CLK.set(Param.CPU_CLOCK.set(cpuC1Sel, cpuC2Sel, hclkSel, cpuC3Sel).shift(0, 2, 4, 8))
+						.pre(1, 1, 2, 1).cmt("CPU_C1", "CPU_C2", "CPU_C3", "HCLK").build(oldCode);
 
-				MDR_BKP.get().arr(comments);
-				MDR_BKP.set(Param.REG_0E.set(lowBKP, lowBKP).shift(0, 3)).cmt(6, 7).build(oldCode);
+				MDR_BKP.get().arr(cmnts[2]).set(oldCode);
+				MDR_BKP.sete(Param.REG_0E.set(lowBKP, lowBKP).shift(0, 3));
 				break;
 		}
 		return oldCode;
 	}
 
 	private int getDelayEeprom(int hClk) {
-		int delayEeprom = hClk % 25_000_000;
+		int delayEeprom = hClk / 25_000_000;
 		if (delayEeprom > 7) delayEeprom = 7;
 		return delayEeprom;
+	}
+
+	@Override
+	protected String[] methodNames() {
+		return new String[]{"CPU", ""};
 	}
 
 	@Override
@@ -277,7 +286,7 @@ public class MCUClockController extends MCUExtPairController
 		int cpuC2Sel = getClockProp("CPU-C2.S");
 		boolean pllCheck = cpuC2Sel > 0;
 
-		if (cpuC1Sel < 2) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
+		if (cpuC1Sel > 1) {//if (HSECheck.isSelected() || HSE2Check.isSelected()){
 			generateCode(oldCode, 0);
 			if (hClk > 80000000){
 				g().addCodeStr(oldCode,"// warning Частота > 80 МГц: работа миксросхемы не гарантируется!!!");
