@@ -34,9 +34,14 @@ public class CodeGenerator {
 	public CodeGenerator setScene(AppScene scene) { this.scene = scene; return this; }
 	public AppScene getScene() { return scene; }
 
+	protected boolean firstADCInit = true;
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
 		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model.toStr()));
+		if (firstADCInit && pairBlock.equals(Device.EPairNames.ADC)) {
+			firstADCInit = false;
+			BasicController.makeFadeSplash(getScene());
+		}
 		resetIndent();
 		List<String> codeList = model.getBlockCode(pairBlock.name());
 		if (codeList == null || pairBlock.model() == null) return;
