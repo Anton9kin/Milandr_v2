@@ -49,6 +49,7 @@ public class McuBlockProperty implements Cloneable {
 	public static ObservableList<String> usbSpeedList = FXCollections.observableArrayList("1.5 Мбит/с", "12 Мбит/с");
 	public static ObservableList<String> usbPolarList = FXCollections.observableArrayList("Low Speed", "High Speed");
 	public static ObservableList<String> usbPushPullList = FXCollections.observableArrayList("Подтяжки нет", "Подтяжка к GND", "Подтяжка к VCC");
+	public static ObservableList<String> gpioInOutList = FXCollections.observableArrayList("In (Вход)", "Out (Выход)");
 
 	public enum PropKind {
 		NONE,
@@ -379,7 +380,9 @@ public class McuBlockProperty implements Cloneable {
 		clone.setMsgKey(msgKey);
 		clone.setMsgTxt(msgTxt);
 //		private List<McuBlockProperty> subProps;
-//		clone.setSubItems(subItems.clone());
+		if (subItems != null) {
+			clone.setSubItems(FXCollections.observableArrayList(subItems));
+		}
 		clone.setIntDefValue(intDefValue);
 		clone.setStrDefValue(strDefValue);
 		clone.setMinValue(minValue);

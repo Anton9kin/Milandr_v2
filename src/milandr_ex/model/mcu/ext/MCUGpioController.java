@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import static milandr_ex.data.Constants.textToKey;
+import static milandr_ex.data.McuBlockProperty.gpioInOutList;
 
 public class MCUGpioController extends MCUExtPairController {
 	private static final Logger log	= LoggerFactory.getLogger(MCUGpioController.class);
@@ -25,7 +26,7 @@ public class MCUGpioController extends MCUExtPairController {
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
 		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"},
-				"each", (List) null, null, null, null);
+				"each", gpioInOutList, null, null, null);
 		addModelProps(new String[]{"gpio_ifin", "gpio_filt"}, "each", "BB");
 		addModelProps(new String[]{"gpio_spd"}, "each", (List) null);
 		log.debug("#postInit - initialized");
