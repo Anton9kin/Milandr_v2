@@ -370,7 +370,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		updateCodeGenerator(key);
 	}
 	protected boolean firstCANInit = false;
-	protected boolean firstCANInitialized = false;
+	protected static boolean firstCANInitialized = false;
+	public static void makeFadeSplash(AppScene scene) {
+		if (firstCANInitialized) return;
+		firstCANInitialized = true;
+		SplashScreenLoader.makeFadeSplash(scene.getSplashStage(), scene.getSplashLayout());
+		scene.getAppStage().show();
+	}
 	/**
 	 * GUI method called from auto-created listeners of pinouts|clock tabs
 	 * @param key key of selected combo-box
@@ -380,9 +386,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	public void callGuiListener(String key, String prev, String value) {
 		if (firstCANInit && key.startsWith("CAN") && value.equals("RESET")) {
 			firstCANInit = false;
-			firstCANInitialized = true;
-			SplashScreenLoader.makeFadeSplash(getScene().getSplashStage(), getScene().getSplashLayout());
-			getScene().getAppStage().show();
+			makeFadeSplash(getScene());
 		}
 		//do nothing by default
 		getScene().setMainController(this);
