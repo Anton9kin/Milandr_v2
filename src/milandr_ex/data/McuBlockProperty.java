@@ -228,6 +228,9 @@ public class McuBlockProperty implements Cloneable {
 
 	public McuBlockProperty setRO(boolean readOnly) {
 		this.readOnly = readOnly;
+		if (obsNode != null) {
+			obsNode.setDisable(readOnly);
+		}
 		return this;
 	}
 
