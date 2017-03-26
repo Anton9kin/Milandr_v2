@@ -630,6 +630,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return new String[]{methodName()};
 	}
 	protected List<String> generateCode(Device device, List<String> oldCode, String methodName) {
+		if (methodName == null || methodName.isEmpty()) return oldCode;
 		if (methodName.equals(getDevicePair().name())) {
 			if (methodNames().length < 2) generateCode(oldCode, 0);
 		}
