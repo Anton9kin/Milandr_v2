@@ -3,6 +3,8 @@ package milandr_ex.data;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import milandr_ex.data.code.CommentKind;
+import milandr_ex.model.BasicController;
+import milandr_ex.model.SplashScreenLoader;
 import milandr_ex.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +24,15 @@ public class CodeGenerator {
 	}
 	private CodeGenerator() {
 	}
+	private AppScene scene;
 	private static CodeGenerator instance;
 	public static CodeGenerator instance(){
 		if (instance == null) instance = new CodeGenerator();
 		return instance;
 	}
 
+	public CodeGenerator setScene(AppScene scene) { this.scene = scene; return this; }
+	public AppScene getScene() { return scene; }
 
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
