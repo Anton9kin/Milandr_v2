@@ -137,7 +137,7 @@ public class GuiUtils {
 		if (kkey == null) return;
 		callback.callListener(kkey, String.valueOf(t), String.valueOf(t1));
 		Platform.runLater(() -> {
-			if (map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
+			if (map != null && map.containsKey(kkey) && !map.get(kkey).isVisible()) return;
 			callback.callGuiListener(kkey, String.valueOf(t), String.valueOf(t1));
 		});
 	}
