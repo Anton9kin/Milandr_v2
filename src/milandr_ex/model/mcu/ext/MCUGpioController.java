@@ -51,6 +51,20 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 
 	@Override
+	protected void controlPropByPinGroup(Device.EPairNames pair, McuBlockProperty prop, String group) {
+		super.controlPropByPinGroup(pair, prop, group);
+		if (!getDevicePair().equals(pair)) return;
+		if (group.equals(pair.name())) return;
+		if (prop.getName().equals("gpio_dir")) {
+			if (group.contains("IO in")) {
+				prop.setStrValue(gpioInOutList.get(0)).setRO(true);
+			} else if (group.contains("IO out")) {
+				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
+			}
+		}
+	}
+
+	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		List<String> pinList = getPinList();
 		Set<String> pinPorts = Sets.newLinkedHashSet();
