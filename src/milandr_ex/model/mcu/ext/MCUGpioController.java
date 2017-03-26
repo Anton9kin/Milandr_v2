@@ -16,6 +16,7 @@ import java.util.Set;
 
 import static milandr_ex.data.Constants.textToKey;
 import static milandr_ex.data.McuBlockProperty.gpioInOutList;
+import static milandr_ex.utils.StringUtils.strHasAnySubstr;
 
 public class MCUGpioController extends MCUExtPairController {
 	private static final Logger log	= LoggerFactory.getLogger(MCUGpioController.class);
@@ -56,9 +57,9 @@ public class MCUGpioController extends MCUExtPairController {
 		if (!getDevicePair().equals(pair)) return;
 		if (group.equals(pair.name())) return;
 		if (prop.getName().equals("gpio_dir")) {
-			if (group.contains("IO in")) {
+			if (strHasAnySubstr(group, "IO in", "SIRIN")) {
 				prop.setStrValue(gpioInOutList.get(0)).setRO(true);
-			} else if (group.contains("IO out")) {
+			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
 				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
 			}
 		}
