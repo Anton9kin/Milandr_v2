@@ -187,7 +187,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		String body = getScene().getPinoutsModel().getSelectedBody();
 		int pairCnt = DeviceFactory.getDevice(body).getPairCounts().get(pair.ordinal());
 		int ind = 0;
-		if (pairCnt > 1) {
+		if (group.equals(pair.name()) && pairCnt > 1) {
 			HBox hBox = makeToggleGroup(pair, propsPane, pairCnt);
 			if (isPropsGrid){
 			GridPane.setRowIndex(hBox, ind++);
