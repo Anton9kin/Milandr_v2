@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import milandr_ex.model.BasicController;
 
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 public abstract class MCUExtPairController extends BasicController {
 
-	private Map<String, VBox> gpio_vbox;
+	private Map<String, Pane> gpio_vbox;
 	private Map<String, TitledPane> gpio_tpane;
 	@Override
 	protected boolean isExtPair() { return true; }
@@ -33,7 +32,7 @@ public abstract class MCUExtPairController extends BasicController {
 	}
 
 	@Override
-	protected Node getPropsForGpio(TitledPane parent, VBox vbox, String pinName) {
+	protected Node getPropsForGpio(TitledPane parent, Pane vbox, String pinName) {
 		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
 		if (gpio_tpane == null) gpio_tpane = Maps.newHashMap();
 		gpio_tpane.put(pinName, parent);
