@@ -26,10 +26,10 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
-		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_spo", "gpio_mode1", "gpio_mode2"},
-				"each", gpioInOutList, gpioKindList, gpioFuncList, usbPushPullList, gpioMode1List, gpioMode2List);
+		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_spo", "gpio_mode1"},
+				"each", gpioInOutList, gpioKindList, gpioFuncList, usbPushPullList, gpioMode1List);
 		addModelProps(new String[]{"gpio_filt"}, "each", "B");
-		addModelProps(new String[]{"gpio_spd"}, "each", gpioSpeedList);
+		addModelProps(new String[]{"gpio_spd", "gpio_mode2"}, "each", gpioSpeedList, gpioMode2List);
 		log.debug("#postInit - initialized");
 	}
 
@@ -52,6 +52,19 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 
 	@Override
+	protected boolean checkPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
+										  McuBlockProperty prop, String group) {
+		if (strHasAnySubstr(prop.getName(), "gpio_mode1", "gpio_mode2", "gpio_spd", "gpio_filt")) {
+			if (strHasAnySubstr(group, "IO in", "SIRIN")) {
+				return !prop.getName().equals("gpio_mode2");
+			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
+				return prop.getName().equals("gpio_mode2");
+			}
+		}
+		return super.checkPropByPinGroup(pair, props, prop, group);
+	}
+
+	@Override
 	protected void controlPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
 										 McuBlockProperty prop, String group) {
 		super.controlPropByPinGroup(pair, props, prop, group);
@@ -63,19 +76,26 @@ public class MCUGpioController extends MCUExtPairController {
 			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
 				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
 			}
+			switchPropsVis(props);
 		}
+	}
+
+	private void switchPropsVis(List<McuBlockProperty> props) {
 		if (getNamedProp(props, "gpio_dir").getIntValue() == 0) {
 			getNamedProps(props, McuBlockProperty::show, "gpio_mode1", "gpio_spd", "gpio_filt");
 			getNamedProps(props, McuBlockProperty::hide, "gpio_mode2");
+			getNamedProp(props, "gpio_mode1", p->p.setRow(4));
 		} else {
 			getNamedProps(props, McuBlockProperty::show, "gpio_mode2");
 			getNamedProps(props, McuBlockProperty::hide, "gpio_mode1", "gpio_spd", "gpio_filt");
+			getNamedProp(props, "gpio_mode2", p->p.setRow(4));
 		}
 	}
 
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		List<String> pinList = getPinList();
+		if (pinList.isEmpty()) return oldCode;
 		Set<String> pinPorts = Sets.newLinkedHashSet();
 		Set<String> pinConfs = Sets.newLinkedHashSet();
 		String[] portsInpStrs = new String[]{};
