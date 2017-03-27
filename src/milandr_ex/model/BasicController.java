@@ -176,7 +176,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	private void makeUI(Device.EPairNames pair) {
 		makeUI(pair, pair.name());
 	}
-	private void makeUI(Device.EPairNames pair, String group) {
+	protected void makeUI(Device.EPairNames pair, String group) {
 		Pane propsPane = getPropControl(group);
 		if (propsPane == null) return;
 		propsPane.getChildren().clear();
@@ -202,6 +202,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		int ind = pairCnt > 0 ? 1 : 0;
 		List<McuBlockProperty> props = pair.model().getGroup(group);
 		if (props != null) {
+			propsPane.getChildren().clear();
 			for(McuBlockProperty prop: props) {
 				if (checkPropByPinGroup(pair, props, prop, group)) {
 					prop.makeUI(getScene(), propsPane, ind++);
@@ -247,9 +248,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	private void changePropsAreaHeight(Pane propsPane, int pairCnt, int propsSize) {
 		Pane parent = (Pane)propsPane.getParent();
 		if (parent == null) parent = propsPane;
-		parent.setMinWidth(pairCnt * 25 + propsSize * 25 + 25);
-		parent.setPrefHeight(pairCnt * 25 + propsSize * 25 + 25);
-		parent.setMaxHeight(pairCnt * 25 + propsSize * 25 + 25);
+		GuiUtils.setMinPrefHeight(parent, pairCnt * 25 + propsSize * 35 + 25);
 	}
 
 	private HBox makeToggleGroup(Device.EPairNames pair, Pane propsPane, int pairCnt) {
