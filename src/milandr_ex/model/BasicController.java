@@ -499,7 +499,18 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected McuBlockProperty getModelProp(String name) {
 		return getDevicePair().model().getProp(name);
 	}
+	protected McuBlockProperty getModelProp(String group, String name) {
+		return getDevicePair().model().getProp(group, name);
+	}
 
+	/**
+	 * Set new value for current block's model property
+	 * @param name name for property
+	 * @param value new value for property
+	 */
+	protected void setModelProp(String name, String value) {
+		setModelProp(name, 0, value);
+	}
 	/**
 	 * Set new value for current block's model property
 	 * @param name name for property
@@ -507,7 +518,25 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String name, int ind, String value) {
-		getModelProp(name).setStrValue(value, ind);
+		getModelProp(name).setStrValue(value, ind, true);
+	}
+	/**
+	 * Set new value for current block's model property
+	 * @param group group of property
+	 * @param name name for property
+	 * @param ind value index for setup
+	 * @param value new value for property
+	 */
+	protected void setModelProp(String group, String name, int ind, String value) {
+		getModelProp(group, name).setStrValue(value, ind, true);
+	}
+	/**
+	 * Set new value for current block's model property
+	 * @param name name for property
+	 * @param value new value for property
+	 */
+	protected void setModelProp(String name, Integer value) {
+		setModelProp(name, 0, value);
 	}
 	/**
 	 * Set new value for current block's model property
@@ -516,7 +545,17 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String name, int ind, Integer value) {
-		getModelProp(name).setIntValue(value, ind);
+		getModelProp(name).setIntValue(value, ind, true);
+	}
+	/**
+	 * Set new value for current block's model property
+	 * @param group group of property
+	 * @param name name for property
+	 * @param ind value index for setup
+	 * @param value new value for property
+	 */
+	protected void setModelProp(String group, String name, int ind, Integer value) {
+		getModelProp(group, name).setIntValue(value, ind, true);
 	}
 
 	/**
