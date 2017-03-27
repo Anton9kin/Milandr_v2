@@ -143,7 +143,10 @@ public class Device {
         return pairExists(name) && EPairNames.valueOf(name).custom();
     }
     public enum EPortNames {
-        A, B, C, D, E, F
+        A, B, C, D, E, F;
+        public int ord() { return ordinal(); }
+        public int num() { return ord() + 1; }
+        public int clk() { return num() + 20; }
     }
     private String name;
     private String body;
