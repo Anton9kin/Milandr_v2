@@ -50,6 +50,10 @@ public class McuBlockProperty implements Cloneable {
 	public static ObservableList<String> usbPolarList = FXCollections.observableArrayList("Low Speed", "High Speed");
 	public static ObservableList<String> usbPushPullList = FXCollections.observableArrayList("Подтяжки нет", "Подтяжка к GND", "Подтяжка к VCC");
 	public static ObservableList<String> gpioInOutList = FXCollections.observableArrayList("In (Вход)", "Out (Выход)");
+	public static ObservableList<String> gpioKindList = FXCollections.observableArrayList("Аналоговый", "Цифровой");
+//	public static ObservableList<String> gpioModeList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
+	public static ObservableList<String> gpioFuncList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
+//	public static ObservableList<String> gpioSpeedList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
 
 	public enum PropKind {
 		NONE,
@@ -57,6 +61,9 @@ public class McuBlockProperty implements Cloneable {
 		ERROR;
 	}
 
+	public interface PropAction {
+		void exec(McuBlockProperty prop);
+	}
 	private static class PropValue {
 		private int intValue;
 		private String strValue;
@@ -348,6 +355,8 @@ public class McuBlockProperty implements Cloneable {
 	public boolean isLst() { return kind.equals(PropKind.LST); }
 	public boolean isStr() { return kind.equals(PropKind.STR); }
 	public PropKind getKind() { return kind; }
+	public McuBlockProperty hide() { if (obsNode != null) obsNode.setVisible(false); return this; }
+	public McuBlockProperty show() { if (obsNode != null) obsNode.setVisible(true); return this; }
 
 	public McuBlockProperty makeUI(Pane pane) {
 		return makeUI(null, pane, 0);
