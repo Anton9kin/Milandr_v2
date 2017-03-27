@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.ext;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import static milandr_ex.data.Constants.textToKey;
-import static milandr_ex.data.McuBlockProperty.gpioInOutList;
+import static milandr_ex.data.McuBlockProperty.*;
 import static milandr_ex.utils.StringUtils.strHasAnySubstr;
 
 public class MCUGpioController extends MCUExtPairController {
@@ -23,13 +22,14 @@ public class MCUGpioController extends MCUExtPairController {
 	@FXML
 	private GridPane gpio_gpio;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
 		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"},
-				"each", gpioInOutList, null, null, null);
-		addModelProps(new String[]{"gpio_ifin", "gpio_filt"}, "each", "BB");
-		addModelProps(new String[]{"gpio_spd"}, "each", (List) null);
+				"each", gpioInOutList, gpioKindList, gpioFuncList, usbPushPullList);
+		addModelProps(new String[]{"gpio_filt"}, "each", "B");
+		addModelProps(new String[]{"gpio_spd"}, "each", usbSpeedList);
 		log.debug("#postInit - initialized");
 	}
 
@@ -52,15 +52,18 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 
 	@Override
-	protected void controlPropByPinGroup(Device.EPairNames pair, McuBlockProperty prop, String group) {
-		super.controlPropByPinGroup(pair, prop, group);
+	protected void controlPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
+										 McuBlockProperty prop, String group) {
+		super.controlPropByPinGroup(pair, props, prop, group);
 		if (!getDevicePair().equals(pair)) return;
 		if (group.equals(pair.name())) return;
 		if (prop.getName().equals("gpio_dir")) {
 			if (strHasAnySubstr(group, "IO in", "SIRIN")) {
 				prop.setStrValue(gpioInOutList.get(0)).setRO(true);
+				getNamedProps(props, McuBlockProperty::show, "gpio_spd", "gpio_filt");
 			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
 				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
+				getNamedProps(props, McuBlockProperty::hide, "gpio_spd", "gpio_filt");
 			}
 		}
 	}
