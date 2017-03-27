@@ -14,7 +14,6 @@ import milandr_ex.data.*;
 import milandr_ex.data.code.Command;
 import milandr_ex.data.code.Module;
 import milandr_ex.data.code.Param;
-import milandr_ex.model.BasicController;
 import milandr_ex.model.mcu.ext.MCUExtPairController;
 import milandr_ex.utils.GuiUtils;
 import org.slf4j.Logger;
@@ -24,11 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import static milandr_ex.data.Constants.*;
-import static milandr_ex.data.McuBlockProperty.buccList;
-import static milandr_ex.data.McuBlockProperty.uccList;
 import static milandr_ex.utils.GuiUtils.*;
 
 /**
+ * Clock controller - hold logic for setup clock and generation CPU code block
  * Created by lizard2k1 on 24.02.2017.
  */
 public class MCUClockController extends MCUExtPairController
@@ -36,7 +34,7 @@ public class MCUClockController extends MCUExtPairController
 	private static final Logger log	= LoggerFactory.getLogger(MCUClockController.class);
 
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
-	private Map<String, Label> cllMap = Maps.newHashMap();
+//	private Map<String, Label> cllMap = Maps.newHashMap();
 	private Map<String, GridPane> clkBlocks = Maps.newLinkedHashMap();
 	private GridPane clckCont;
 	@FXML
@@ -212,11 +210,12 @@ public class MCUClockController extends MCUExtPairController
 		return oldCode;
 	}
 
-	Module MDR_EEPROM = Module.MDR_EEPROM.get();
-	Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
-	Module MDR_BKP = Module.MDR_BKP.get();
+	private Module MDR_EEPROM = Module.MDR_EEPROM.get();
+	private Module MDR_RST_CLK = Module.MDR_RST_CLK.get();
+	private Module MDR_BKP = Module.MDR_BKP.get();
 
-	private String[][] cmnts = {{ "Необходима пауза для работы Flash-памяти программ"},{
+	private String[][] cmnts = {
+	{ "Необходима пауза для работы Flash-памяти программ"},{
 		"вкл. HSE осцилятора (частота кварца %s)",
 		"ждем пока HSE выйдет в рабочий режим",
 		"подача частоты на блок PLL",
@@ -548,7 +547,7 @@ public class MCUClockController extends MCUExtPairController
 		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
-		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
+//		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 //		if (subInd != 0 && subInd != 9) {
 ////			String preKey = comboKey.substring(0, comboKey.lastIndexOf("-"));
 //			updatePInComboByGrid(preKey + "-0", preKey.substring(2));
@@ -560,7 +559,7 @@ public class MCUClockController extends MCUExtPairController
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		log_debug(log, String.format("#callGuiListener[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
 //		int row = subInd % 10; int col = subInd / 10;
-		int blockInd = 0;
+//		int blockInd = 0;
 		for(String key: clkBlocks.keySet()) {
 			fillBlocksInputs(key, subInd, clock, key);
 			String hzText = makeHzText(clock.getOut(key, -1));
