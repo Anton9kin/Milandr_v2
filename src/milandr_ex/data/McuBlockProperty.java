@@ -48,12 +48,13 @@ public class McuBlockProperty implements Cloneable {
 	public static ObservableList<String> usbModeList = FXCollections.observableArrayList("Device", "Host");
 	public static ObservableList<String> usbSpeedList = FXCollections.observableArrayList("1.5 Мбит/с", "12 Мбит/с");
 	public static ObservableList<String> usbPolarList = FXCollections.observableArrayList("Low Speed", "High Speed");
-	public static ObservableList<String> usbPushPullList = FXCollections.observableArrayList("Подтяжки нет", "Подтяжка к GND", "Подтяжка к VCC");
+	public static ObservableList<String> usbPushPullList = FXCollections.observableArrayList("Подтяжки нет", "Подтяжка к GND", "Подтяжка к VCC", "Обе две");
 	public static ObservableList<String> gpioInOutList = FXCollections.observableArrayList("In (Вход)", "Out (Выход)");
 	public static ObservableList<String> gpioKindList = FXCollections.observableArrayList("Аналоговый", "Цифровой");
-//	public static ObservableList<String> gpioModeList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
-	public static ObservableList<String> gpioFuncList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
-//	public static ObservableList<String> gpioSpeedList = FXCollections.observableArrayList("Основная", "Альтернативная", "Переопределенная ");
+	public static ObservableList<String> gpioMode1List = FXCollections.observableArrayList("Выключен", "Включен");
+	public static ObservableList<String> gpioMode2List = FXCollections.observableArrayList("Управляемый драйвер", "Открытый сток");
+	public static ObservableList<String> gpioFuncList = FXCollections.observableArrayList("Порт", "Основная", "Альтернативная", "Переопределенная");
+	public static ObservableList<String> gpioSpeedList = FXCollections.observableArrayList("Медленная", "Быстрая", "Максимальная ");
 
 	public enum PropKind {
 		NONE,
