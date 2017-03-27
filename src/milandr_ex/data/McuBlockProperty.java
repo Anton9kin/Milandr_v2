@@ -394,6 +394,8 @@ public class McuBlockProperty implements Cloneable {
 			if (kind.equals(PropKind.INT) && t2s.matches("\\d+")) {
 				setIntValue(Integer.parseInt(t2s), true);
 			} else setStrValue(t2s, true);
+			String propKey = String.format("bp-%s-%s-%s", getPair().name(), getGroup(), getName());
+			scene.getMainController().callGuiListener(propKey, String.valueOf(t1), String.valueOf(t2));
 			scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getPair(), scene.getPinoutsModel());
 			if (scene.getMainController() != null && getPair() != null) {
 				scene.getMainController().updateCodeGenerator(getPair().name());
