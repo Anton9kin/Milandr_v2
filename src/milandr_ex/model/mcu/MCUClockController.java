@@ -544,7 +544,10 @@ public class MCUClockController extends MCUExtPairController
 		ComboBox comboBox = clkMap.get(comboKey);
 		String preKey = comboKey.substring(0, comboKey.lastIndexOf("-"));
 		String subKey = preKey.substring(2);
-		Integer subInd = Integer.parseInt(comboKey.substring(comboKey.lastIndexOf("-") + 1));
+		String subSubKey = comboKey.substring(comboKey.lastIndexOf("-") + 1);
+		// skip keys from mcuBlockProperty listener
+		if (!subSubKey.matches("\\d+")) return;
+		Integer subInd = Integer.parseInt(subSubKey);
 		// 0, 10, 11, 12, 30, 31, 32
 		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 //		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
