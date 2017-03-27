@@ -4,7 +4,6 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import milandr_ex.data.code.CommentKind;
 import milandr_ex.model.BasicController;
-import milandr_ex.model.SplashScreenLoader;
 import milandr_ex.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,7 @@ public class CodeGenerator {
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
 		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model.toStr()));
-		if (firstADCInit && pairBlock.equals(Device.EPairNames.ADC)) {
+		if (firstADCInit && pairBlock.equals(Device.EPairNames.CPU)) {
 			firstADCInit = false;
 			BasicController.makeFadeSplash(getScene());
 		}
