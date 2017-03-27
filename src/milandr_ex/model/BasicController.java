@@ -503,6 +503,13 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return getDevicePair().model().getProp(group, name);
 	}
 
+	protected void resetModelProps(String group) {
+		Map<String, McuBlockProperty> stored = getDevicePair().model().getGroupMap(group);
+		getDevicePair().model().clearProps(group);
+		for(String key: stored.keySet()) {
+			setModelProp(group, key, 0, stored.get(key).getStrValue());
+		}
+	}
 	/**
 	 * Set new value for current block's model property
 	 * @param name name for property
