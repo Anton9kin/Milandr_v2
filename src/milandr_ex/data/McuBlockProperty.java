@@ -111,6 +111,7 @@ public class McuBlockProperty implements Cloneable {
 	private List<PropValue> values;
 	private int valueInd;
 	private Node obsNode;
+	private Node nodeLbl;
 	private ObservableValue obsValue;
 	private Device.EPairNames pair;
 	private boolean readOnly;
@@ -355,8 +356,15 @@ public class McuBlockProperty implements Cloneable {
 	public boolean isLst() { return kind.equals(PropKind.LST); }
 	public boolean isStr() { return kind.equals(PropKind.STR); }
 	public PropKind getKind() { return kind; }
-	public McuBlockProperty hide() { if (obsNode != null) obsNode.setVisible(false); return this; }
-	public McuBlockProperty show() { if (obsNode != null) obsNode.setVisible(true); return this; }
+	public McuBlockProperty hide() { return swich(false); }
+	public McuBlockProperty show() { return swich(true); }
+	private McuBlockProperty swich(boolean visible) {
+		if (obsNode != null) {
+			obsNode.setVisible(visible);
+			nodeLbl.setVisible(visible);
+		}
+		return this;
+	}
 
 	public McuBlockProperty makeUI(Pane pane) {
 		return makeUI(null, pane, 0);
@@ -471,7 +479,7 @@ public class McuBlockProperty implements Cloneable {
 						makeListener(scene, node, ((ComboBox) node).valueProperty()); break;
 		}
 		if (node != null) {
-			Label nodeLbl = new Label(getMsgTxt());
+			nodeLbl = new Label(getMsgTxt());
 			pane.getChildren().add(nodeLbl);
 			GridPane.setRowIndex(nodeLbl, gridIndex);
 			if (subItems != null && !subItems.isEmpty()) {
