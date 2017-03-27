@@ -69,6 +69,7 @@ public class McuBlockProperty implements Cloneable {
 		void exec(McuBlockProperty prop);
 	}
 	private static class PropValue {
+		private boolean innerChange;
 		private int intValue;
 		private String strValue;
 
@@ -265,6 +266,7 @@ public class McuBlockProperty implements Cloneable {
 
 	private void updateObservable(String obsValue) {
 		if (this.obsValue == null) return;
+		this.values.get(valueInd).innerChange = true;
 		if (obsValue == null || obsValue.equals("null")) return;
 		if (this.obsValue instanceof StringProperty) {
 			((StringProperty) this.obsValue).setValue(obsValue + "");
@@ -276,6 +278,7 @@ public class McuBlockProperty implements Cloneable {
 		} else if (this.obsValue instanceof ObjectProperty) {
 			((ObjectProperty) this.obsValue).setValue(obsValue + "");
 		}
+		this.values.get(valueInd).innerChange = false;
 	}
 
 	public McuBlockProperty setStrValue(String strValue) {
@@ -388,6 +391,7 @@ public class McuBlockProperty implements Cloneable {
 		obsValue = property;
 		property.addListener((e, t1, t2) -> {
 			if (t1 == null || scene.isSetupInProcess()) return;
+			if (values.get(valueInd).innerChange) return;
 			String propKey = String.format("bp-%s-%s-%s", getPair().name(), getGroup(), getName());
 			log_debug(String.format("#listen(%s = %s) %s -> %s", propKey, getMsgTxt(), t1, t2));
 			String t1s = String.valueOf(t1);
@@ -497,13 +501,12 @@ public class McuBlockProperty implements Cloneable {
 		}
 		if (node != null) {
 			nodeLbl = new Label(getMsgTxt());
-			if (subItems != null && !subItems.isEmpty()) {
+			String value = getStrValue();
+			if (value.isEmpty() && subItems != null && !subItems.isEmpty()) {
 				setStrValue(subItems.get(0));
 			}
 			if (!name.equals("-")) {
-				if (node instanceof ComboBox) {
-					((ComboBox) node).getSelectionModel().selectFirst();
-				}
+				if (node instanceof ComboBox) setStrValue(getStrValue());
 				if (kind.equals(PropKind.CHK)) GridPane.setHalignment(node, HPos.RIGHT);
 				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
 			}
