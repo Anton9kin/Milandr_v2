@@ -102,9 +102,17 @@ public class MCUGpioController extends MCUExtPairController {
 		for(String pinPort: pinPorts) {
 			g().addCodeStr(oldCode, "//gpio port selected: %s", pinPort);
 		}
+		g().addCodeStr(oldCode, "MDR_RST_CLK->PER_CLOCK |= (");
+		String portsEnableStr = "";
+		for(String pinPort: pinPorts) {
+			portsEnableStr += String.format("|(1UL << %d)", Device.EPortNames.valueOf(pinPort.substring(5)).clk());
+		}
+		g().addCodeStrR(oldCode, "\t" + portsEnableStr.substring(1) + ");");
+		g().addCodeStrL(oldCode, "");
 		for(String pinConf: pinConfs) {
 			g().addCodeStr(oldCode, "//gpio config selected: %s", pinConf);
 		}
+
 		return oldCode;
 	}
 }
