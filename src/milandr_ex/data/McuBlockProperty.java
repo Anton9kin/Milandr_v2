@@ -387,14 +387,16 @@ public class McuBlockProperty implements Cloneable {
 		obsNode = node;
 		obsValue = property;
 		property.addListener((e, t1, t2) -> {
-			if (scene.isSetupInProcess()) return;
-			log_debug(String.format("#listen(%s) %s -> %s", getMsgTxt(), t1, t2));
+			if (t1 == null || scene.isSetupInProcess()) return;
+			String propKey = String.format("bp-%s-%s-%s", getPair().name(), getGroup(), getName());
+			log_debug(String.format("#listen(%s = %s) %s -> %s", propKey, getMsgTxt(), t1, t2));
+			String t1s = String.valueOf(t1);
+			if (t1s.equals("null")) return;
 			String t2s = String.valueOf(t2);
 			if (t2s.equals("null")) t2s = "";
 			if (kind.equals(PropKind.INT) && t2s.matches("\\d+")) {
 				setIntValue(Integer.parseInt(t2s), true);
 			} else setStrValue(t2s, true);
-			String propKey = String.format("bp-%s-%s-%s", getPair().name(), getGroup(), getName());
 			scene.getMainController().callGuiListener(propKey, String.valueOf(t1), String.valueOf(t2));
 			scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getPair(), scene.getPinoutsModel());
 			if (scene.getMainController() != null && getPair() != null) {
