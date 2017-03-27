@@ -26,10 +26,10 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected void postInit(AppScene scene) {
 		setDevicePair(Device.EPairNames.GPIO);
-		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_mode"},
-				"each", gpioInOutList, gpioKindList, gpioFuncList, usbPushPullList);
+		addModelProps(new String[]{"gpio_dir", "gpio_kind", "gpio_funx", "gpio_spo", "gpio_mode1", "gpio_mode2"},
+				"each", gpioInOutList, gpioKindList, gpioFuncList, usbPushPullList, gpioMode1List, gpioMode2List);
 		addModelProps(new String[]{"gpio_filt"}, "each", "B");
-		addModelProps(new String[]{"gpio_spd"}, "each", usbSpeedList);
+		addModelProps(new String[]{"gpio_spd"}, "each", gpioSpeedList);
 		log.debug("#postInit - initialized");
 	}
 
@@ -60,11 +60,16 @@ public class MCUGpioController extends MCUExtPairController {
 		if (prop.getName().equals("gpio_dir")) {
 			if (strHasAnySubstr(group, "IO in", "SIRIN")) {
 				prop.setStrValue(gpioInOutList.get(0)).setRO(true);
-				getNamedProps(props, McuBlockProperty::show, "gpio_spd", "gpio_filt");
 			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
 				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
-				getNamedProps(props, McuBlockProperty::hide, "gpio_spd", "gpio_filt");
 			}
+		}
+		if (getNamedProp(props, "gpio_dir").getIntValue() == 0) {
+			getNamedProps(props, McuBlockProperty::show, "gpio_mode1", "gpio_spd", "gpio_filt");
+			getNamedProps(props, McuBlockProperty::hide, "gpio_mode2");
+		} else {
+			getNamedProps(props, McuBlockProperty::show, "gpio_mode2");
+			getNamedProps(props, McuBlockProperty::hide, "gpio_mode1", "gpio_spd", "gpio_filt");
 		}
 	}
 
@@ -73,6 +78,13 @@ public class MCUGpioController extends MCUExtPairController {
 		List<String> pinList = getPinList();
 		Set<String> pinPorts = Sets.newLinkedHashSet();
 		Set<String> pinConfs = Sets.newLinkedHashSet();
+		String[] portsInpStrs = new String[]{};
+		String[] portsOutStrs = new String[]{};
+		String[] portsAnlgStrs = new String[]{};
+		String[] portsDigStrs = new String[]{};
+		String[] portsPullStrs = new String[]{};
+		String[] portsPushStrs = new String[]{};
+		String[] portsFuncStrs = new String[]{};
 		for(String pinText: pinList) {
 			g().addCodeStr(oldCode, "//gpio pin selected: %s", pinText);
 			String parts[] = pinText.split("\\s");
