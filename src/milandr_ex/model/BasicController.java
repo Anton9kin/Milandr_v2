@@ -518,7 +518,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String name, int ind, String value) {
-		getModelProp(name).setStrValue(value, ind, true);
+		getModelProp(name).setStrValue(value, ind);
 	}
 	/**
 	 * Set new value for current block's model property
@@ -528,7 +528,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String group, String name, int ind, String value) {
-		getModelProp(group, name).setStrValue(value, ind, true);
+		getModelProp(group, name).setStrValue(value, ind);
 	}
 	/**
 	 * Set new value for current block's model property
@@ -545,7 +545,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String name, int ind, Integer value) {
-		getModelProp(name).setIntValue(value, ind, true);
+		getModelProp(name).setIntValue(value, ind);
 	}
 	/**
 	 * Set new value for current block's model property
@@ -555,7 +555,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	 * @param value new value for property
 	 */
 	protected void setModelProp(String group, String name, int ind, Integer value) {
-		getModelProp(group, name).setIntValue(value, ind, true);
+		getModelProp(group, name).setIntValue(value, ind);
 	}
 
 	/**
