@@ -24,11 +24,11 @@ public abstract class MCUExtPairController extends BasicController {
 	protected ObservableList<Node> clearGpioProps() {
 		if (gpio_tpane == null) gpio_tpane = Maps.newHashMap();
 		gpio_tpane.clear();
-//		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
-//		for(String key: gpio_vbox.keySet()) {
-//			getDevicePair().model().clearProps(key);
-//		}
-//		gpio_vbox.clear();
+		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
+		for(String key: gpio_vbox.keySet()) {
+			getDevicePair().model().clearProps(key);
+		}
+		gpio_vbox.clear();
 		return super.clearGpioProps();
 	}
 
