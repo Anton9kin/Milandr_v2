@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static milandr_ex.data.Constants.textToKey;
@@ -59,6 +60,13 @@ public class MCUGpioController extends MCUExtPairController {
 				return !prop.getName().equals("gpio_mode2");
 			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
 				return prop.getName().equals("gpio_mode2");
+			} else {
+				switch (getNamedProp(props, "gpio_dir").getIntValue()) {
+					case 0:
+						return !prop.getName().equals("gpio_mode2");
+					case 1:
+						return prop.getName().equals("gpio_mode2");
+				}
 			}
 		}
 		return super.checkPropByPinGroup(pair, props, prop, group);
@@ -77,6 +85,17 @@ public class MCUGpioController extends MCUExtPairController {
 				prop.setStrValue(gpioInOutList.get(1)).setRO(true);
 			}
 			switchPropsVis(props);
+		}
+	}
+
+	@Override
+	public void callGuiListener(String comboKey, String prev, String value) {
+		super.callGuiListener(comboKey, prev, value);
+		if (!prev.equals("null") && comboKey.endsWith("gpio_dir")) {
+			String group = comboKey.substring(8, comboKey.lastIndexOf("-"));
+			resetModelProps(group);
+			makeUI(getDevicePair(), group);
+//			reCreatePinProps(getDevicePair(), group, getPropControl(group), 0);
 		}
 	}
 
