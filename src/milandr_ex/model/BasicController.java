@@ -207,6 +207,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	protected McuBlockProperty getNamedProp(List<McuBlockProperty> props, String name) {
 		return getNamedProp(props, name, null);
 	}
+	protected McuBlockProperty getNamedProps(List<McuBlockProperty> props, McuBlockProperty.PropAction action, String... names) {
+		for(String name: names) {
+			getNamedProp(props, name, action);
+		}
+		return null;
+	}
 	protected McuBlockProperty getNamedProp(List<McuBlockProperty> props, String name, McuBlockProperty.PropAction action) {
 		for(McuBlockProperty prop: props) {
 			if (prop.getName().equals(name)) {
