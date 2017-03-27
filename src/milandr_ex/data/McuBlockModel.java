@@ -139,10 +139,16 @@ public class McuBlockModel {
 	}
 	public List<McuBlockProperty> getProps() {
 		if (props.isEmpty()) return props;
-		return getGroup(pair.name());
+		return getGroup(getPair().name());
 	}
 
 	public McuBlockProperty getProp(String name) {
+		return getProp(getPair().name(), name);
+	}
+	public McuBlockProperty getProp(String group, String name) {
+		return getProp(name, getGroup(group));
+	}
+	public McuBlockProperty getProp(String name, List<McuBlockProperty> props) {
 		for(McuBlockProperty prop: props) {
 			if (prop.getName().equals(name)) return prop;
 		}
