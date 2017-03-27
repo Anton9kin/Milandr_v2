@@ -12,7 +12,9 @@ import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import jfxtras.scene.control.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,7 @@ public class McuBlockProperty implements Cloneable {
 	public static ObservableList<String> gpioFuncList = FXCollections.observableArrayList("Порт", "Основная", "Альтернативная", "Переопределенная");
 	public static ObservableList<String> gpioSpeedList = FXCollections.observableArrayList("Медленная", "Быстрая", "Максимальная ");
 
+	public static boolean USE_HBOX = Boolean.FALSE;
 	public enum PropKind {
 		NONE,
 		INT, STR, CHK, CMB, LST, CMP,
@@ -363,6 +366,15 @@ public class McuBlockProperty implements Cloneable {
 		if (obsNode != null) {
 			obsNode.setVisible(visible);
 			nodeLbl.setVisible(visible);
+			((Region)obsNode).setPrefHeight(visible ? 12.0 : 0);
+			((Region)nodeLbl).setPrefHeight(visible ? 12.0 : 0);
+		}
+		return this;
+	}
+	public McuBlockProperty setRow(int row) {
+		if (obsNode != null) {
+			GridPane.setRowIndex(obsNode, row);
+			GridPane.setRowIndex(nodeLbl, row);
 		}
 		return this;
 	}
@@ -481,8 +493,6 @@ public class McuBlockProperty implements Cloneable {
 		}
 		if (node != null) {
 			nodeLbl = new Label(getMsgTxt());
-			pane.getChildren().add(nodeLbl);
-			GridPane.setRowIndex(nodeLbl, gridIndex);
 			if (subItems != null && !subItems.isEmpty()) {
 				setStrValue(subItems.get(0));
 			}
@@ -490,14 +500,24 @@ public class McuBlockProperty implements Cloneable {
 				if (node instanceof ComboBox) {
 					((ComboBox) node).getSelectionModel().selectFirst();
 				}
-				pane.getChildren().add(node);
-				GridPane.setRowIndex(node, gridIndex);
-				GridPane.setColumnIndex(node, 1);
 				if (kind.equals(PropKind.CHK)) GridPane.setHalignment(node, HPos.RIGHT);
 				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
 			}
 			node.setDisable(readOnly);
 			setValueInd(0, true);
+			if (USE_HBOX) {
+				HBox hBox = new HBox();
+				hBox.getChildren().add(nodeLbl);
+				hBox.getChildren().add(node);
+				GridPane.setRowIndex(hBox, gridIndex);
+				pane.getChildren().add(hBox);
+			} else {
+				pane.getChildren().add(nodeLbl);
+				pane.getChildren().add(node);
+				GridPane.setRowIndex(nodeLbl, gridIndex);
+				GridPane.setRowIndex(node, gridIndex);
+				GridPane.setColumnIndex(node, 1);
+			}
 		}
 		return this;
 	}
