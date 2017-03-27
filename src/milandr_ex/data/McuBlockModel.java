@@ -107,6 +107,14 @@ public class McuBlockModel {
 		return groups.get(group);
 	}
 
+	public Map<String, McuBlockProperty> getGroupMap(String group) {
+		Map<String, McuBlockProperty> result = Maps.newHashMap();
+		List<McuBlockProperty> list = getGroup(group);
+		if (list == null || list.isEmpty()) return result;
+		for(McuBlockProperty prop: list) result.put(prop.getName(), prop);
+		return result;
+	}
+
 	public McuBlockModel setPropsPane(Pane propsPane) {
 		this.propsPane = propsPane;
 		return this;
