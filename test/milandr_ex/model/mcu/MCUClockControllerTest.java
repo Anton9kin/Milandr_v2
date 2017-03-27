@@ -2,13 +2,13 @@ package milandr_ex.model.mcu;
 
 import com.google.common.collect.Lists;
 import milandr_ex.model.BasicControllerTest;
-import milandr_ex.model.mcu.inn.MCUAdcController;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
 /**
+ * Test class for Clock Controller of the CPU code generation functionality
  * Created by lizard2k1 on 15.03.2017.
  */
 public class MCUClockControllerTest extends BasicControllerTest {
@@ -24,6 +24,16 @@ public class MCUClockControllerTest extends BasicControllerTest {
 	public void initController() {
 		cpuController = new MCUClockController();
 		super.initController(cpuController);
+	}
+
+	@Override
+	protected String[] getControllerParamNames() {
+		return cpuParamNames;
+	}
+
+	@Override
+	protected String[] getControllerClockNames() {
+		return cpuClockNames;
 	}
 
 	@Test
