@@ -101,7 +101,7 @@ public class McuBlockModel {
 	}
 
 	public List<McuBlockProperty> getGroup(String group) {
-		if (!groups.containsKey(group)) {
+		if (!groups.containsKey(group) || groups.get(group).isEmpty()) {
 			groups.put(group, cloneGroup("each"));
 		}
 		return groups.get(group);
