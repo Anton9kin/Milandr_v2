@@ -37,7 +37,7 @@ public class CodeGenerator {
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
 		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model.toStr()));
-		if (firstADCInit && pairBlock.equals(Device.EPairNames.CPU)) {
+		if (firstADCInit && pairBlock.equals(Device.EPairNames.ADC)) {
 			firstADCInit = false;
 			BasicController.makeFadeSplash(getScene());
 		}

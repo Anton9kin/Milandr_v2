@@ -581,6 +581,9 @@ public class MCUClockController extends MCUExtPairController
 //			blockInd++;
 		}
 		fillCpuConfProperties();
+		if (value.trim().equals("LSE")) {
+			makeFadeSplash(getScene());
+		}
 	}
 
 	private void updatePInComboByGrid(String comboKey, String key) {
