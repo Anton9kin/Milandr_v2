@@ -182,22 +182,30 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		propsPane.getChildren().clear();
 		boolean isPropsGrid = propsPane instanceof GridPane;
 		if (isPropsGrid) {
-			makeColumnConstraints((GridPane) propsPane, pair.colWidth(), 100 - pair.colWidth());
+			if (McuBlockProperty.USE_HBOX) {
+				makeColumnConstraints((GridPane) propsPane, 99, 1);
+			} else makeColumnConstraints((GridPane) propsPane, pair.colWidth(), 100 - pair.colWidth());
 		}
 		String body = getScene().getPinoutsModel().getSelectedBody();
 		int pairCnt = DeviceFactory.getDevice(body).getPairCounts().get(pair.ordinal());
-		int ind = 0;
 		if (group.equals(pair.name()) && pairCnt > 1) {
 			HBox hBox = makeToggleGroup(pair, propsPane, pairCnt);
 			if (isPropsGrid){
-			GridPane.setRowIndex(hBox, ind++);
-			GridPane.setColumnSpan(hBox, 2);
+				GridPane.setRowIndex(hBox, 0);
+				GridPane.setColumnSpan(hBox, 2);
 			}
 		}
+		reCreatePinProps(pair, group, propsPane, pairCnt);
+	}
+
+	protected void reCreatePinProps(Device.EPairNames pair, String group, Pane propsPane, int pairCnt) {
+		int ind = pairCnt > 0 ? 1 : 0;
 		List<McuBlockProperty> props = pair.model().getGroup(group);
 		if (props != null) {
 			for(McuBlockProperty prop: props) {
-				prop.makeUI(getScene(), propsPane, ind++);
+				if (checkPropByPinGroup(pair, props, prop, group)) {
+					prop.makeUI(getScene(), propsPane, ind++);
+				}
 			}
 			changePropsAreaHeight(propsPane, pairCnt, props.size());
 			for(McuBlockProperty prop: props) {
@@ -225,7 +233,14 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return null;
 	}
 
-	protected void controlPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props, McuBlockProperty prop, String group) {
+	protected boolean checkPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
+										  McuBlockProperty prop, String group) {
+		//all props allowed by default
+		return true;
+	}
+
+	protected void controlPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
+										 McuBlockProperty prop, String group) {
 		//do nothing by default
 	}
 
@@ -279,7 +294,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		children.clear();
 		return children;
 	}
-	protected Node getPropsForGpio(TitledPane parent, VBox vbox, String pinName) {
+	protected Node getPropsForGpio(TitledPane parent, Pane vbox, String pinName) {
 		vbox.getChildren().add(new Label(pinName));
 		return vbox;
 	}
