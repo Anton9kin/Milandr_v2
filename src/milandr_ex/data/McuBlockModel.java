@@ -92,9 +92,9 @@ public class McuBlockModel {
 
 	private List<McuBlockProperty> cloneGroup(String group) {
 		List<McuBlockProperty> clone = Lists.newArrayList();
-		if (!groups.containsKey(group)) return clone;
-		for (McuBlockProperty item : groups.get(group)) {
-			clone.add(item.clone());
+		if (!groups.containsKey("each")) return clone;
+		for (McuBlockProperty item : groups.get("each")) {
+			clone.add(item.clone().setGroup(group));
 		}
 
 		return clone;
@@ -102,7 +102,7 @@ public class McuBlockModel {
 
 	public List<McuBlockProperty> getGroup(String group) {
 		if (!groups.containsKey(group) || groups.get(group).isEmpty()) {
-			groups.put(group, cloneGroup("each"));
+			groups.put(group, cloneGroup(group));
 		}
 		return groups.get(group);
 	}
