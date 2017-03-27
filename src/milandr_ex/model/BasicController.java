@@ -198,13 +198,26 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (props != null) {
 			for(McuBlockProperty prop: props) {
 				prop.makeUI(getScene(), propsPane, ind++);
-				controlPropByPinGroup(pair, prop, group);
+				controlPropByPinGroup(pair, props, prop, group);
 			}
 			changePropsAreaHeight(propsPane, pairCnt, props.size());
 		}
 	}
 
-	protected void controlPropByPinGroup(Device.EPairNames pair, McuBlockProperty prop, String group) {
+	protected McuBlockProperty getNamedProp(List<McuBlockProperty> props, String name) {
+		return getNamedProp(props, name, null);
+	}
+	protected McuBlockProperty getNamedProp(List<McuBlockProperty> props, String name, McuBlockProperty.PropAction action) {
+		for(McuBlockProperty prop: props) {
+			if (prop.getName().equals(name)) {
+				if (action != null) action.exec(prop);
+				return prop;
+			}
+		}
+		return null;
+	}
+
+	protected void controlPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props, McuBlockProperty prop, String group) {
 		//do nothing by default
 	}
 
