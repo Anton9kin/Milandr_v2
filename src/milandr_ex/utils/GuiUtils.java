@@ -316,13 +316,17 @@ public class GuiUtils {
 		public void decrement(int steps) {
 			String o = String.valueOf(getValue());
 			lastFactor = DoubleStringConverter.getFactor(o);
-			setValue(DoubleStringConverter.getValue(o) - steps * Math.pow(10, lastFactor));
+			Double value = DoubleStringConverter.getValue(o);
+			Double subVal = DoubleStringConverter.getValue(o.replaceAll("[0.]", ""));
+			if (subVal > 0 && subVal <= 1) { lastFactor--;}
+			setValue(value - steps * Math.pow(10, lastFactor));
 		}
 		@Override
 		public void increment(int steps) {
 			String o = String.valueOf(getValue());
 			lastFactor = DoubleStringConverter.getFactor(o);
-			setValue(DoubleStringConverter.getValue(o) + steps * Math.pow(10, lastFactor));
+			Double value = DoubleStringConverter.getValue(o);
+			setValue(value + steps * Math.pow(10, lastFactor));
 		}
 	};
 
