@@ -336,7 +336,8 @@ public class MCUClockController extends MCUExtPairController
 	private void fillCpuConfProperties() {
 		for(String cpuProp: cpuProps) {
 			McuBlockProperty mcuProp = getDevicePair().model().getProp(cpuProp);
-			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
+			mcuProp.setStrValue(makeHzText(getClockProp(mcuProp.getMsgTxt())));
+//			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
 		}
 		AppScene scene = getScene();
 		if (scene.isSetupInProcess()) return;
@@ -465,9 +466,10 @@ public class MCUClockController extends MCUExtPairController
 		makePaddings(gridPane1);
 		String[] combos = combostr.split("\\|");
 		int i = 0;
+		String prev = "";
 		while (combos.length > i) {
-			addComboToGrid(gridPane1, prefix, combos[i], i % 4, i / 4);
-			i++;
+			addComboToGrid(gridPane1, prefix, prev, combos[i], i % 4, i / 4);
+			prev = combos[i++];
 		}
 
 		addRowToGrid(gridPane, gridPane1, 0, 1, span);
@@ -479,12 +481,12 @@ public class MCUClockController extends MCUExtPairController
 		GridPane.setRowIndex(node, row);
 		gp.getChildren().add(node);
 	}
-	private Region addComboToGrid(GridPane gridPane1, String prefix, String items, int col, int row) {
+	private Region addComboToGrid(GridPane gridPane1, String prefix, String prev, String items, int col, int row) {
 		if (items.startsWith("\\")) return null;
-		Region cb = col % 2 == 0 ? makeLabel(items) : makeGridsCombo(items);
+		String key = "k-" + prefix + "-" + col + row;
+		Region cb = col % 2 == 0 ? makeLabel(items) : makeGridsCombo(items, key, changeCallback);
 		if (cb instanceof ComboBox) {
-			String key = "k-" + prefix + "-" + col + row;
-			GuiUtils.makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
+//			GuiUtils.makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
 //			cb = new HBox(cb, new Label(items));
 		}
@@ -515,7 +517,13 @@ public class MCUClockController extends MCUExtPairController
 		}
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		ComboBox comboBox = clkMap.get(comboKey);
-		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+		if (comboBox == null || comboBox.getSelectionModel() == null) {
+			if (comboKey.startsWith("sp-k-")) {
+				clock.setInput("HSE", (int)Math.round(Double.parseDouble(value)));
+				clock.calc();
+			}
+			return;
+		}
 		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 		if (clock == null) return;
 		switch (subInd) {
@@ -549,16 +557,18 @@ public class MCUClockController extends MCUExtPairController
 		if (!subSubKey.matches("\\d+")) return;
 		Integer subInd = Integer.parseInt(subSubKey);
 		// 0, 10, 11, 12, 30, 31, 32
-		if (comboBox == null || comboBox.getSelectionModel() == null) return;
+//		if (comboBox == null || comboBox.getSelectionModel() == null) return;
 //		int selIndex = comboBox.getSelectionModel().getSelectedIndex();
 //		if (subInd != 0 && subInd != 9) {
 ////			String preKey = comboKey.substring(0, comboKey.lastIndexOf("-"));
 //			updatePInComboByGrid(preKey + "-0", preKey.substring(2));
 ////				zeroCBox.getItems().set(factors.indexOf(subInd), value);
 //		}
-		setupOnHoverStyle(bcDef, bcTxt, comboBox);
+		if (comboBox != null && comboBox.getSelectionModel() != null) {
+			setupOnHoverStyle(bcDef, bcTxt, comboBox);
 //		setupOnHoverStyle(newClr("dbe0b6"), comboBox);
-		saveSelectedPin(comboKey, value);
+			saveSelectedPin(comboKey, value);
+		}
 		ClockModel clock = getScene().getPinoutsModel().getClockModel();
 		log_debug(log, String.format("#callGuiListener[%d] process clock with key [%s, %s] -> %s)", 0, subKey, subInd, value));
 //		int row = subInd % 10; int col = subInd / 10;
