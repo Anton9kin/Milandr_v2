@@ -29,7 +29,7 @@ public class Constants {
             {"USB-C1", "USB-C2", ""},
             {"ADC-C1", "ADC-C2", ""},
             {
-                    "HSI|8Mhz|HSE|8 Mhz|LSE|32 Khz|LSI|40 Khz|\\Not",
+                    "HSI|8Mhz|HSE|8 MHz|LSE|32 Khz|LSI|40 Khz|\\Not",
                     "",
                     "HCLK|Sim|CPU-CLK|Sim|USB-CLK|Sim|ADC-CLK|Sim|HSE|/ 256|\\Not",
                     "HSI|8Mhz|HSI|/ 2|HSE|MHz|HSE|/ 2|\\Sim",
