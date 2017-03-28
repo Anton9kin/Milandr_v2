@@ -764,10 +764,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected String makeHzText(int pinVal) {
 		Double pinOut = pinVal  * 1.0;
-		String pinSuff = "Hz";
-		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }
-		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
-		return "  " + pinOut + pinSuff + "  ";
+		String pinSuff = " Hz";
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = " KHz"; }
+		if (pinOut > 1000) { pinOut /=1000; pinSuff = " MHz"; }
+		return " " + pinOut + pinSuff + " ";
 	}
 
 	private Device.EPairNames lastPair = Device.EPairNames.NON;
