@@ -1,18 +1,18 @@
 package milandr_ex.model.mcu.ext;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
 import milandr_ex.data.McuBlockProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static milandr_ex.data.Constants.textToKey;
 import static milandr_ex.data.McuBlockProperty.*;
@@ -113,17 +113,15 @@ public class MCUGpioController extends MCUExtPairController {
 
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
+		Set<String> propList = getDevicePair().model().getGroupMap("each").keySet();
 		List<String> pinList = getPinList();
 		if (pinList.isEmpty()) return oldCode;
 		Set<String> pinPorts = Sets.newLinkedHashSet();
 		Set<String> pinConfs = Sets.newLinkedHashSet();
-		String[] portsInpStrs = new String[]{};
-		String[] portsOutStrs = new String[]{};
-		String[] portsAnlgStrs = new String[]{};
-		String[] portsDigStrs = new String[]{};
-		String[] portsPullStrs = new String[]{};
-		String[] portsPushStrs = new String[]{};
-		String[] portsFuncStrs = new String[]{};
+		Map<Device.EPortNames, Map<String, String[]>> portsStrs = Maps.newLinkedHashMap();
+		for(Device.EPortNames port: Device.EPortNames.values()) {
+			portsStrs.put(port, Maps.newLinkedHashMap());
+		}
 		for(String pinText: pinList) {
 			g().addCodeStr(oldCode, "//gpio pin selected: %s", pinText);
 			String parts[] = pinText.split("\\s");
@@ -132,6 +130,7 @@ public class MCUGpioController extends MCUExtPairController {
 				pinPort = "Port_" + parts[0].charAt(1) + "";
 				pinPorts.add(pinPort);
 			}
+			Device.EPortNames portName = getePortName(pinPort);
 			StringBuilder pinConf = new StringBuilder("\n//Conf: \t").append(pinPort);
 			List<McuBlockProperty> group = getDevicePair().model().getGroup(pinText);
 			int count = 0;
@@ -145,6 +144,9 @@ public class MCUGpioController extends MCUExtPairController {
 					case CMB: confValue = intVal + ""; break;
 					case CHK: confValue = strVal.equals("true") ? "true" : "false"; break;
 				}
+				String[] propStrs = computeIfAbsent(portsStrs, portName, prop);
+				updatePropStrs(pinText, prop, propStrs);
+
 				pinConf.append(String.format("[%s=%s]", prop.getName(), confValue));
 				if (count++ == 3) { count = 0; pinConf.append("\n//\t"); }
 			}
@@ -156,7 +158,7 @@ public class MCUGpioController extends MCUExtPairController {
 		g().addCodeStr(oldCode, "MDR_RST_CLK->PER_CLOCK |= (");
 		String portsEnableStr = "";
 		for(String pinPort: pinPorts) {
-			portsEnableStr += String.format("|(1UL << %d)", Device.EPortNames.valueOf(pinPort.substring(5)).clk());
+			portsEnableStr += String.format("|(1UL << %d)", getePortName(pinPort).clk());
 		}
 		g().addCodeStrR(oldCode, "\t" + portsEnableStr.substring(1) + ");");
 		g().addCodeStrL(oldCode, "");
@@ -164,6 +166,62 @@ public class MCUGpioController extends MCUExtPairController {
 			g().addCodeStr(oldCode, "//gpio config selected: %s", pinConf);
 		}
 
+		g().addCodeStr(oldCode, "");
+		for(Device.EPortNames portName: portsStrs.keySet()) {
+			if (portsStrs.get(portName).isEmpty()) continue;
+			for(String propName: propList) {
+				String[] propVals = portsStrs.get(portName).get(propName);
+				g().addCodeStr(oldCode, "//gpio %s config %s separated: %s", portName, propName, Arrays.toString(propVals));
+				updateCodeStrWithProps(oldCode, portName.name(), propName, propVals);
+			}
+		}
 		return oldCode;
+	}
+
+	private void updateCodeStrWithProps(List<String> code, String port, String func, String[] values) {
+		checkPropFuncs(func);
+		updateCodeStrWithProps(code, port, propFuncs.get(func), values,
+				!func.endsWith("dir") && !func.endsWith("kind"));
+	}
+
+	private Map<String, String> propFuncs = Maps.newLinkedHashMap();
+	private void checkPropFuncs(String func) {
+		if (propFuncs.isEmpty()) {
+			for(String propFunc: Constants.propFuncs) {
+				String[] propParts = propFunc.split("\\:");
+				propFuncs.put(propParts[0], propParts[1]);
+			}
+		}
+		if (!propFuncs.containsKey(func)) propFuncs.put(func, func);
+	}
+
+	private void updateCodeStrWithProps(List<String> code, String port, String func, String[] values, boolean skipFirst) {
+		int ind = 0;
+		for(String value: values) {
+			if (ind == 0 && skipFirst) {ind++; continue;}
+			updateCodeStrWithProps(code, port, func, (ind++ == 0 ? "&=~" : "="), value);
+		}
+	}
+	private void updateCodeStrWithProps(List<String> code, String port, String func, String opp, String values) {
+		if (values.isEmpty()) return;
+		g().addCodeStr(code, "MDR_PORT%s->%s %s 0x0;//%s", port, func, opp, values);
+	}
+	private void updatePropStrs(String pinText, McuBlockProperty prop, String[] propStrs) {
+		String pinStrs = propStrs[prop.getIntValue()];
+		pinStrs += "[" + pinText.split("\\s")[0] + "]";
+		propStrs[prop.getIntValue()] = pinStrs;
+	}
+
+	private String[] computeIfAbsent(Map<Device.EPortNames, Map<String, String[]>> portsStrs,
+									 Device.EPortNames portName, McuBlockProperty prop) {
+		return portsStrs.get(portName).computeIfAbsent(prop.getName(), k -> {
+			String[] result = new String[9];
+			Arrays.fill(result, "");
+			return result;
+		});
+	}
+
+	private Device.EPortNames getePortName(String pinPort) {
+		return Device.EPortNames.valueOf(pinPort.substring(5));
 	}
 }
