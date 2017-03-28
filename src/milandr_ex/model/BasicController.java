@@ -762,7 +762,8 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		else System.out.println(logText);
 	}
 
-	protected String makeHzText(int pinOut) {
+	protected String makeHzText(int pinVal) {
+		Double pinOut = pinVal  * 1.0;
 		String pinSuff = "Hz";
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "KHz"; }
 		if (pinOut > 1000) { pinOut /=1000; pinSuff = "MHz"; }
