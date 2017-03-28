@@ -19,9 +19,13 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.StringConverter;
+import javafx.util.converter.FormatStringConverter;
 import milandr_ex.data.Constants;
 import org.controlsfx.control.CheckComboBox;
 
+import java.text.Format;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -303,6 +307,25 @@ public class GuiUtils {
 		return input;
 	}
 
+	private static SpinnerValueFactory svf = new SpinnerValueFactory<Double>() {
+		{
+			setConverter(new DoubleStringConverter());
+		}
+		private long lastFactor;
+		@Override
+		public void decrement(int steps) {
+			String o = String.valueOf(getValue());
+			lastFactor = DoubleStringConverter.getFactor(o);
+			setValue(DoubleStringConverter.getValue(o) - steps * Math.pow(10, lastFactor));
+		}
+		@Override
+		public void increment(int steps) {
+			String o = String.valueOf(getValue());
+			lastFactor = DoubleStringConverter.getFactor(o);
+			setValue(DoubleStringConverter.getValue(o) + steps * Math.pow(10, lastFactor));
+		}
+	};
+
 	public static Region makeGridsCombo(String items) {
 		return makeGridsCombo(items, "", null);
 	}
@@ -310,7 +333,9 @@ public class GuiUtils {
 		Region cb;
 		if (items.matches("\\d+\\s[MK]Hz")) {
 			int max = Integer.parseInt(items.substring(0, items.indexOf(' ')));
-			cb = new Spinner<Integer>(2, max, 2);
+			Spinner sp = new Spinner<Integer>(svf);
+			sp.setEditable(true);
+			cb = sp;
 		} else cb = !items.matches("[\\/\\*] \\d+") ? new TextField(items) :
 				new ComboBox<String>(Constants.getDvMlItems(items));
 		if (cb instanceof ComboBox) {
@@ -320,8 +345,7 @@ public class GuiUtils {
 			((TextField) cb).setEditable(false);
 			cb.setDisable(true);
 		}
-		cb.setPrefWidth(80.0);
-//		cb.setPrefWidth(cb instanceof ComboBox ? 120.0 : 80.0);
+		cb.setPrefWidth(cb instanceof Spinner ? 120.0 : 80.0);
 		return cb;
 	}
 
