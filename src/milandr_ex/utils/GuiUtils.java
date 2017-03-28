@@ -333,7 +333,8 @@ public class GuiUtils {
 		Region cb;
 		if (items.matches("\\d+\\s[MK]Hz")) {
 			int max = Integer.parseInt(items.substring(0, items.indexOf(' ')));
-			Spinner sp = new Spinner<Integer>(svf);
+			Spinner sp = new Spinner<Double>(svf);
+			sp.getEditor().setText(items);
 			sp.setEditable(true);
 			cb = sp;
 		} else cb = !items.matches("[\\/\\*] \\d+") ? new TextField(items) :
