@@ -232,7 +232,7 @@ public class MCUAdcController extends BasicController {
 					chns |= 1 << chni;
 					chnCmt += (chnCmt.length() > 0 ? "|" : "") + String.format("1 << %d", chni);
 				}
-				if (chn >= 0) {
+				if (!chnLst.matches("RESET") && chn >= 0) {
 					MDR_ADC.set((codeStep > 2 ? Param.ADC2_CFG : Param.ADC1_CFG)
 							.set(1, adcSrc, sample, chn, adcSwCh,mref, adcSrcDiv)
 							.shift(0, 2, 3, 4, 9, 11, 12)).args(chnLst).cmt(0, 1, 2, 3, 4, 5, 6).build();
@@ -311,8 +311,10 @@ public class MCUAdcController extends BasicController {
 	protected void checkSelectedPin(String comboKey, String value) {
 		super.checkSelectedPin(comboKey, value);
 		if (comboKey.matches(getDevicePair().name() + "-\\d")) {
+			super.checkSelectedPin("c-" + comboKey, "true");
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
 			setModelProp("lst_chn", Integer.parseInt(ind) - 1, value);
+			getScene().genKind(getScene().genKind());
 		}
 	}
 }
