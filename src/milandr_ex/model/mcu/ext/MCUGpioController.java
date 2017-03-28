@@ -162,9 +162,9 @@ public class MCUGpioController extends MCUExtPairController {
 		}
 		g().addCodeStrR(oldCode, "\t" + portsEnableStr.substring(1) + ");");
 		g().addCodeStrL(oldCode, "");
-		for(String pinConf: pinConfs) {
-			g().addCodeStr(oldCode, "//gpio config selected: %s", pinConf);
-		}
+//		for(String pinConf: pinConfs) {
+//			g().addCodeStr(oldCode, "//gpio config selected: %s", pinConf);
+//		}
 
 		g().addCodeStr(oldCode, "");
 		for(Device.EPortNames portName: portsStrs.keySet()) {
@@ -204,11 +204,16 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 	private void updateCodeStrWithProps(List<String> code, String port, String func, String opp, String values) {
 		if (values.isEmpty()) return;
-		g().addCodeStr(code, "MDR_PORT%s->%s %s 0x0;//%s", port, func, opp, values);
+		g().addCodeStr(code, "MDR_PORT%s->%s %s(%s)", port, func, opp, values);
 	}
 	private void updatePropStrs(String pinText, McuBlockProperty prop, String[] propStrs) {
 		String pinStrs = propStrs[prop.getIntValue()];
-		pinStrs += "[" + pinText.split("\\s")[0] + "]";
+//		pinStrs += "[" + pinText.split("\\s")[0] + "]";
+		boolean isFunc = prop.getName().endsWith("funx") || prop.getName().endsWith("spd");
+		String pref = "|(" + (isFunc ? prop.getIntValue() : 1);
+		int portIndex = Integer.parseInt(pinText.split("\\s")[0].charAt(2) + "");
+		pinStrs += pref + " << " + portIndex + (isFunc ? " * 2)" : ")");
+		if (pinStrs.startsWith("|")) pinStrs = pinStrs.substring(1);
 		propStrs[prop.getIntValue()] = pinStrs;
 	}
 
