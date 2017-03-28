@@ -340,6 +340,7 @@ public class GuiUtils {
 			Spinner sp = new Spinner<Double>(svf);
 			sp.getEditor().setText(items);
 			sp.setEditable(true);
+			if (!key.isEmpty()) makeListener("sp-" + key, sp.valueProperty(), callBack);
 			cb = sp;
 		} else cb = !items.matches("[\\/\\*] \\d+") ? new TextField(items) :
 				new ComboBox<String>(Constants.getDvMlItems(items));
