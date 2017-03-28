@@ -23,6 +23,16 @@ public class Constants {
     public static boolean USE_HOVERED_STYLE = Boolean.FALSE;
     public static String[] exclusivePairs = {"IO", "DATA", "READY", "nSIR", "EXT", "ADC", "ADDR", "OSC"};
     public static List<String> exclusiveList = Lists.newArrayList(exclusivePairs);
+    public static String[] propFuncs = {
+            "gpio_dir:OE",
+            "gpio_kind:ANALOG",
+            "gpio_filt:GFEN",
+            "gpio_funx:FUNC",
+            "gpio_spo:PULL",
+            "gpio_mode1:PD",
+            "gpio_mode2:PD",
+            "gpio_spd:PWR",
+    };
     public static String[][] combostrs = {
             {"INPUTS", "", "OUTPUT"},
             {"CPU-C1", "CPU-C2", "HCLK"},
