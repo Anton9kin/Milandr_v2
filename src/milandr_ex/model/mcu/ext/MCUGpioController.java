@@ -204,7 +204,8 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 	private void updateCodeStrWithProps(List<String> code, String port, String func, String opp, String values) {
 		if (values.isEmpty()) return;
-		g().addCodeStr(code, "MDR_PORT%s->%s %s(%s)", port, func, opp, values);
+		if (func.length() <= 4) func += "\t";
+		g().addCodeStr(code, "MDR_PORT%s->%s %s\t(%s)", port, func, opp, values);
 	}
 	private void updatePropStrs(String pinText, McuBlockProperty prop, String[] propStrs) {
 		String pinStrs = propStrs[prop.getIntValue()];
