@@ -108,7 +108,7 @@ public class McuBlockModel {
 	}
 
 	public Map<String, McuBlockProperty> getGroupMap(String group) {
-		Map<String, McuBlockProperty> result = Maps.newHashMap();
+		Map<String, McuBlockProperty> result = Maps.newLinkedHashMap();
 		List<McuBlockProperty> list = getGroup(group);
 		if (list == null || list.isEmpty()) return result;
 		for(McuBlockProperty prop: list) result.put(prop.getName(), prop);
