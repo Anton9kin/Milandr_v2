@@ -17,11 +17,9 @@ import milandr_ex.model.mcu.ext.*;
 import milandr_ex.model.mcu.inn.*;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
-import org.hibernate.annotations.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
