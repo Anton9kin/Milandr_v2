@@ -327,20 +327,22 @@ public class MCUClockController extends MCUExtPairController
 //		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
-		fillCpuConfProperties();
+		fillCpuConfProperties(scene);
 		clockInitialized = true;
 		setupInitalClockValues(scene.getPinoutsModel().getClockModel());
 		log.debug("#postInit - initialized");
 	}
 
-	private void fillCpuConfProperties() {
+	private void updateCpuConfProperties() {
 		for(String cpuProp: cpuProps) {
 			McuBlockProperty mcuProp = getDevicePair().model().getProp(cpuProp);
 			mcuProp.setStrValue(makeHzText(getClockProp(mcuProp.getMsgTxt())));
 //			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
 		}
-		AppScene scene = getScene();
-		if (scene.isSetupInProcess()) return;
+	}
+	private void fillCpuConfProperties(AppScene scene) {
+		updateCpuConfProperties();
+		if (scene == null || scene.isSetupInProcess()) return;
 		scene.getCodeGenerator().listenPinsChanges(scene.getDevice(), getDevicePair(), scene.getPinoutsModel());
 	}
 
@@ -538,6 +540,7 @@ public class MCUClockController extends MCUExtPairController
 				break;
 		}
 		clock.calc();
+//		updateCpuConfProperties();
 //		log_debug(log, clock.calc().toStr(subKey));
 	}
 
@@ -590,7 +593,7 @@ public class MCUClockController extends MCUExtPairController
 			}
 //			blockInd++;
 		}
-		fillCpuConfProperties();
+		fillCpuConfProperties(getScene());
 		if (value.trim().equals("LSE")) {
 			makeFadeSplash(getScene());
 		}
