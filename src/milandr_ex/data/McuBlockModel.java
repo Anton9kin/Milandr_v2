@@ -214,8 +214,10 @@ public class McuBlockModel {
 	public void save(List<String> toSave) {
 		for(McuBlockProperty prop: props) {
 			for(int i = 0; i < prop.getValuesCount(); i++) {
-				toSave.add(String.format("mbm.%s.%s.%d=%d:%s", pair, prop.getName(),
-						i, prop.getIntValue(i), prop.getStrValue(i)));
+				String valueToSave = String.format("mbm.%s.%s.%d=%d:%s", pair, prop.getName(),
+						i, prop.getIntValue(i), prop.getStrValue(i));
+				if (valueToSave.matches(".*(\\.0=0:).*")) continue;
+				toSave.add(valueToSave);
 			}
 		}
 	}
