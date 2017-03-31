@@ -6,6 +6,7 @@ import milandr_ex.McuType;
 import milandr_ex.model.ModelObserver;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,9 @@ public class PinoutsModel {
 
 	public McuBlockModel getBlockModel(String name) {
 		return mcuBlocks.get(getBlockKey(name));
+	}
+	public Collection<McuBlockModel> getBlockModels() {
+		return mcuBlocks.values();
 	}
 
 	public PinoutsModel setBlockModel(McuBlockModel mcuBlockModel) {
@@ -88,7 +92,9 @@ public class PinoutsModel {
 		List<String> toSave = Lists.newArrayList();
 		toSave.add("body=" + selectedBody);
 		for(String key: selectedPins.keySet()) {
-			toSave.add(String.format("pin.%s=%s", key, selectedPins.get(key)));
+			String value = selectedPins.get(key);
+			if (value.equals("RESET")) continue;
+			toSave.add(String.format("pin.%s=%s", key, value));
 		}
 		clockModel.save(toSave);
 		for(McuBlockModel blockModel: mcuBlocks.values()) blockModel.save(toSave);
@@ -100,6 +106,17 @@ public class PinoutsModel {
 		List<String> strings = Constants.loadTxtStrings(file);
 		if (strings == null || strings.isEmpty()) return null;
 		PinoutsModel pinoutsModel = new PinoutsModel();
+		loadModelParams(strings, pinoutsModel);
+		loadSelectedPins(strings, pinoutsModel);
+		pinoutsModel.setHasUnsavedChanges(false);
+		return pinoutsModel;
+	}
+
+	private static void loadModelParams(List<String> strings, PinoutsModel pinoutsModel) {
+		for(McuBlockModel blockModel: pinoutsModel.getBlockModels()) blockModel.load(strings);
+	}
+
+	private static void loadSelectedPins(List<String> strings, PinoutsModel pinoutsModel) {
 		for(String str: strings) {
 			if (!str.contains("=")) continue;
 			String[] props = str.split("=");
@@ -108,8 +125,6 @@ public class PinoutsModel {
 			if (props[0].startsWith("pin.")) pinoutsModel.
 					setSelectedPin(props[0].substring(4), props[1]);
 		}
-		pinoutsModel.setHasUnsavedChanges(false);
-		return pinoutsModel;
 	}
 
 	@Override
