@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>21.0</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
@@ -99,244 +99,6 @@
             <version>${log4j-version}</version>
             <scope>${package.scope}</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-jdk14</artifactId>-->
-            <!--<version>${slf4j-version}</version>-->
-            <!--<scope>${log4j.scope}</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-simple</artifactId>-->
-            <!--<version>${slf4j-version}</version>-->
-            <!--<scope>${log4j.scope}</scope>-->
-        <!--</dependency>-->
-        <!-- www -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-
-        <!-- XML -->
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.4.01</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${org.codehaus.jackson-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${org.codehaus.jackson-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-
-        <!-- tiles -->
-<!--         <dependency> -->
-<!--             <groupId>org.apache.tiles</groupId> -->
-<!--             <artifactId>tiles-jsp</artifactId> -->
-<!--             <version>${org.apache.tiles-version}</version> -->
-<!--             <scope>${package.scope}</scope> -->
-<!--             <exclusions> -->
-<!--                 Exclude Commons Logging in favor of SLF4j -->
-<!--                 <exclusion> -->
-<!--                     <groupId>commons-logging</groupId> -->
-<!--                     <artifactId>commons-logging-api</artifactId> -->
-<!--                 </exclusion> -->
-<!--             </exclusions> -->
-<!--         </dependency> -->
-        <!-- SPRING -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${org.spring-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <!-- SPRING SECURITY -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-<!--             <version>${org.spring-version}</version> -->
-            <version>${org.spring-security-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-<!--             <version>${org.spring-version}</version> -->
-            <version>${org.spring-security-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-taglibs</artifactId>
-<!--             <version>${org.spring-version}</version> -->
-            <version>${org.spring-security-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <!-- END OF SPRING SECURITY -->
-
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.6.9</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${org.hibernate-version}</version>
-            <scope>${package.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>${org.hibernate-version}</version>
-            <scope>${package.scope}</scope>
-		</dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>4.1.0.Final</version>
-            <!--<version>4.0.0.GA</version>-->
-            <scope>${package.scope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.1</version>
-        </dependency>
-
-          <!-- Apache Commons Upload -->  
-<!--         <dependency>   -->
-<!--             <groupId>commons-fileupload</groupId>   -->
-<!--             <artifactId>commons-fileupload</artifactId>   -->
-<!--             <version>1.2.2</version>   -->
-<!--         </dependency>   -->
-		<dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
-		</dependency>
-
-        <!-- Apache Commons Upload -->  
-        <dependency>  
-            <groupId>commons-io</groupId>  
-            <artifactId>commons-io</artifactId>  
-            <version>1.3.2</version>  
-        </dependency>  
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.5.4</version>
-            <scope>${jackson.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.5.4</version>
-            <scope>${jackson.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.5.4</version>
-            <scope>${jackson.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>2.5.4</version>
-            <scope>${jackson.scope}</scope>
-        </dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.6.1</version>
-		</dependency> 
-		<dependency>
-        	<groupId>io.springfox</groupId>
-        	<artifactId>springfox-swagger-ui</artifactId>
-        	<version>2.6.1</version>
-    	</dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <version>3.4.1</version>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -351,61 +113,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Beeline integration -->
-        <dependency>
-              <groupId>javax.mail</groupId>
-              <artifactId>mail</artifactId>
-              <version>1.4.7</version>
-            </dependency>
-            <dependency>
-              <groupId>xerces</groupId>
-              <artifactId>xercesImpl</artifactId>
-              <version>2.10.0</version>
-            </dependency>
-            <dependency>
-              <groupId>commons-codec</groupId>
-              <artifactId>commons-codec</artifactId>
-              <version>1.1</version>
-            </dependency>
-            <!-- END of beeline integration -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3.3</version>
-        </dependency>
         <!-- JSON -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20160212</version>
         </dependency>
-
-        <!-- IOs Pushes -->
-        <dependency>
-            <groupId>com.github.fernandospr</groupId>
-            <artifactId>javapns-jdk16</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <!-- Asterisk -->
-        <dependency>
-            <groupId>org.asteriskjava</groupId>
-            <artifactId>asterisk-java</artifactId>
-            <version>1.0.0-final</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>c:/users/user/Desktop/Lizard/lib/asterisk-java-1.0.0.CI.jar</systemPath>-->
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.oracle</groupId>-->
-            <!--<artifactId>javafx</artifactId>-->
-            <!--<version>2.2.3</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/lib/jfxrt.jar</systemPath>-->
-        <!--</dependency>-->
     </dependencies>
 
     <profiles>
@@ -468,23 +181,9 @@
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
-
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Internal Releases</name>
-            <url>http://nexus.intech-global.com/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Internal Snapshots</name>
-            <url>http://nexus.intech-global.com/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
