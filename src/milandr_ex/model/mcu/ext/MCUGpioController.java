@@ -137,13 +137,7 @@ public class MCUGpioController extends MCUExtPairController {
 			for(McuBlockProperty prop: group) {
 				Integer intVal = prop.getIntValue();
 				String strVal = prop.getStrValue();
-				String confValue = strVal;
-				switch (prop.getKind()) {
-					case INT: confValue = intVal + ""; break;
-					case LST: confValue = intVal + ""; break;
-					case CMB: confValue = intVal + ""; break;
-					case CHK: confValue = strVal.equals("true") ? "true" : "false"; break;
-				}
+				String confValue = getConfValue(prop, intVal, strVal);
 				String[] propStrs = computeIfAbsent(portsStrs, portName, prop);
 				updatePropStrs(pinText, prop, propStrs);
 
@@ -178,6 +172,17 @@ public class MCUGpioController extends MCUExtPairController {
 		return oldCode;
 	}
 
+	private String getConfValue(McuBlockProperty prop, Integer intVal, String strVal) {
+		String confValue = strVal;
+		switch (prop.getKind()) {
+			case INT: confValue = intVal + ""; break;
+			case LST: confValue = intVal + ""; break;
+			case CMB: confValue = intVal + ""; break;
+			case CHK: confValue = strVal.equals("true") ? "true" : "false"; break;
+		}
+		return confValue;
+	}
+
 	private void updateCodeStrWithProps(List<String> code, String port, String func, String[] values) {
 		checkPropFuncs(func);
 		updateCodeStrWithProps(code, port, propFuncs.get(func), values,
@@ -188,7 +193,7 @@ public class MCUGpioController extends MCUExtPairController {
 	private void checkPropFuncs(String func) {
 		if (propFuncs.isEmpty()) {
 			for(String propFunc: Constants.propFuncs) {
-				String[] propParts = propFunc.split("\\:");
+				String[] propParts = propFunc.split(":");
 				propFuncs.put(propParts[0], propParts[1]);
 			}
 		}
