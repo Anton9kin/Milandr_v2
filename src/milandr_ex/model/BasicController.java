@@ -202,10 +202,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		int ind = pairCnt > 0 ? 1 : 0;
 		List<McuBlockProperty> props = pair.model().getGroup(group);
 		if (props != null) {
-			if (!pair.name().equals(group)) propsPane.getChildren().clear();
+			boolean forceUI = pair.name().equals(group);
+			if (!forceUI) propsPane.getChildren().clear();
 			for(McuBlockProperty prop: props) {
 				if (checkPropByPinGroup(pair, props, prop, group)) {
-					prop.makeUI(getScene(), propsPane, ind++);
+					prop.makeUI(getScene(), propsPane, ind++, forceUI);
 				}
 			}
 			changePropsAreaHeight(propsPane, pairCnt, props.size());
@@ -874,6 +875,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		this.devicePair = devicePair;
 		devicePair.model().setBundle(getMessages());
 		devicePair.model().setController(this);
+		devicePair.model().clearAllProps();
 	}
 
 	/**
