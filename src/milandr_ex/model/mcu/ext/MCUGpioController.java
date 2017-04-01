@@ -114,7 +114,7 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected List<String> generateSimpleCodeStep(List<String> oldCode, int codeStep) {
 		Set<String> propList = getDevicePair().model().getGroupMap("each").keySet();
-		List<String> pinList = getPinList();
+		Set<String> pinList = getPinList();
 		if (pinList.isEmpty()) return oldCode;
 		Set<String> pinPorts = Sets.newLinkedHashSet();
 		Set<String> pinConfs = Sets.newLinkedHashSet();

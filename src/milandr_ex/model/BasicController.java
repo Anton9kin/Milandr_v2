@@ -2,6 +2,7 @@ package milandr_ex.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static milandr_ex.utils.GuiUtils.bcDef;
 import static milandr_ex.utils.GuiUtils.bcTxt;
@@ -306,11 +308,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (checkPairForMethodSkip()) return;
 		if (getGPIOControl() != null) {
 			ObservableList<Node> children = clearGpioProps();
-			List<String> pinList = getPinList();
+			int ind = 0;
+			Set<String> pinList = getPinList();
 			for(String pin: pinList) {
 				TitledPane label = makeTitledPane(pin);
 				children.add(label);
-				GridPane.setRowIndex(label, pinList.indexOf(pin));
+				GridPane.setRowIndex(label, ind++);
 				makeUI(getDevicePair(), pin);
 			}
 		}
@@ -897,10 +900,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	protected boolean isExtPair() { return false; }
-	protected List<String> getPinList() {
-		if (checkPairForMethodSkip()) return Lists.newArrayList();
+	protected Set<String> getPinList() {
+		if (checkPairForMethodSkip()) return Sets.newLinkedHashSet();
 	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(getDevicePair().name());
-	 	if (blockModel == null) return Lists.newArrayList();
+	 	if (blockModel == null) return Sets.newLinkedHashSet();
 		return blockModel.getPinsList();
 	}
 }

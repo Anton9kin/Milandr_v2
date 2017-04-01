@@ -2,6 +2,7 @@ package milandr_ex.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
@@ -11,6 +12,7 @@ import milandr_ex.model.BasicController;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Mcu Block Model
@@ -168,8 +170,8 @@ public class McuBlockModel {
 		return McuBlockProperty.get(getPair(), name, "0");
 	}
 
-	public List<String> getPinsList() {
-		List<String> keys = Lists.newArrayList();
+	public Set<String> getPinsList() {
+		Set<String> keys = Sets.newLinkedHashSet();
 		for(ComboBox comboBox: cmBoxes) {
 			String key = comboBox.getId();
 			SingleSelectionModel model = comboBox.getSelectionModel();
