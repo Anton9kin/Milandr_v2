@@ -117,6 +117,7 @@ public class McuBlockProperty implements Cloneable {
 	private int valueInd;
 	private Node obsNode;
 	private Node nodeLbl;
+	private Pane obsPane;
 	private ObservableValue obsValue;
 	private Device.EPairNames pair;
 	private boolean readOnly;
@@ -383,7 +384,15 @@ public class McuBlockProperty implements Cloneable {
 	}
 
 	public McuBlockProperty makeUI(Pane pane) {
-		return makeUI(null, pane, 0);
+		return makeUI(null, pane, 0, true);
+	}
+	public Node getUI() { return obsNode; }
+	public Pane getPane() { return obsPane; }
+	public McuBlockProperty clear() {
+		if (obsPane != null) {
+			obsPane.getChildren().removeAll(obsNode, nodeLbl);
+		}
+		return this;
 	}
 	public void makeListener(AppScene scene, Node node, ObservableValue property) {
 		if (property == null) return;
@@ -483,11 +492,14 @@ public class McuBlockProperty implements Cloneable {
 				'}';
 	}
 
-	public McuBlockProperty makeUI(AppScene scene, Pane pane, int gridIndex) {
-		if (obsNode != null) return this;
+	public McuBlockProperty makeUI(AppScene scene, Pane pane, int gridIndex, boolean force) {
+		if (!force && obsNode != null) return this;
+		if (obsPane == null) obsPane = pane;
+		if (force && obsPane != null) obsPane.getChildren().removeAll(obsNode, nodeLbl);
+		boolean separator = name.equals("-");
 		Node node = null;
 		switch (kind) {
-			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(scene, pane, gridIndex++); break;
+			case CMP: for(McuBlockProperty prop: subProps) prop.makeUI(scene, pane, gridIndex++, force); break;
 			case CHK: node = new CheckBox("");
 				makeListener(scene, node, ((CheckBox) node).selectedProperty()); break;
 			case STR: node = new TextField(strDefValue);
@@ -505,7 +517,7 @@ public class McuBlockProperty implements Cloneable {
 			if (value.isEmpty() && subItems != null && !subItems.isEmpty()) {
 				setStrValue(subItems.get(0));
 			}
-			if (!name.equals("-")) {
+			if (!separator) {
 				if (node instanceof ComboBox) setStrValue(getStrValue());
 				if (kind.equals(PropKind.CHK)) GridPane.setHalignment(node, HPos.RIGHT);
 				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
@@ -515,14 +527,14 @@ public class McuBlockProperty implements Cloneable {
 			if (USE_HBOX) {
 				HBox hBox = new HBox();
 				hBox.getChildren().add(nodeLbl);
-				hBox.getChildren().add(node);
+				if (!separator) hBox.getChildren().add(node);
 				GridPane.setRowIndex(hBox, gridIndex);
 				pane.getChildren().add(hBox);
 			} else {
 				pane.getChildren().add(nodeLbl);
-				pane.getChildren().add(node);
+				if (!separator) pane.getChildren().add(node);
 				GridPane.setRowIndex(nodeLbl, gridIndex);
-				GridPane.setRowIndex(node, gridIndex);
+				if (!separator) GridPane.setRowIndex(node, gridIndex);
 				GridPane.setColumnIndex(node, 1);
 			}
 		}
