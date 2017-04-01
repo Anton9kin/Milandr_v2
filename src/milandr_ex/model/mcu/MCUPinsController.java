@@ -81,8 +81,11 @@ public class MCUPinsController extends BasicController
 	@Override
 	public void observe(PinoutsModel pinoutsModel) {
 		if (pinoutsModel == null) return;
+		final Map<String, String> pins = Maps.newHashMap(pinoutsModel.getSelectedPins());
 		Platform.runLater(() -> {
-			Map<String, String> pins = pinoutsModel.getSelectedPins();
+			// clean pin combos
+			iterateComboMap("", pinoutsModel.getSelectedPins(), comboMap);
+			// load saved pin values
 			iterateComboMap("", pins, ccbMap);
 			iterateComboMap("", pins, comboMap);
 			iterateComboMap("t-", pins, tpaneMap);
