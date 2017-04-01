@@ -128,6 +128,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getParentController() != null) {
 			getParentController().hideChildPane(pair);
 		}
+		if (checkPairForHide(pair.name())) return;
 		McuBlockModel model = pair.model();
 		if (getScene().getPinoutsModel() != null) {
 			model.load(getScene().getPinoutsModel().getSelectedProps());
@@ -891,6 +892,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected boolean isExtPair() { return false; }
 	protected List<String> getPinList() {
+		if (checkPairForHide(getDevicePair().name())) return Lists.newArrayList();
 	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(getDevicePair().name());
 	 	if (blockModel == null) return Lists.newArrayList();
 		return blockModel.getPinsList();
