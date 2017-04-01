@@ -131,6 +131,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getPropControl() != null) {
 			McuBlockModel model = pair.model();
 			model.setPropsPane(getPropControl());
+			model.load(getScene().getPinoutsModel().getSelectedProps());
 			makeUI(pair);
 		}
 	}
