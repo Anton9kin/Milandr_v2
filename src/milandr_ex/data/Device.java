@@ -112,6 +112,7 @@ public class Device {
         if (showPairNames == null) {
             showPairNames = Lists.newArrayList();
             for(EPairNames pair: showPairs) showPairNames.add(pair.name());
+            showPairNames.add(EPairNames.GPIO.name());
         }
         return showPairNames;
     }
