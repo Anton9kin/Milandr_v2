@@ -219,7 +219,7 @@ public class McuBlockModel {
 	public void save(List<String> toSave) {
 		for(McuBlockProperty prop: props) {
 			for(int i = 0; i < prop.getValuesCount(); i++) {
-				String valueToSave = String.format("mbm.%s.%s.%d=%d:%s", pair, prop.getName(),
+				String valueToSave = String.format("mbm.%s-%s.%d=%d:%s", pair, prop.getName(),
 						i, prop.getIntValue(i), prop.getStrValue(i));
 				if (valueToSave.matches(".*(\\.0=0:).*")) continue;
 				toSave.add(valueToSave);
@@ -230,16 +230,29 @@ public class McuBlockModel {
 	public void load(List<String> toLoad) {
 		for(String loadStr: toLoad) {
 			String[] loadItms = loadStr.split("\\.");
-			if (!pair.name().equals(loadItms[1])) continue;
-			for(McuBlockProperty prop: props) {
-				if (!prop.getName().equals(loadItms[2])) continue;
-				String[] valParts = loadItms[3].split("=");
-				int valueInd = Integer.parseInt(valParts[0]);
-				int intValue = Integer.parseInt(valParts[1].split(":")[0]);
-				String strValue = valParts[1].split(":")[1];
-				prop.setIntValue(intValue, valueInd);
-				prop.setStrValue(strValue, valueInd);
-			}
+			loadOneProp(loadItms[1], loadItms[2], loadItms[2].split("=")[1]);
+		}
+	}
+
+	public void loadOneProp(String pairName, String valPart, String values) {
+		String pair = pairName.split("-")[0];
+		String name = pairName.split("-")[1];
+		if (!this.pair.name().equals(pair)) return;
+		for(McuBlockProperty prop: props) {
+            if (!prop.getName().equals(name)) continue;
+            String[] valParts = valPart.split("=");
+            int valueInd = Integer.parseInt(valParts[0]);
+            int intValue = Integer.parseInt(values.split(":")[0]);
+            String strValue = valParts[1].split(":")[1];
+            prop.setIntValue(intValue, valueInd);
+            prop.setStrValue(strValue, valueInd);
+        }
+	}
+
+	public void load(Map<String, String> toLoad) {
+		for(String loadStr: toLoad.keySet()) {
+			String[] loadItms = loadStr.split("\\.");
+			loadOneProp(loadItms[0], loadItms[1], toLoad.get(loadStr));
 		}
 	}
 }
