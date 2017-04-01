@@ -317,6 +317,7 @@ public class GuiUtils {
 			String o = String.valueOf(getValue());
 			lastFactor = DoubleStringConverter.getFactor(o);
 			Double value = DoubleStringConverter.getValue(o);
+			if (o.matches("[+-]?\\d[.]\\dE\\d+")) o = o.replaceAll("E\\d+", "00");
 			Double subVal = DoubleStringConverter.getValue(o.replaceAll("[0.]", ""));
 			if (subVal > 0 && subVal <= 1) { lastFactor--;}
 			setValue(value - steps * Math.pow(10, lastFactor));
