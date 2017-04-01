@@ -217,10 +217,16 @@ public class McuBlockModel {
 	}
 
 	public void save(List<String> toSave) {
+		save(toSave, props);
+		for(String grp: groups.keySet()) {
+			save(toSave, getGroup(grp));
+		}
+	}
+	public void save(List<String> toSave, List<McuBlockProperty> props) {
 		for(McuBlockProperty prop: props) {
 			for(int i = 0; i < prop.getValuesCount(); i++) {
-				String valueToSave = String.format("mbm.%s-%s.%d=%d:%s", pair, prop.getName(),
-						i, prop.getIntValue(i), prop.getStrValue(i));
+				String valueToSave = String.format("mbm.%s-%s-%s.%d=%d:%s", pair,
+						prop.getName(), prop.getGroup(), i, prop.getIntValue(i), prop.getStrValue(i));
 				if (valueToSave.matches(".*(\\.0=0:).*")) continue;
 				toSave.add(valueToSave);
 			}
@@ -238,8 +244,14 @@ public class McuBlockModel {
 	public void loadOneProp(String pairName, String valPart, String values) {
 		String[] names = pairName.split("-");
 		if (names.length < 2) return;
-		String pair = names[0], name = names[1];
+		String pair = names[0], name = names[1], group = names[names.length - 1];
 		if (!this.pair.name().equals(pair)) return;
+		loadOneGroupProp(props, valPart, values, name);
+		if (group.equals("all") || group.equals("each")) return;
+		loadOneGroupProp(getGroup(group), valPart, values, name);
+	}
+
+	private void loadOneGroupProp(List<McuBlockProperty> props, String valPart, String values, String name) {
 		for(McuBlockProperty prop: props) {
             if (!prop.getName().equals(name)) continue;
             String[] valParts = valPart.split("=");
