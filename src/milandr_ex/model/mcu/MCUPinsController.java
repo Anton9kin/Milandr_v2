@@ -83,6 +83,7 @@ public class MCUPinsController extends BasicController
 		if (pinoutsModel == null) return;
 		Platform.runLater(() -> {
 			Map<String, String> pins = pinoutsModel.getSelectedPins();
+			iterateComboMap("", pins, ccbMap);
 			iterateComboMap("", pins, comboMap);
 			iterateComboMap("t-", pins, tpaneMap);
 			iterateComboMap("c-", pins, cboxMap);
