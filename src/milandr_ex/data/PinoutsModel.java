@@ -16,6 +16,7 @@ import java.util.Map;
 public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
+	private Map<String, String> selectedProps = Maps.newHashMap();
 	private Map<Device.EPairNames, McuBlockModel> mcuBlocks = Maps.newHashMap();
 	private boolean hasUnsavedChanges = Boolean.FALSE;
 	private ClockModel clockModel;
@@ -67,8 +68,16 @@ public class PinoutsModel {
 		return Device.EPairNames.valueOf(name.toUpperCase());
 	}
 
+	public PinoutsModel clearSelected() {
+		getSelectedPins().clear();
+		getSelectedProps().clear();
+		return this;
+	}
 	public Map<String, String> getSelectedPins() {
 		return selectedPins;
+	}
+	public Map<String, String> getSelectedProps() {
+		return selectedProps;
 	}
 
 	public boolean isHasUnsavedChanges() {
@@ -81,6 +90,11 @@ public class PinoutsModel {
 
 	public void setSelectedPin(String key, String value) {
 		this.selectedPins.put(key, value);
+		hasUnsavedChanges = true;
+	}
+
+	public void setSelectedProp(String key, String value) {
+		this.selectedProps.put(key, value);
 		hasUnsavedChanges = true;
 	}
 
@@ -124,14 +138,17 @@ public class PinoutsModel {
 			if (props[0].equals("body")) pinoutsModel.setSelectedBody(props[1]);
 			if (props[0].startsWith("pin.")) pinoutsModel.
 					setSelectedPin(props[0].substring(4), props[1]);
+			if (props[0].startsWith("mbm.")) pinoutsModel.
+					setSelectedProp(props[0].substring(4), props[1]);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "PinoutsModel{" +
-				"selectedBody='" + selectedBody + '\'' +
-				", selectedPins=" + selectedPins +
+		return "PinModel{" +
+				"selBody='" + selectedBody + '\'' +
+				", selPins=" + selectedPins +
+				", selProps=" + selectedProps +
 				", mcuBlocks=" + mcuBlocks +
 				", hasUnsavedChanges=" + hasUnsavedChanges +
 				", clockModel=" + clockModel +
