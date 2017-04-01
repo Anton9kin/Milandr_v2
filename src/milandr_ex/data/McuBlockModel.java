@@ -230,20 +230,23 @@ public class McuBlockModel {
 	public void load(List<String> toLoad) {
 		for(String loadStr: toLoad) {
 			String[] loadItms = loadStr.split("\\.");
+			if (loadItms.length < 3) continue;
 			loadOneProp(loadItms[1], loadItms[2], loadItms[2].split("=")[1]);
 		}
 	}
 
 	public void loadOneProp(String pairName, String valPart, String values) {
-		String pair = pairName.split("-")[0];
-		String name = pairName.split("-")[1];
+		String[] names = pairName.split("-");
+		if (names.length < 2) return;
+		String pair = names[0], name = names[1];
 		if (!this.pair.name().equals(pair)) return;
 		for(McuBlockProperty prop: props) {
             if (!prop.getName().equals(name)) continue;
             String[] valParts = valPart.split("=");
             int valueInd = Integer.parseInt(valParts[0]);
-            int intValue = Integer.parseInt(values.split(":")[0]);
-            String strValue = valParts[1].split(":")[1];
+            String[] valVals = values.split(":");
+            int intValue = Integer.parseInt(valVals[0]);
+            String strValue = valVals[valVals.length - 1];
             prop.setIntValue(intValue, valueInd);
             prop.setStrValue(strValue, valueInd);
         }
@@ -252,6 +255,7 @@ public class McuBlockModel {
 	public void load(Map<String, String> toLoad) {
 		for(String loadStr: toLoad.keySet()) {
 			String[] loadItms = loadStr.split("\\.");
+			if (loadItms.length < 2) continue;
 			loadOneProp(loadItms[0], loadItms[1], toLoad.get(loadStr));
 		}
 	}
