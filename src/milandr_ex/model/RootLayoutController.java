@@ -106,7 +106,7 @@ public class RootLayoutController extends BasicController {
 		if (mcu != null){
 			if (clean || getScene().getPinoutsModel() == null) {
 				getScene().setPinoutsModel(PinoutsModel.get(mcu));
-				getScene().getPinoutsModel().getSelectedPins().clear();
+				getScene().getPinoutsModel().clearSelected();
 			}
 			LoaderUtils.initAnyLayout(getScene(), "mainMCU", "main.title", false);
 			getScene().observe("pinouts");
@@ -157,7 +157,7 @@ public class RootLayoutController extends BasicController {
 		PinoutsModel model = getScene().getPinoutsModel();
 		if (model != null) {
 			model.setHasUnsavedChanges(false);
-			model.getSelectedPins().clear();
+			model.clearSelected();
 		}
 		LoaderUtils.initAnyLayout(getScene(), "Main", "main.title", false);
 	}
