@@ -5,11 +5,8 @@ import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -19,13 +16,10 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.util.StringConverter;
-import javafx.util.converter.FormatStringConverter;
 import milandr_ex.data.Constants;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.IndexedCheckModel;
 
-import java.text.Format;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -162,6 +156,13 @@ public class GuiUtils {
 				((CheckBox)node).setSelected(pin.equals("true"));
 			if (node instanceof TitledPane) //noinspection unchecked
 				((TitledPane)node).setExpanded(pin.equals("true"));
+			if (node instanceof CheckComboBox) {
+				IndexedCheckModel model = ((CheckComboBox) node).getCheckModel();
+				String[] values = pin.substring(1, pin.length() - 1).split(",");
+				for(String value: values) {
+					model.check(Integer.parseInt(value.trim()));
+				}
+			}
 		}
 	}
 
@@ -474,5 +475,4 @@ public class GuiUtils {
 			processor.process(comboKey, node);
 		}
 	}
-
 }
