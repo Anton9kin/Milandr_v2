@@ -128,10 +128,12 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getParentController() != null) {
 			getParentController().hideChildPane(pair);
 		}
-		if (getPropControl() != null) {
-			McuBlockModel model = pair.model();
-			model.setPropsPane(getPropControl());
+		McuBlockModel model = pair.model();
+		if (getScene().getPinoutsModel() != null) {
 			model.load(getScene().getPinoutsModel().getSelectedProps());
+		}
+		if (getPropControl() != null) {
+			model.setPropsPane(getPropControl());
 			makeUI(pair);
 		}
 	}
