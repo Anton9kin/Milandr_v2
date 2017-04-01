@@ -128,7 +128,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (getParentController() != null) {
 			getParentController().hideChildPane(pair);
 		}
-		if (checkPairForHide(pair.name())) return;
+		if (checkPairForMethodSkip()) return;
 		McuBlockModel model = pair.model();
 		if (getScene().getPinoutsModel() != null) {
 			model.load(getScene().getPinoutsModel().getSelectedProps());
@@ -207,7 +207,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		List<McuBlockProperty> props = pair.model().getGroup(group);
 		if (props != null) {
 			boolean forceUI = pair.name().equals(group);
-			if (!forceUI) propsPane.getChildren().clear();
+			//if (!forceUI) propsPane.getChildren().clear();
 			for(McuBlockProperty prop: props) {
 				if (checkPropByPinGroup(pair, props, prop, group)) {
 					prop.makeUI(getScene(), propsPane, ind++, forceUI);
@@ -303,6 +303,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return vbox;
 	}
 	protected void fillGpio() {
+		if (checkPairForMethodSkip()) return;
 		if (getGPIOControl() != null) {
 			ObservableList<Node> children = clearGpioProps();
 			List<String> pinList = getPinList();
@@ -313,6 +314,10 @@ public abstract class BasicController implements ChangeCallbackOwner {
 				makeUI(getDevicePair(), pin);
 			}
 		}
+	}
+
+	protected boolean checkPairForMethodSkip() {
+		return checkPairForHide(getDevicePair().name());
 	}
 
 	private TitledPane makeTitledPane(String pin) {
@@ -860,6 +865,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 	protected void saveSelectedPin(String comboKey, String value) {
+		if (checkPairForMethodSkip()) return;
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
 		if (value != null && !value.equals("null") && pinoutsModel != null) {
 			pinoutsModel.setSelectedPin(comboKey, value);
@@ -892,7 +898,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected boolean isExtPair() { return false; }
 	protected List<String> getPinList() {
-		if (checkPairForHide(getDevicePair().name())) return Lists.newArrayList();
+		if (checkPairForMethodSkip()) return Lists.newArrayList();
 	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(getDevicePair().name());
 	 	if (blockModel == null) return Lists.newArrayList();
 		return blockModel.getPinsList();

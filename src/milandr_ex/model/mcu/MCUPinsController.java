@@ -68,6 +68,11 @@ public class MCUPinsController extends BasicController
 	}
 
 	@Override
+	protected boolean checkPairForMethodSkip() {
+		return false;
+	}
+
+	@Override
 	protected void postInit(AppScene scene) {
 		scene.addObserver("pinouts", this);
 		String pack = scene.getMcuMain().getProp("pack");
