@@ -304,8 +304,12 @@ public class McuBlockProperty implements Cloneable {
 	private String getNewStrValueWithDef(String strValue) {
 		String newValue = strValue == null ? strDefValue : strValue;
 		if (newValue == null) newValue = "";
-		if (newValue.isEmpty() && subItems != null && !subItems.isEmpty()) {
-			newValue = subItems.get(0);
+		boolean isNumStr = newValue.matches("\\d+");
+		if ((newValue.isEmpty() || isNumStr)
+				&& subItems != null && !subItems.isEmpty()) {
+			int ind = isNumStr ? Integer.parseInt(newValue) : 0;
+			if (ind >= subItems.size()) ind = 0;
+			newValue = subItems.get(ind);
 		}
 		return newValue;
 	}
