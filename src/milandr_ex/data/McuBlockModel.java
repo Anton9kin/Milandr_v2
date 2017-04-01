@@ -101,6 +101,7 @@ public class McuBlockModel {
 	}
 
 	public List<McuBlockProperty> getGroup(String group) {
+		if (group.equals("all")) return props;
 		if (!groups.containsKey(group) || groups.get(group).isEmpty()) {
 			groups.put(group, cloneGroup(group));
 		}
@@ -133,16 +134,20 @@ public class McuBlockModel {
 		return clearProps(pair.name());
 	}
 	public McuBlockModel clearAllProps() {
+		clearProps(getPair().name());
 		return clearProps("all");
 	}
-	public McuBlockModel clearProps(String group) {
+	public McuBlockModel clearGroup(String group) {
+		List<McuBlockProperty> props = getGroup(group);
 		if (props.isEmpty()) return this;
-		if (!groups.containsKey(group)) return this;
-		if (group.equals("all")) {
-			groups.clear();
-			props.clear();
-		}
-		getGroup(group).clear();
+		for(McuBlockProperty prop: props) prop.clear();
+		props.clear();
+		return this;
+	}
+	public McuBlockModel clearProps(String group) {
+		if (group.equals("all")) groups.clear();
+		else if (!groups.containsKey(group)) return this;
+		clearGroup(group);
 		return this;
 	}
 	public List<McuBlockProperty> getProps() {
