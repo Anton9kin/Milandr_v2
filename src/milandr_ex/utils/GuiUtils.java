@@ -20,10 +20,7 @@ import milandr_ex.data.Constants;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.IndexedCheckModel;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static milandr_ex.data.Constants.*;
 
@@ -144,26 +141,29 @@ public class GuiUtils {
 		iterateComboMap(pref, pins, map, false);
 	}
 	public static void iterateComboMap(String pref, Map<String, String> pins, Map<String, ? extends Node> map, boolean skipReset) {
-		for(String key: map.keySet()) {
+		Set<String> keys = (pins.size() > map.size() ? map : pins).keySet();
+		for(String key: keys) {
 			String pin = pins.get(key);
 			if (pin == null) pin = pins.get(pref + key);
-			if (pin == null) continue;
-			if (skipReset && pin.equals("RESET")) continue;
-			Node node = map.get(key);
-			if (node instanceof ComboBox) //noinspection unchecked
-				((ComboBox)node).getSelectionModel().select(pin);
-			if (node instanceof CheckBox) //noinspection unchecked
-				((CheckBox)node).setSelected(pin.equals("true"));
-			if (node instanceof TitledPane) //noinspection unchecked
-				((TitledPane)node).setExpanded(pin.equals("true"));
-			if (node instanceof CheckComboBox) {
-				IndexedCheckModel model = ((CheckComboBox) node).getCheckModel();
-				String[] values = pin.substring(1, pin.length() - 1).split(",");
-				for(String value: values) {
-					model.check(Integer.parseInt(value.trim()));
-				}
-			}
+			if (pin == null || skipReset && pin.equals("RESET")) continue;
+			processOnePinItem(map.get(key), pin);
 		}
+	}
+
+	private static void processOnePinItem(Node node, String pin) {
+		if (node instanceof ComboBox) //noinspection unchecked
+            ((ComboBox)node).getSelectionModel().select(pin);
+		if (node instanceof CheckBox) //noinspection unchecked
+            ((CheckBox)node).setSelected(pin.equals("true"));
+		if (node instanceof TitledPane) //noinspection unchecked
+            ((TitledPane)node).setExpanded(pin.equals("true"));
+		if (node instanceof CheckComboBox) {
+            IndexedCheckModel model = ((CheckComboBox) node).getCheckModel();
+            String[] values = pin.substring(1, pin.length() - 1).split(",");
+            for(String value: values) {
+                model.check(Integer.parseInt(value.trim()));
+            }
+        }
 	}
 
 	public static void setMinPrefHW(Region node, double minPrefH, double minPrefW) {
