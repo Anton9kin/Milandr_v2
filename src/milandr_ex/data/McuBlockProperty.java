@@ -519,7 +519,10 @@ public class McuBlockProperty implements Cloneable {
 			}
 			if (!separator) {
 				if (node instanceof ComboBox) setStrValue(getStrValue());
-				if (kind.equals(PropKind.CHK)) GridPane.setHalignment(node, HPos.RIGHT);
+				if (kind.equals(PropKind.CHK)) {
+					GridPane.setHalignment(node, HPos.RIGHT);
+					setStrValue(getStrValue());
+				}
 				else ((Control)node).setMaxWidth(Double.MAX_VALUE);
 			}
 			node.setDisable(readOnly);
