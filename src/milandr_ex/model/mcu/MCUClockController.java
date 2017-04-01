@@ -327,17 +327,18 @@ public class MCUClockController extends MCUExtPairController
 //		addModelProps(new String[]{"bp_ucc", "bp_bucc"}, uccList, buccList);
 		scene.addObserver("pinouts", this);
 		fillClockGrid();
-		fillCpuConfProperties(scene);
 		clockInitialized = true;
 		setupInitalClockValues(scene.getPinoutsModel().getClockModel());
+		fillCpuConfProperties(scene);
 		log.debug("#postInit - initialized");
 	}
 
 	private void updateCpuConfProperties() {
 		for(String cpuProp: cpuProps) {
 			McuBlockProperty mcuProp = getDevicePair().model().getProp(cpuProp);
-			mcuProp.setStrValue(makeHzText(getClockProp(mcuProp.getMsgTxt())));
-//			mcuProp.setIntValue(getClockProp(mcuProp.getMsgTxt()));
+			Integer clockProp = getClockProp(mcuProp.getMsgTxt());
+			mcuProp.setStrValue(makeHzText(clockProp));
+//			mcuProp.setIntValue(clockProp);
 		}
 	}
 	private void fillCpuConfProperties(AppScene scene) {
