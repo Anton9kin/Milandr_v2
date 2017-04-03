@@ -34,6 +34,7 @@ public class MCUClockController extends MCUExtPairController
 	private static final Logger log	= LoggerFactory.getLogger(MCUClockController.class);
 
 	private Map<String, ComboBox> clkMap = Maps.newHashMap();
+	private Map<String, Spinner> spnMap = Maps.newHashMap();
 //	private Map<String, Label> cllMap = Maps.newHashMap();
 	private Map<String, GridPane> clkBlocks = Maps.newLinkedHashMap();
 	private GridPane clckCont;
@@ -382,6 +383,8 @@ public class MCUClockController extends MCUExtPairController
 
 	private void setupInitalClockValues(ClockModel clock) {
 		clock.setInputs(new String[]{"HSI", "HSE", "LSI", "LSE"}, new int[]{8000000, 8000000, 40000, 32000});
+		getScene().getPinoutsModel().loadClockParams();
+		updateInputEditors("sp-k-INPUTS-30", "HSE");
 		clock.addRestriction("USB-CLK", "= 48000000");
 		clock.addRestriction("ADC-CLK", "< 14000000");
 		clock.addRestriction("HCLK", "< 80000000");
@@ -402,6 +405,13 @@ public class MCUClockController extends MCUExtPairController
 		updatePInComboByGrid("k-USB-C1-0", "USB-C1");
 		updatePInComboByGrid("k-ADC-C1-0", "ADC-C1");
 		updatePInComboByGrid("k-ADC-C2-0", "ADC-C2");
+	}
+
+	@SuppressWarnings({"SameParameterValue", "unchecked"})
+	private void updateInputEditors(String editorKey, String propName) {
+		SpinnerValueFactory valueFactory = spnMap.get(editorKey).getValueFactory();
+		valueFactory.setValue(getClockProp(propName));
+		valueFactory.decrement(0);
 	}
 
 	private void selectClockCBoxes(String block, int i1, int i2, int i3, String v1, String v2, String v3) {
@@ -492,6 +502,8 @@ public class MCUClockController extends MCUExtPairController
 //			GuiUtils.makeListener(key, (ComboBox) cb, changeCallback);//xtodo	makeListener
 			clkMap.put(key, (ComboBox) cb);
 //			cb = new HBox(cb, new Label(items));
+		} else if (cb instanceof Spinner) {
+			spnMap.put("sp-" + key, (Spinner) cb);
 		}
 		setGridRowCol(gridPane1, cb, row, col);
 		return cb;

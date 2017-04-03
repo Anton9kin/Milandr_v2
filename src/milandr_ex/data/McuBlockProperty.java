@@ -395,7 +395,10 @@ public class McuBlockProperty implements Cloneable {
 	public McuBlockProperty clear() {
 		if (obsPane != null) {
 			obsPane.getChildren().removeAll(obsNode, nodeLbl);
+			obsPane = null;
 		}
+		obsNode = null;
+		nodeLbl = null;
 		return this;
 	}
 	public void makeListener(AppScene scene, Node node, ObservableValue property) {

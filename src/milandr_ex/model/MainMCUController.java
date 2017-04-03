@@ -1,6 +1,8 @@
 package milandr_ex.model;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -10,6 +12,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.*;
 import milandr_ex.data.AppScene;
+import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
 import milandr_ex.data.DeviceFactory;
 import milandr_ex.model.mcu.*;
@@ -20,6 +23,7 @@ import milandr_ex.utils.SyntaxHighlighter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -253,5 +257,78 @@ public class MainMCUController extends BasicController {
 		((Region)node).setMinHeight(0.0);
 		((Region)node).setPrefHeight(0.0);
 		((Region)node).setMaxHeight(0.0);
+	}
+
+	private Map<FN, List<String>> outClasses = Maps.newLinkedHashMap();
+	private enum FN {NONE, INIT_H, INIT_C, MAIN_H, MAIN_C, ERR}
+	private enum KN {
+		NONE {
+			public FN h() { return FN.NONE; }
+			public FN c() { return FN.NONE; }
+		}, INIT {
+			public FN h() { return FN.INIT_H; }
+			public FN c() { return FN.INIT_C; }
+		}, MAIN {
+			public FN h() { return FN.MAIN_H; }
+			public FN c() { return FN.MAIN_C; }
+		}, ERR {
+			public FN h() { return FN.ERR; }
+			public FN c() { return FN.ERR; }
+		};
+		public abstract FN h();
+		public abstract FN c();
+	}
+	private void addCode(FN fn, String codeLine) {
+		if (!outClasses.containsKey(fn)) {
+			outClasses.put(fn, Lists.newArrayList());
+		}
+		outClasses.get(fn).add(codeLine);
+	}
+	private void saveCode() {
+		List<String> fullCode = Lists.newArrayList();
+		for(FN fn: outClasses.keySet()) {
+			String fPath = "./" + fn.name().toLowerCase().replace("_", ".");
+			Constants.saveTxtList(new File(fPath), outClasses.get(fn), true);
+			fullCode.add("");
+			fullCode.add("/* " + fPath + " */");
+			fullCode.addAll(outClasses.get(fn));
+		}
+		SyntaxHighlighter.set(getScene(), fullCode);
+	}
+	public void genAllCode(ActionEvent actionEvent) {
+		outClasses.clear();
+		addCode(FN.INIT_H, "int init ( void );");
+
+		addCode(FN.INIT_C, "#include init.h;");
+		List<String> funcList = Lists.newArrayList();
+		for(String pairName: Device.showPairNames()) {
+			if (checkPairForHide(pairName)) continue;
+			Device.EPairNames pair = Device.EPairNames.valueOf(pairName);
+			funcList.add(pairName + "_init");
+			for(String codeLine: pair.model().getCodeList()) {
+				addCode(FN.INIT_C, codeLine);
+			}
+		}
+		addCode(FN.INIT_C, "int init ( void ) {");
+		addCodeFunc(KN.INIT, "CPU_init");
+		for(String funcName: funcList) {
+			if (funcName.startsWith("CPU")) continue;
+			addCodeFunc(KN.INIT, funcName);
+		}
+		addCode(FN.INIT_C, "}");
+
+		addCode(FN.MAIN_H, "int main ( void );");
+
+		addCode(FN.MAIN_C, "#include init.h;");
+		addCode(FN.MAIN_C, "#include main.h;");
+		addCode(FN.MAIN_C, "int main ( void ) {");
+		addCode(FN.MAIN_C, "\tinit();");
+		addCode(FN.MAIN_C, "}");
+		saveCode();
+	}
+
+	private void addCodeFunc(KN kn, String funcName) {
+		addCode(kn.h(), "void " + funcName + "( void );");
+		addCode(kn.c(), "\t" + funcName + "();");
 	}
 }

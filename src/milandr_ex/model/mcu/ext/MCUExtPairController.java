@@ -35,6 +35,9 @@ public abstract class MCUExtPairController extends BasicController {
 //					getDevicePair().model().clearProps(key);
 			}
 //		}
+		for(String key: gpio_vbox.keySet()) {
+			getDevicePair().model().propsClear(key);
+		}
 		gpio_vbox.clear();
 		return super.clearGpioProps();
 	}
