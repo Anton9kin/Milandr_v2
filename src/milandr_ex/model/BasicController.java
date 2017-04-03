@@ -860,19 +860,27 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		checkSelectedPin(comboKey, value, false);
 	}
 	protected void checkSelectedPin(String comboKey, String value, boolean force) {
-		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
 		if (!force && getScene().isSetupInProcess()) return;
 		if (value.equals("RESET")) return;
+		iterateSubs((s)->s.checkSelectedPin(comboKey, value));
 		if (comboKey.matches("c-" + getDevicePair().name() + "-\\d")) {
 			String ind = comboKey.substring(comboKey.length() -1, comboKey.length());
 			cboxChecked[Integer.parseInt(ind) - 1] = Boolean.parseBoolean(value);
-			getScene().genKind(getScene().genKind());
+			if (comboKey.contains(getDevicePair().name())) {
+				getScene().genKind(getDevicePair());
+			}
 		} else if (comboKey.startsWith(getDevicePair().name())) {
 			pinSelected.put(comboKey, value);
 		}
 	}
+	private void addPinIfMissed(String comboKey, String value) {
+		PinoutsModel pinoutsModel = getScene().getPinoutsModel();
+		if (pinoutsModel.hasSelectedPin(comboKey)) return;
+		pinoutsModel.setSelectedPin(comboKey, value);
+	}
 	protected void saveSelectedPin(String comboKey, String value) {
 		if (checkPairForMethodSkip()) return;
+		if (getScene().isSetupInProcess()) addPinIfMissed(comboKey, value);
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
 		if (value != null && !value.equals("null") && pinoutsModel != null) {
 //todo if (!pinoutsModel.getSelectedPins().containsKey(comboKey) && value.equals("RESET")) return;
