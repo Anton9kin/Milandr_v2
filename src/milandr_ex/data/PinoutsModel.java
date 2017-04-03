@@ -116,7 +116,7 @@ public class PinoutsModel {
 		return lastSelectedPin;
 	}
 	public String getLastSelectedValue() {
-		return lastSelectedPin;
+		return lastSelPinValue;
 	}
 
 	public void save(File file) {
