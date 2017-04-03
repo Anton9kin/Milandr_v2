@@ -95,6 +95,9 @@ public class PinoutsModel {
 		this.hasUnsavedChanges = hasUnsavedChanges;
 	}
 
+	public boolean hasSelectedPin(String key) {
+		return selectedPins.containsKey(key);
+	}
 	public void setSelectedPin(String key, String value) {
 		this.selectedPins.put(key, value);
 		lastSelectedPin = key;
