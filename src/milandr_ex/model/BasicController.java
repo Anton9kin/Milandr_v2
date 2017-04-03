@@ -296,7 +296,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected ObservableList<Node> clearGpioProps() {
 		ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();
-		getDevicePair().model().clearProps("gpio");
+		getDevicePair().model().clearProps("gpio", true);
 		children.clear();
 		return children;
 	}
