@@ -139,12 +139,21 @@ public class McuBlockModel {
 		clearProps(getPair().name());
 		return clearProps("all");
 	}
+	public McuBlockModel groupClear(String group) {
+		List<McuBlockProperty> props = getGroup(group);
+		if (props == null || props.isEmpty()) return this;
+		for(McuBlockProperty prop: props) prop.clear();
+		return this;
+	}
 	public McuBlockModel clearGroup(String group) {
 		List<McuBlockProperty> props = getGroup(group);
-		if (props.isEmpty()) return this;
-		for(McuBlockProperty prop: props) prop.clear();
+		if (props == null || props.isEmpty()) return this;
+		groupClear(group);
 		props.clear();
 		return this;
+	}
+	public McuBlockModel propsClear(String group) {
+		return groupClear(group);
 	}
 	public McuBlockModel clearProps(String group) {
 		if (group.equals("all")) groups.clear();
