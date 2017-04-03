@@ -137,7 +137,7 @@ public class McuBlockModel {
 	}
 	public McuBlockModel clearAllProps() {
 		clearProps(getPair().name());
-		return clearProps("all");
+		return clearProps("all", true);
 	}
 	public McuBlockModel groupClear(String group) {
 		return groupClear(group, false);
