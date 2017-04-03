@@ -136,14 +136,11 @@ public class McuBlockModel {
 	public McuBlockModel clearProps() {
 		return clearProps(pair.name());
 	}
-
 	public McuBlockModel clearAllProps() {
 		clearProps(getPair().name());
 		return clearProps("all");
 	}
 	public McuBlockModel groupClear(String group) {
-
-	public McuBlockModel clearGroup(String group) {
 		List<McuBlockProperty> props = getGroup(group);
 		if (props == null || props.isEmpty()) return this;
 		for(McuBlockProperty prop: props) prop.clear();
@@ -153,34 +150,18 @@ public class McuBlockModel {
 		List<McuBlockProperty> props = getGroup(group);
 		if (props == null || props.isEmpty()) return this;
 		groupClear(group);
-		if (props.isEmpty()) return this;
-		for (McuBlockProperty prop : props) prop.clear();
 		props.clear();
 		return this;
 	}
 	public McuBlockModel propsClear(String group) {
 		return groupClear(group);
 	}
-
-	public McuBlockModel groupClear(String group) {
-		List<McuBlockProperty> props = getGroup(group);
-		if (props.isEmpty()) return this;
-		for (McuBlockProperty prop : props) prop.clear();
-		return this;
-	}
-
 	public McuBlockModel clearProps(String group) {
 		if (group.equals("all")) groups.clear();
 		else if (!groups.containsKey(group)) return this;
-		return clearGroup(group);
+		clearGroup(group);
+		return this;
 	}
-
-	public McuBlockModel propsClear(String group) {
-		if (group.equals("all")) groups.clear();
-		else if (!groups.containsKey(group)) return this;
-		return groupClear(group);
-	}
-
 	public List<McuBlockProperty> getProps() {
 		if (props.isEmpty()) return props;
 		return getGroup(getPair().name());
@@ -189,11 +170,9 @@ public class McuBlockModel {
 	public McuBlockProperty getProp(String name) {
 		return getProp(getPair().name(), name);
 	}
-
 	public McuBlockProperty getProp(String group, String name) {
 		return getProp(name, getGroup(group));
 	}
-
 	public McuBlockProperty getProp(String name, List<McuBlockProperty> props) {
 		for (McuBlockProperty prop : props) {
 			if (prop.getName().equals(name)) return prop;
