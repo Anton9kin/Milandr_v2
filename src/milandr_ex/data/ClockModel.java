@@ -18,6 +18,21 @@ public class ClockModel {
 
 	public void save(List<String> toSave) {
 		//do nothing - will saved by pins
+		saveInpVal(toSave, "HSE");
+	}
+
+	private void saveInpVal(List<String> toSave, String inpName) {
+		toSave.add(String.format("clk.%s=%d", inpName, getInpVal(inpName)));
+	}
+
+	public void load(List<String> toLoad) {
+		for (String loadStr : toLoad) {
+			if (loadStr.startsWith("clk")) {
+				String[] parts = loadStr.split("=");
+				if (parts.length < 2 || !parts[1].matches("\\d+")) continue;
+				setInput(parts[0], Integer.parseInt(parts[1]));
+			}
+		}
 	}
 
 	public static class InOut {
