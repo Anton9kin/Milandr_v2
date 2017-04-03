@@ -261,6 +261,23 @@ public class MainMCUController extends BasicController {
 
 	private Map<FN, List<String>> outClasses = Maps.newLinkedHashMap();
 	private enum FN {NONE, INIT_H, INIT_C, MAIN_H, MAIN_C, ERR}
+	private enum KN {
+		NONE {
+			public FN h() { return FN.NONE; }
+			public FN c() { return FN.NONE; }
+		}, INIT {
+			public FN h() { return FN.INIT_H; }
+			public FN c() { return FN.INIT_C; }
+		}, MAIN {
+			public FN h() { return FN.MAIN_H; }
+			public FN c() { return FN.MAIN_C; }
+		}, ERR {
+			public FN h() { return FN.ERR; }
+			public FN c() { return FN.ERR; }
+		};
+		public abstract FN h();
+		public abstract FN c();
+	}
 	private void addCode(FN fn, String codeLine) {
 		if (!outClasses.containsKey(fn)) {
 			outClasses.put(fn, Lists.newArrayList());
@@ -293,10 +310,10 @@ public class MainMCUController extends BasicController {
 			}
 		}
 		addCode(FN.INIT_C, "int init ( void ) {");
-		addCodeFunc("CPU_init");
+		addCodeFunc(KN.INIT, "CPU_init");
 		for(String funcName: funcList) {
 			if (funcName.startsWith("CPU")) continue;
-			addCodeFunc(funcName);
+			addCodeFunc(KN.INIT, funcName);
 		}
 		addCode(FN.INIT_C, "}");
 
@@ -310,8 +327,8 @@ public class MainMCUController extends BasicController {
 		saveCode();
 	}
 
-	private void addCodeFunc(String funcName) {
-		addCode(FN.INIT_H, "void " + funcName + ";");
-		addCode(FN.INIT_C, "\t" + funcName + "();");
+	private void addCodeFunc(KN kn, String funcName) {
+		addCode(kn.h(), "void " + funcName + "( void );");
+		addCode(kn.c(), "\t" + funcName + "();");
 	}
 }
