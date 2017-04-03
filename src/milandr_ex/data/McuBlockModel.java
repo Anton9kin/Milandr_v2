@@ -63,10 +63,11 @@ public class McuBlockModel {
 	public McuBlockModel addModelProp(McuBlockProperty prop) {
 		return addModelProp(prop, prop.getName());
 	}
+
 	public McuBlockModel addModelProp(McuBlockProperty prop, String... msgKeys) {
 		this.props.add(prop.setPair(pair));
 		if (bundle != null && msgKeys != null) {
-			for(String msgKey: msgKeys) {
+			for (String msgKey : msgKeys) {
 				String[] propPath = msgKey.split("\\.");
 				String propKey = propPath[0];
 				String propKeyMsg = propPath[propPath.length - 1];
@@ -114,7 +115,7 @@ public class McuBlockModel {
 		Map<String, McuBlockProperty> result = Maps.newLinkedHashMap();
 		List<McuBlockProperty> list = getGroup(group);
 		if (list == null || list.isEmpty()) return result;
-		for(McuBlockProperty prop: list) result.put(prop.getName(), prop);
+		for (McuBlockProperty prop : list) result.put(prop.getName(), prop);
 		return result;
 	}
 
@@ -135,23 +136,39 @@ public class McuBlockModel {
 	public McuBlockModel clearProps() {
 		return clearProps(pair.name());
 	}
+
 	public McuBlockModel clearAllProps() {
 		clearProps(getPair().name());
 		return clearProps("all");
 	}
+
 	public McuBlockModel clearGroup(String group) {
 		List<McuBlockProperty> props = getGroup(group);
 		if (props.isEmpty()) return this;
-		for(McuBlockProperty prop: props) prop.clear();
+		for (McuBlockProperty prop : props) prop.clear();
 		props.clear();
 		return this;
 	}
+
+	public McuBlockModel groupClear(String group) {
+		List<McuBlockProperty> props = getGroup(group);
+		if (props.isEmpty()) return this;
+		for (McuBlockProperty prop : props) prop.clear();
+		return this;
+	}
+
 	public McuBlockModel clearProps(String group) {
 		if (group.equals("all")) groups.clear();
 		else if (!groups.containsKey(group)) return this;
-		clearGroup(group);
-		return this;
+		return clearGroup(group);
 	}
+
+	public McuBlockModel propsClear(String group) {
+		if (group.equals("all")) groups.clear();
+		else if (!groups.containsKey(group)) return this;
+		return groupClear(group);
+	}
+
 	public List<McuBlockProperty> getProps() {
 		if (props.isEmpty()) return props;
 		return getGroup(getPair().name());
@@ -160,11 +177,13 @@ public class McuBlockModel {
 	public McuBlockProperty getProp(String name) {
 		return getProp(getPair().name(), name);
 	}
+
 	public McuBlockProperty getProp(String group, String name) {
 		return getProp(name, getGroup(group));
 	}
+
 	public McuBlockProperty getProp(String name, List<McuBlockProperty> props) {
-		for(McuBlockProperty prop: props) {
+		for (McuBlockProperty prop : props) {
 			if (prop.getName().equals(name)) return prop;
 		}
 		return McuBlockProperty.get(getPair(), name, "0");
@@ -172,7 +191,7 @@ public class McuBlockModel {
 
 	public Set<String> getPinsList() {
 		Set<String> keys = Sets.newLinkedHashSet();
-		for(ComboBox comboBox: cmBoxes) {
+		for (ComboBox comboBox : cmBoxes) {
 			String key = comboBox.getId();
 			SingleSelectionModel model = comboBox.getSelectionModel();
 			if (model != null && model.getSelectedIndex() >= 0) {
@@ -180,7 +199,7 @@ public class McuBlockModel {
 				if (!controller.filterGpio(key, item)) continue;
 				boolean hasSpace = item.contains(" ") && !item.startsWith("IO");
 				keys.add(hasSpace ? item //Constants.textToKey(item.split("\\s")[1])
-						:  Constants.keyToText(key) + " " + item);
+						: Constants.keyToText(key) + " " + item);
 			}
 		}
 		return keys;
@@ -192,7 +211,7 @@ public class McuBlockModel {
 	}
 
 	public boolean togglePropValues(final int index) {
-		for(McuBlockProperty prop: props) {
+		for (McuBlockProperty prop : props) {
 			prop.setValueInd(index);
 		}
 		return true;
@@ -220,23 +239,24 @@ public class McuBlockModel {
 
 	public void save(List<String> toSave) {
 		save(toSave, props);
-		for(String grp: groups.keySet()) {
+		for (String grp : groups.keySet()) {
 			save(toSave, getGroup(grp));
 		}
 	}
+
 	public void save(List<String> toSave, List<McuBlockProperty> props) {
-		for(McuBlockProperty prop: props) {
-			for(int i = 0; i < prop.getValuesCount(); i++) {
+		for (McuBlockProperty prop : props) {
+			for (int i = 0; i < prop.getValuesCount(); i++) {
 				String valueToSave = String.format("mbm.%s-%s-%s.%d=%d:%s", pair,
 						prop.getName(), prop.getGroup(), i, prop.getIntValue(i), prop.getStrValue(i));
-				if (valueToSave.matches(".*(\\.0=0:).*")) continue;
+				if (valueToSave.matches(".*(\\.\\d=0:).*")) continue;
 				toSave.add(valueToSave);
 			}
 		}
 	}
 
 	public void load(List<String> toLoad) {
-		for(String loadStr: toLoad) {
+		for (String loadStr : toLoad) {
 			String[] loadItms = loadStr.split("\\.");
 			if (loadItms.length < 3) continue;
 			loadOneProp(loadItms[1], loadItms[2], loadItms[2].split("=")[1]);
@@ -254,20 +274,20 @@ public class McuBlockModel {
 	}
 
 	private void loadOneGroupProp(List<McuBlockProperty> props, String valPart, String values, String name) {
-		for(McuBlockProperty prop: props) {
-            if (!prop.getName().equals(name)) continue;
-            String[] valParts = valPart.split("=");
-            int valueInd = Integer.parseInt(valParts[0]);
-            String[] valVals = values.split(":");
-            int intValue = Integer.parseInt(valVals[0]);
-            String strValue = valVals[valVals.length - 1];
-            prop.setIntValue(intValue, valueInd);
-            prop.setStrValue(strValue, valueInd);
-        }
+		for (McuBlockProperty prop : props) {
+			if (!prop.getName().equals(name)) continue;
+			String[] valParts = valPart.split("=");
+			int valueInd = Integer.parseInt(valParts[0]);
+			String[] valVals = values.split(":");
+			int intValue = Integer.parseInt(valVals[0]);
+			String strValue = valVals[valVals.length - 1];
+			prop.setIntValue(intValue, valueInd);
+			prop.setStrValue(strValue, valueInd);
+		}
 	}
 
 	public void load(Map<String, String> toLoad) {
-		for(String loadStr: toLoad.keySet()) {
+		for (String loadStr : toLoad.keySet()) {
 			String[] loadItms = loadStr.split("\\.");
 			if (loadItms.length < 2) continue;
 			loadOneProp(loadItms[0], loadItms[1], toLoad.get(loadStr));
