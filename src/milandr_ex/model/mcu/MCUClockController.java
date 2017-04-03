@@ -410,7 +410,7 @@ public class MCUClockController extends MCUExtPairController
 	@SuppressWarnings({"SameParameterValue", "unchecked"})
 	private void updateInputEditors(String editorKey, String propName) {
 		SpinnerValueFactory valueFactory = spnMap.get(editorKey).getValueFactory();
-		valueFactory.setValue(getClockProp(propName));
+		valueFactory.setValue(getClockProp(propName) * 1.0);
 		valueFactory.decrement(0);
 	}
 
