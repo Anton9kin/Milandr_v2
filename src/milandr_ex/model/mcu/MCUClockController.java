@@ -639,7 +639,8 @@ public class MCUClockController extends MCUExtPairController
 					}
 				}
 
-				log_debug(log, String.format("#updatePInComboByGrid(%s, %s) [%d] = %s", comboKey, key, cind++, lbl.getText() + suff));
+//				log_debug(log, String.format("#updatePInComboByGrid(%s, %s) [%d] = %s", comboKey, key, cind++, lbl.getText() + suff));
+				//noinspection unchecked
 				comboBox.getItems().add(lbl.getText() + suff);
 			}
 			comboBox.getSelectionModel().select(selInd > 0 ? selInd : 0);
