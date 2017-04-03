@@ -5,8 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
-import milandr_ex.data.Constants;
-import milandr_ex.data.PinoutsModel;
 import milandr_ex.model.BasicController;
 
 import java.util.Map;
@@ -26,13 +24,8 @@ public abstract class MCUExtPairController extends BasicController {
 		if (gpio_tpane == null) gpio_tpane = Maps.newHashMap();
 		gpio_tpane.clear();
 		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
-		PinoutsModel pinModel = getScene().getPinoutsModel();
-//		if (pinModel.getLastSelectedValue().equals("RESET")) {
-//			String lastCBkey = pinModel.getLastSelectedPin();
 			for(String key: gpio_vbox.keySet()) {
-//				if (key.startsWith(Constants.keyToText(lastCBkey)))
-					getDevicePair().model().propsClear(key);
-//					getDevicePair().model().clearProps(key);
+				getDevicePair().model().clearProps(key);
 			}
 //		}
 		gpio_vbox.clear();

@@ -296,7 +296,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected ObservableList<Node> clearGpioProps() {
 		ObservableList<Node> children = ((GridPane) getGPIOControl()).getChildren();
-		getDevicePair().model().propsClear("gpio");
+		getDevicePair().model().clearProps("gpio");
 		children.clear();
 		return children;
 	}
@@ -310,9 +310,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 			ObservableList<Node> children = clearGpioProps();
 			int ind = 0;
 			Set<String> pinList = getPinList();
-			PinoutsModel pinoutsModel = getScene().getPinoutsModel();
-			if (pinoutsModel.getLastSelectedValue().equals("RESET")) return;
-			if (!pinoutsModel.getLastSelectedPin().startsWith("cb")) return;
+//			PinoutsModel pinoutsModel = getScene().getPinoutsModel();
+//			if (pinoutsModel.getLastSelectedValue().equals("RESET")) return;
+//			if (!pinoutsModel.getLastSelectedPin().startsWith("cb")) return;
 //			if (!pinList.contains(getScene().getPinoutsModel().getLastSelectedPin())) return;
 			for(String pin: pinList) {
 				TitledPane label = makeTitledPane(pin);
@@ -522,7 +522,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected void resetModelProps(String group) {
 		Map<String, McuBlockProperty> stored = getDevicePair().model().getGroupMap(group);
-		getDevicePair().model().propsClear(group);
+		getDevicePair().model().clearProps(group, true);
 		for(String key: stored.keySet()) {
 			setModelProp(group, key, 0, stored.get(key).getStrValue());
 		}
@@ -875,8 +875,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		if (checkPairForMethodSkip()) return;
 		PinoutsModel pinoutsModel = getScene().isSetupInProcess() ? null : getScene().getPinoutsModel();
 		if (value != null && !value.equals("null") && pinoutsModel != null) {
-//todo
- if (!pinoutsModel.getSelectedPins().containsKey(comboKey) && value.equals("RESET")) return;
+//todo if (!pinoutsModel.getSelectedPins().containsKey(comboKey) && value.equals("RESET")) return;
 			pinoutsModel.setSelectedPin(comboKey, value);
 			if (getParentController() != null) {
 				getParentController().fillAllGpio();
