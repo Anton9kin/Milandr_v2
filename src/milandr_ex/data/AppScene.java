@@ -71,10 +71,16 @@ public class AppScene extends Scene {
 		this.genKind = genKind;
 		Device.EPairNames temp = getMainController().getLastPair();
 		for(Device.EPairNames pair: Device.EPairNames.values()) {
-			getCodeGenerator().listenPinsChanges(getDevice(), pair, getPinoutsModel());
-			if (!temp.equals(pair)) continue;
-			getMainController().updateCodeGenerator(pair.name());
+			genKind(pair, temp);
 		}
+	}
+	public void genKind(Device.EPairNames pair) {
+		genKind(pair, getMainController().getLastPair());
+	}
+	private void genKind(Device.EPairNames pair, Device.EPairNames temp) {
+			getCodeGenerator().listenPinsChanges(getDevice(), pair, getPinoutsModel());
+			if (!temp.equals(pair)) return;
+			getMainController().updateCodeGenerator(pair.name());
 	}
 
 	public boolean isProdMode() {
