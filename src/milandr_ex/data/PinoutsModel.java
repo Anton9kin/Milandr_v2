@@ -20,6 +20,8 @@ public class PinoutsModel {
 	private Map<Device.EPairNames, McuBlockModel> mcuBlocks = Maps.newHashMap();
 	private boolean hasUnsavedChanges = Boolean.FALSE;
 	private ClockModel clockModel;
+	private String lastSelectedPin = "";
+	private String lastSelPinValue = "";
 	public interface Observer extends ModelObserver {
 		public void observe(PinoutsModel model);
 	}
@@ -90,12 +92,21 @@ public class PinoutsModel {
 
 	public void setSelectedPin(String key, String value) {
 		this.selectedPins.put(key, value);
+		lastSelectedPin = key;
+		lastSelPinValue = value;
 		hasUnsavedChanges = true;
 	}
 
 	public void setSelectedProp(String key, String value) {
 		this.selectedProps.put(key, value);
 		hasUnsavedChanges = true;
+	}
+
+	public String getLastSelectedPin() {
+		return lastSelectedPin;
+	}
+	public String getLastSelectedValue() {
+		return lastSelectedPin;
 	}
 
 	public void save(File file) {
