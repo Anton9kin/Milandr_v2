@@ -2,6 +2,7 @@ package milandr_ex.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -156,8 +157,9 @@ public class MainMCUController extends BasicController {
 		makeListeners(cfg_vbox_ex.getChildren());
 		cfg_vbox_ad.getChildren().add(SyntaxHighlighter.get(getScene()));
 		GuiUtils.setAnchors(15.0, cfg_vbox_in, cfg_vbox_ex, cfg_vbox_ad);
-		scene.stopSetupProcess();
-		log.debug("#postInit - initialized");
+//		scene.stopSetupProcess();
+		Platform.runLater(scene::stopSetupProcess);
+		Platform.runLater(()->log.debug("#postInit - initialized"));
 	}
 
 	private void makeListeners(List<Node> cfg_vbox) {
