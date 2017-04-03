@@ -36,6 +36,7 @@ public class CodeGenerator {
 	protected boolean firstADCInit = true;
 	public void listenPinsChanges(Device device, Device.EPairNames pairBlock, PinoutsModel model) {
 		if (device == null || pairBlock == null || model == null) return;
+		if (getScene().isSetupInProcess()) return;
 		if (pairBlock.model().getController().checkPairForMethodSkip()) return;
 		log.debug(String.format("#listenPinsChanges(%s, %s, %s)", device, pairBlock, model.toStr()));
 		if (firstADCInit && pairBlock.equals(Device.EPairNames.ADC)) {
