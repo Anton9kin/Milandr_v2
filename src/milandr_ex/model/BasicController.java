@@ -143,7 +143,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 
 	/**
-	 * Проверка блока на скритие в зависимости от режима запузка приложения (test или debug)
+	 * Проверка блока на скрытие в зависимости от режима запуска приложения (test или debug)
 	 * @param pairName указанный блок для проверки
 	 * @return true - если необходимо скрыть
 	 */
@@ -518,7 +518,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected void resetModelProps(String group) {
 		Map<String, McuBlockProperty> stored = getDevicePair().model().getGroupMap(group);
-		getDevicePair().model().clearProps(group);
+		getDevicePair().model().propsClear(group);
 		for(String key: stored.keySet()) {
 			setModelProp(group, key, 0, stored.get(key).getStrValue());
 		}

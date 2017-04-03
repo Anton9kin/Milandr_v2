@@ -25,7 +25,7 @@ public abstract class MCUExtPairController extends BasicController {
 		gpio_tpane.clear();
 		if (gpio_vbox == null) gpio_vbox = Maps.newHashMap();
 		for(String key: gpio_vbox.keySet()) {
-			getDevicePair().model().clearProps(key);
+			getDevicePair().model().propsClear(key);
 		}
 		gpio_vbox.clear();
 		return super.clearGpioProps();
