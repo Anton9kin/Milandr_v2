@@ -95,6 +95,7 @@ public class MCUPinsController extends BasicController
 			iterateComboMap("", pins, comboMap);
 			iterateComboMap("t-", pins, tpaneMap);
 			iterateComboMap("c-", pins, cboxMap);
+			pinoutsModel.setHasUnsavedChanges(false);
 		});
 	}
 

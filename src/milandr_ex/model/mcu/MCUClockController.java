@@ -353,6 +353,7 @@ public class MCUClockController extends MCUExtPairController
 		if (pinoutsModel == null) return;
 		Map<String, String> pins = pinoutsModel.getSelectedPins();
 		iterateComboMap("k-", pins, clkMap, true);
+		pinoutsModel.setHasUnsavedChanges(false);
 	}
 
 	private void fillClockGrid() {
