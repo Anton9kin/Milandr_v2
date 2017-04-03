@@ -17,6 +17,7 @@ public class PinoutsModel {
 	private String selectedBody;
 	private Map<String, String> selectedPins = Maps.newHashMap();
 	private Map<String, String> selectedProps = Maps.newHashMap();
+	private Map<String, String> clockProps = Maps.newHashMap();
 	private Map<Device.EPairNames, McuBlockModel> mcuBlocks = Maps.newHashMap();
 	private boolean hasUnsavedChanges = Boolean.FALSE;
 	private ClockModel clockModel;
@@ -80,6 +81,10 @@ public class PinoutsModel {
 		return selectedProps;
 	}
 
+	public Map<String, String> getClockProps() {
+		return clockProps;
+	}
+
 	public boolean isHasUnsavedChanges() {
 		return hasUnsavedChanges;
 	}
@@ -90,6 +95,11 @@ public class PinoutsModel {
 
 	public void setSelectedPin(String key, String value) {
 		this.selectedPins.put(key, value);
+		hasUnsavedChanges = true;
+	}
+
+	public void setClockProp(String key, String value) {
+		this.clockProps.put(key, value);
 		hasUnsavedChanges = true;
 	}
 
@@ -130,6 +140,15 @@ public class PinoutsModel {
 		for(McuBlockModel blockModel: pinoutsModel.getBlockModels()) blockModel.load(strings);
 	}
 
+	public void loadClockParams() {
+		if (getClockModel() == null) return;
+		List<String> strings = Lists.newArrayList();
+		for(String key: clockProps.keySet()) {
+			strings.add(String.format("clk.%s=%s", key, clockProps.get(key)));
+		}
+		getClockModel().load(strings);
+	}
+
 	private static void loadSelectedPins(List<String> strings, PinoutsModel pinoutsModel) {
 		for(String str: strings) {
 			if (!str.contains("=")) continue;
@@ -140,6 +159,8 @@ public class PinoutsModel {
 					setSelectedPin(props[0].substring(4), props[1]);
 			if (props[0].startsWith("mbm.")) pinoutsModel.
 					setSelectedProp(props[0].substring(4), props[1]);
+			if (props[0].startsWith("clk.")) pinoutsModel.
+					setClockProp(props[0].substring(4), props[1]);
 		}
 	}
 
@@ -149,6 +170,7 @@ public class PinoutsModel {
 				"selBody='" + selectedBody + '\'' +
 				", selPins=" + selectedPins +
 				", selProps=" + selectedProps +
+				", clkProps=" + clockProps +
 				", mcuBlocks=" + mcuBlocks +
 				", hasUnsavedChanges=" + hasUnsavedChanges +
 				", clockModel=" + clockModel +
