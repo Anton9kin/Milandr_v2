@@ -323,7 +323,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		}
 	}
 
-	protected boolean checkPairForMethodSkip() {
+	public boolean checkPairForMethodSkip() {
 		return checkPairForHide(getDevicePair().name());
 	}
 
@@ -893,6 +893,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		this.devicePair = devicePair;
 		devicePair.model().setBundle(getMessages());
 		devicePair.model().setController(this);
+        if (checkPairForMethodSkip()) return;
 		devicePair.model().clearAllProps();
 	}
 

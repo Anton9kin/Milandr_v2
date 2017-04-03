@@ -68,7 +68,7 @@ public class MCUPinsController extends BasicController
 	}
 
 	@Override
-	protected boolean checkPairForMethodSkip() {
+	public boolean checkPairForMethodSkip() {
 		return false;
 	}
 
