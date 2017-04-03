@@ -279,6 +279,7 @@ public class MainMCUController extends BasicController {
 		SyntaxHighlighter.set(getScene(), fullCode);
 	}
 	public void genAllCode(ActionEvent actionEvent) {
+		outClasses.clear();
 		addCode(FN.INIT_H, "int init ( void );");
 
 		addCode(FN.INIT_C, "#include init.h;");
