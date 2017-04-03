@@ -56,7 +56,14 @@
 						<TitledPane fx:id="cfg_usb" text="%config.usb_setup" expanded="false"><fx:include fx:id="mcuUsb" source="mcu/MCUUsb.fxml" /></TitledPane>
 						<TitledPane fx:id="cfg_gpio" text="%config.gpio_setup" expanded="false"><fx:include fx:id="mcuGpio" source="mcu/MCUGpio.fxml" /></TitledPane>
 					</VBox>
-					<AnchorPane fx:id="cfg_vbox_ad" prefHeight="1024.0" prefWidth="768.0" GridPane.columnIndex="2" />
+					<AnchorPane prefHeight="1024.0" prefWidth="768.0" GridPane.columnIndex="2" >
+						<VBox>
+							<AnchorPane fx:id="cfg_vbox_ad" prefHeight="1024.0" prefWidth="768.0" GridPane.columnIndex="2" />
+							<Button fx:id="genBtn" layoutX="71.0" layoutY="1.0" mnemonicParsing="false"
+									onAction="#genAllCode" text="Generate Code" textAlignment="CENTER"
+									GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+						</VBox>
+					</AnchorPane>
 				</GridPane>
 			</AnchorPane>
 		</Tab>
