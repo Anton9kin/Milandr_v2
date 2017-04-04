@@ -243,6 +243,11 @@ public class MCUGpioController extends MCUExtPairController {
 		});
 	}
 
+	@Override
+	protected boolean isCboxChecked(int index) {
+		return true;
+	}
+
 	private Device.EPortNames getePortName(String pinPort) {
 		return Device.EPortNames.valueOf(pinPort.substring(5));
 	}

@@ -314,6 +314,11 @@ public class MCUClockController extends MCUExtPairController
 		return lowBKP;
 	}
 
+	@Override
+	protected boolean isCboxChecked(int index) {
+		return true;
+	}
+
 	public void setClckCont(GridPane clckCont) {
 		this.clckCont = clckCont;
 	}
