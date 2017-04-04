@@ -306,10 +306,7 @@ public class MainMCUController extends BasicController {
 		for(String pairName: Device.showPairNames()) {
 			if (checkPairForHide(pairName)) continue;
 			Device.EPairNames pair = Device.EPairNames.valueOf(pairName);
-			funcList.add(pairName + "_init");
-			for(String codeLine: pair.model().getCodeList()) {
-				addCode(FN.INIT_C, codeLine);
-			}
+			genCodeIfNedeed(funcList, pairName, pair);
 		}
 		addCode(FN.INIT_C, "int init ( void ) {");
 		addCodeFunc(KN.INIT, "CPU_init");
@@ -327,6 +324,17 @@ public class MainMCUController extends BasicController {
 		addCode(FN.MAIN_C, "\tinit();");
 		addCode(FN.MAIN_C, "}");
 		saveCode();
+	}
+
+	private void genCodeIfNedeed(List<String> funcList, String pairName, Device.EPairNames pair) {
+		getScene().genKind(pair);
+		List<String> codeList = pair.model().getCodeList();
+		if (codeList.size() > 5) {
+            funcList.add(pairName + "_init");
+            for(String codeLine: codeList) {
+                addCode(FN.INIT_C, codeLine);
+            }
+        }
 	}
 
 	private void addCodeFunc(KN kn, String funcName) {
