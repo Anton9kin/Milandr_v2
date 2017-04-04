@@ -727,6 +727,9 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		Device.EPairNames pairBlock = getDevicePair();
 	 	if (pairBlock == null || pairBlock.model() == null) return Lists.newArrayList();
 		oldCode = Lists.newArrayList();
+		boolean cboxChecked = false;
+		for(int i = 0; i < 10;i++) cboxChecked |= isCboxChecked(i);
+		if (!cboxChecked) return oldCode;
 		for(String methodName: methodNames()) {
 			if (methodNeeded(methodName)) {
 				oldCode.addAll(generateCode(device, Lists.newArrayList(), methodName));
