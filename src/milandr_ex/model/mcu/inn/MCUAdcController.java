@@ -259,7 +259,7 @@ public class MCUAdcController extends BasicController {
 					g().addCodeStr(oldCode, "    MDR_ADC->ADC1_CHSEL = (( 1 << 31) | ( 1 << " + NUMCH + "));");
 				} else {
 					g().addCodeStr(oldCode, "/*номер канала преобразования*/");
-					g().addCodeStr(oldCode, "|(31 << 4)); ");
+					g().addCodeStr(oldCode, "|(" + NUMCH + " << 4)); ");
 				}
 				g().addCodeStrL(oldCode, "");
 				break;
