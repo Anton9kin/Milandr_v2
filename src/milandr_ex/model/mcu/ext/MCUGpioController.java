@@ -227,24 +227,25 @@ public class MCUGpioController extends MCUExtPairController {
 	}
 
 	private String genPropSuff(boolean isOutp, Integer propInt, String propEnd, int portIndex) {
-		String suff = ")";
+		String suff = "";
 		if (!propEnd.equals("mode2")) isOutp = false;
-		if (propEnd.equals("spo")) isOutp = propInt > 1;
+		if (propEnd.equals("spo")) isOutp = propInt < 2;
 //		int portInt = portIndex;
 		switch(propEnd) {
 			case "spo" : case "mode1" :case "mode2" :
-				if (isOutp) {
+				if (!isOutp) {
 					suff = " << 16" + suff;
 //					portInt <<= 16;
 				}
+				break;
 			case "funx" : case "spd" :
 				suff = " * 2" + suff;
 //				portInt *= 2;
-			default:
-				suff = portIndex + suff;
+				break;
 		}
+		suff = portIndex + suff + ")";
 		if (propEnd.equals("spo") && propInt == 3) {
-			suff += "|(1 << " + portIndex + " * 2)";
+			suff += "|(1 << " + portIndex + ")";
 		}
 		return suff;
 	}
@@ -252,8 +253,8 @@ public class MCUGpioController extends MCUExtPairController {
 	private String genPropPref(Integer propIntVal, String propEnd) {
 		int propInt = 0;
 		switch (propEnd) {
-			case "funx" : propInt = 1;
-			case "spd" :
+			case "spd" : propInt = 1;
+			case "funx" :
 				propInt += propIntVal;
 				break;
 			case "spo" :
