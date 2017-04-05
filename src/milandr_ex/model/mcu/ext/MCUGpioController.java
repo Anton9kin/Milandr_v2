@@ -187,7 +187,7 @@ public class MCUGpioController extends MCUExtPairController {
 	private void updateCodeStrWithProps(List<String> code, String port, String func, String[] values) {
 		checkPropFuncs(func);
 		updateCodeStrWithProps(code, port, propFuncs.get(func), values,
-				!func.endsWith("dir") && !func.endsWith("kind"));
+				!func.endsWith("dir") && !func.endsWith("kind") && !func.endsWith("spd"));
 	}
 
 	private Map<String, String> propFuncs = Maps.newLinkedHashMap();
@@ -205,7 +205,8 @@ public class MCUGpioController extends MCUExtPairController {
 		int ind = 0;
 		for(String value: values) {
 			if (ind == 0 && skipFirst) {ind++; continue;}
-			updateCodeStrWithProps(code, port, func, (ind++ == 0 ? "&=~" : "|="), value);
+			String opp = ind++ == 0 && !func.equals("PWR") ? "&=~" : "|=";
+			updateCodeStrWithProps(code, port, func, opp, value);
 		}
 	}
 	private void updateCodeStrWithProps(List<String> code, String port, String func, String opp, String values) {
