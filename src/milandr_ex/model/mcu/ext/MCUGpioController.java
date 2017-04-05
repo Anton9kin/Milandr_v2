@@ -55,7 +55,7 @@ public class MCUGpioController extends MCUExtPairController {
 	@Override
 	protected boolean checkPropByPinGroup(Device.EPairNames pair, List<McuBlockProperty> props,
 										  McuBlockProperty prop, String group) {
-		if (strHasAnySubstr(prop.getName(), "gpio_mode1", "gpio_mode2", "gpio_spd", "gpio_filt")) {
+		if (strHasAnySubstr(prop.getName(), "gpio_mode1", "gpio_mode2", "gpio_filt")) {
 			if (strHasAnySubstr(group, "IO in", "SIRIN")) {
 				return !prop.getName().equals("gpio_mode2");
 			} else if (strHasAnySubstr(group, "IO out", "SIROUT")) {
@@ -101,12 +101,12 @@ public class MCUGpioController extends MCUExtPairController {
 
 	private void switchPropsVis(List<McuBlockProperty> props) {
 		if (getNamedProp(props, "gpio_dir").getIntValue() == 0) {
-			getNamedProps(props, McuBlockProperty::show, "gpio_mode1", "gpio_spd", "gpio_filt");
+			getNamedProps(props, McuBlockProperty::show, "gpio_mode1", "gpio_filt");
 			getNamedProps(props, McuBlockProperty::hide, "gpio_mode2");
 			getNamedProp(props, "gpio_mode1", p->p.setRow(4));
 		} else {
 			getNamedProps(props, McuBlockProperty::show, "gpio_mode2");
-			getNamedProps(props, McuBlockProperty::hide, "gpio_mode1", "gpio_spd", "gpio_filt");
+			getNamedProps(props, McuBlockProperty::hide, "gpio_mode1", "gpio_filt");
 			getNamedProp(props, "gpio_mode2", p->p.setRow(4));
 		}
 	}
