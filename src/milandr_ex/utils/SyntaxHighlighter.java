@@ -31,7 +31,7 @@ public class SyntaxHighlighter {
 			"warn", "warni", "warnin", "warning", "alar", "alarm",
 	};
 	private static final String[] KEYWORDS = new String[] {
-			"out", "err", "define",
+			"out", "err", "define", "import", "ifdef", "ifndef", "endif",
 			"abstract", "assert", "boolean", "break", "byte",
 			"case", "catch", "char", "class", "const",
 			"continue", "default", "do", "double", "else",
