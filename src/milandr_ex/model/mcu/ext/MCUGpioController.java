@@ -216,22 +216,52 @@ public class MCUGpioController extends MCUExtPairController {
 	private void updatePropStrs(String pinText, McuBlockProperty prop, String[] propStrs, boolean isOutp) {
 		String pinStrs = propStrs[prop.getIntValue()];
 //		pinStrs += "[" + pinText.split("\\s")[0] + "]";
-		String pref = "|(1";
-		String suff = ")";
+		Integer propInt = prop.getIntValue();
 		String propEnd = prop.getName().substring(prop.getName().lastIndexOf("_") + 1);
 		int portIndex = Integer.parseInt(pinText.split("\\s")[0].charAt(2) + "");
-		switch(propEnd) {
-			case "spd" :
-			case "funx" :
-				suff = " * 2)";
-			case "spo" :
-				pref = "|(" + prop.getIntValue();
-				if (suff.length() < 2 && isOutp) suff = " * 2 << 16)";
-				break;
-		}
-		pinStrs += pref + " << " + portIndex + suff;
+		String pref = genPropPref(propInt, propEnd);
+		String suff = genPropSuff(isOutp, propInt, propEnd, portIndex);
+		pinStrs += pref + " << " + suff;
 		if (pinStrs.startsWith("|")) pinStrs = pinStrs.substring(1);
 		propStrs[prop.getIntValue()] = pinStrs;
+	}
+
+	private String genPropSuff(boolean isOutp, Integer propInt, String propEnd, int portIndex) {
+		String suff = ")";
+		if (!propEnd.equals("mode2")) isOutp = false;
+		if (propEnd.equals("spo")) isOutp = propInt > 1;
+//		int portInt = portIndex;
+		switch(propEnd) {
+			case "spo" : case "mode1" :case "mode2" :
+				if (isOutp) {
+					suff = " << 16" + suff;
+//					portInt <<= 16;
+				}
+			case "funx" : case "spd" :
+				suff = " * 2" + suff;
+//				portInt *= 2;
+			default:
+				suff = portIndex + suff;
+		}
+		if (propEnd.equals("spo") && propInt == 3) {
+			suff += "|(1 << " + portIndex + " * 2)";
+		}
+		return suff;
+	}
+
+	private String genPropPref(Integer propIntVal, String propEnd) {
+		int propInt = 0;
+		switch (propEnd) {
+			case "funx" : propInt = 1;
+			case "spd" :
+				propInt += propIntVal;
+				break;
+			case "spo" :
+				propInt = propIntVal > 0 ? 1 : 0;
+				break;
+			default: propInt = 1; break;
+		}
+		return "|(" + propInt;
 	}
 
 	private String[] computeIfAbsent(Map<Device.EPortNames, Map<String, String[]>> portsStrs,
