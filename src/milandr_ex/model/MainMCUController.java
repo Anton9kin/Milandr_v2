@@ -297,11 +297,15 @@ public class MainMCUController extends BasicController {
 		}
 		SyntaxHighlighter.set(getScene(), fullCode);
 	}
+	@SuppressWarnings("unused")
 	public void genAllCode(ActionEvent actionEvent) {
 		outClasses.clear();
-		addCode(FN.INIT_H, "int init ( void );");
+		addCode(FN.INIT_H, "#ifndef INIT_H_");
+		addCode(FN.INIT_H, "\t#define INIT_H_");
+		addCode(FN.INIT_H, "");
+		addCode(FN.INIT_H, "\tint init ( void );");
 
-		addCode(FN.INIT_C, "#include init.h;");
+		addCode(FN.INIT_C, "#include \"init.h\";");
 		List<String> funcList = Lists.newArrayList();
 		for(String pairName: Device.showPairNames()) {
 			if (checkPairForHide(pairName)) continue;
@@ -314,8 +318,16 @@ public class MainMCUController extends BasicController {
 			if (funcName.startsWith("CPU")) continue;
 			addCodeFunc(KN.INIT, funcName);
 		}
+		addCode(FN.INIT_H, "#endif");
+		addCode(FN.INIT_C, "\treturn 0;");
 		addCode(FN.INIT_C, "}");
 
+//		generateMainClass();
+		saveCode();
+	}
+
+	@SuppressWarnings("unused")
+	private void generateMainClass() {
 		addCode(FN.MAIN_H, "int main ( void );");
 
 		addCode(FN.MAIN_C, "#include init.h;");
@@ -323,7 +335,6 @@ public class MainMCUController extends BasicController {
 		addCode(FN.MAIN_C, "int main ( void ) {");
 		addCode(FN.MAIN_C, "\tinit();");
 		addCode(FN.MAIN_C, "}");
-		saveCode();
 	}
 
 	private void genCodeIfNedeed(List<String> funcList, String pairName, Device.EPairNames pair) {
@@ -338,7 +349,7 @@ public class MainMCUController extends BasicController {
 	}
 
 	private void addCodeFunc(KN kn, String funcName) {
-		addCode(kn.h(), "void " + funcName + "( void );");
+		addCode(kn.h(), "\tvoid " + funcName + "( void );");
 		addCode(kn.c(), "\t" + funcName + "();");
 	}
 }
