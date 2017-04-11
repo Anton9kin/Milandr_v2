@@ -396,8 +396,8 @@ public class MCUClockController extends MCUExtPairController
 		clock.addRestriction("HCLK", "< 80000000");
 		clock.addRestriction("CPU-CLK", "< 80000000");
 		// disable HSE/2, HSI/2 for usb and cpu
-		selectClockCBoxes("CPU-C1", 0, 30, 31, "IN-2", "/ 2","/ 2");
-		selectClockCBoxes("USB-C1", 30, 31, "/ 2","/ 2");
+		selectClockCBoxes("CPU-C1", 0, 30, 31, "IN-3", "/ 2","/ 2");
+		selectClockCBoxes("USB-C1", 0, 30, 31, "IN-3", "/ 2","/ 2");
 		disableCBox("k-CPU-C1-30", true);
 		disableCBox("k-CPU-C1-31", true);
 		disableCBox("k-USB-C1-30", true);
@@ -405,12 +405,14 @@ public class MCUClockController extends MCUExtPairController
 		// make cpu default
 		selectClockCBoxes("CPU-C2", 0, 30, "IN-2","* 2");
 		selectClockCBoxes("HCLK", 0, 30, "IN-2","/ 2");
+		selectClockCBoxes("CPU-C2", 0, 30, "IN-2","* 1");
+		selectClockCBoxes("HCLK", 0, 30, "IN-2","/ 1");
 		// make usb 48 MHz
 		selectClockCBoxes("USB-C2", 0, 9, 30, "IN-2", "/ 1", "* 6");
 		//update pIN combos with grid's contented labels and combo items
 		updatePInComboByGrid("k-USB-C1-0", "USB-C1");
 		updatePInComboByGrid("k-ADC-C1-0", "ADC-C1");
-		updatePInComboByGrid("k-ADC-C2-0", "ADC-C2");
+		updatePInComboByGrid("k-ADC-C2-0", "ADC-C2", 2);
 	}
 
 	@SuppressWarnings({"SameParameterValue", "unchecked"})
@@ -428,6 +430,10 @@ public class MCUClockController extends MCUExtPairController
 	private void selectClockCBoxes(String block, int i1, int i2, String v1, String v2) {
 		selectCBox("k-" + block + "-" + i1, v1);
 		selectCBox("k-" + block + "-" + i2, v2);
+	}
+
+	private void selectClockCBoxes(String block, int i1, String v1) {
+		selectCBox("k-" + block + "-" + i1, v1);
 	}
 
 	private VBox makeImageBox() {
@@ -613,7 +619,7 @@ public class MCUClockController extends MCUExtPairController
 //			blockInd++;
 		}
 		fillCpuConfProperties(getScene());
-		if (value.trim().equals("LSE")) {
+		if (value.trim().equals("LSE") || value.trim().equals("ADC-C1")) {
 			makeFadeSplash(getScene());
 		}
 	}
@@ -621,6 +627,20 @@ public class MCUClockController extends MCUExtPairController
 	private void updatePInComboByGrid(String comboKey, String key) {
 		log_debug(log, String.format("#updatePInComboByGrid(%s, %s)", comboKey, key));
 		ComboBox comboBox = clkMap.get(comboKey);
+		if (comboBox == null) return;
+		int selInd = 0;
+		if (comboBox.getSelectionModel() != null) {
+			selInd = comboBox.getSelectionModel().getSelectedIndex();
+		}
+		updatePInComboByGrid(comboBox, key, selInd);
+	}
+	private void updatePInComboByGrid(String comboKey, String key, int selInd) {
+		log_debug(log, String.format("#updatePInComboByGrid(%s, %s)", comboKey, key));
+		ComboBox comboBox = clkMap.get(comboKey);
+		if (comboBox == null) return;
+		updatePInComboByGrid(comboBox, key, selInd);
+	}
+	private void updatePInComboByGrid(ComboBox comboBox, String key, int selInd) {
 		GridPane subGr = findGridFromGrid(clkBlocks.get(key), 1, 0);
 		if (comboBox != null && subGr != null) {
 			Map<Label, Node> labels = Maps.newLinkedHashMap();
@@ -632,8 +652,6 @@ public class MCUClockController extends MCUExtPairController
 				lbl = findLabelFromGrid(subGr, i, 2);
 				if (lbl != null) labels.put(lbl, findNodeFromGrid(subGr, i, 3));
 			}
-			int selInd = comboBox.getSelectionModel().getSelectedIndex();
-			int cind = 0;
 			comboBox.getItems().clear();
 			for(Label lbl: labels.keySet()) {
 				Node suffHolder = labels.get(lbl);
