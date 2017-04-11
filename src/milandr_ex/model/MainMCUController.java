@@ -305,7 +305,7 @@ public class MainMCUController extends BasicController {
 		addCode(FN.INIT_H, "");
 		addCode(FN.INIT_H, "\tint init ( void );");
 
-		addCode(FN.INIT_C, "#include \"init.h\";");
+		addCode(FN.INIT_C, "#include \"init.h\"");
 		List<String> funcList = Lists.newArrayList();
 		for(String pairName: Device.showPairNames()) {
 			if (checkPairForHide(pairName)) continue;
@@ -330,8 +330,8 @@ public class MainMCUController extends BasicController {
 	private void generateMainClass() {
 		addCode(FN.MAIN_H, "int main ( void );");
 
-		addCode(FN.MAIN_C, "#include init.h;");
-		addCode(FN.MAIN_C, "#include main.h;");
+		addCode(FN.MAIN_C, "#include init.h");
+		addCode(FN.MAIN_C, "#include main.h");
 		addCode(FN.MAIN_C, "int main ( void ) {");
 		addCode(FN.MAIN_C, "\tinit();");
 		addCode(FN.MAIN_C, "}");
