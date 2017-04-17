@@ -1,11 +1,9 @@
 package milandr_ex.data;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.*;
 

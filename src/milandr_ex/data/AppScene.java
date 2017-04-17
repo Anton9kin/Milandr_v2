@@ -1,7 +1,5 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.beans.NamedArg;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +9,8 @@ import javafx.stage.Stage;
 import milandr_ex.McuType;
 import milandr_ex.model.BasicController;
 import milandr_ex.model.ModelObserver;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.List;
 import java.util.Locale;

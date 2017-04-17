@@ -1,11 +1,11 @@
 package milandr_ex.model.mcu.inn;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
+import milandr_ex.utils.guava.Lists;
 
 import java.util.List;
 

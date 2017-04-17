@@ -1,6 +1,5 @@
 package milandr_ex.utils;
 
-import com.google.common.collect.Lists;
 import impl.org.controlsfx.skin.CheckComboBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -17,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import milandr_ex.data.Constants;
+import milandr_ex.utils.guava.Lists;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.IndexedCheckModel;
 

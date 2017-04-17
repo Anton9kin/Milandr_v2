@@ -1,7 +1,5 @@
 package milandr_ex.model.mcu;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -16,6 +14,8 @@ import milandr_ex.data.code.Module;
 import milandr_ex.data.code.Param;
 import milandr_ex.model.mcu.ext.MCUExtPairController;
 import milandr_ex.utils.GuiUtils;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

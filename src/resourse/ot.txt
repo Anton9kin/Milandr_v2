@@ -137,3 +137,8 @@ ARM Cortex-M0 с 8-канальным
 для аэрокосмических систем
 измерения, контроля, управления
 и диагностики
+
+
+.//*[@id='dt_css_override']/tbody/tr/td[7]
+foreach($('tbody > tr > td > input'), function(e){ if e.getId().})
+$x("//*[@id='dt_css_override']/tbody/tr/td[11]/input").forEach(function(e){console.log(e.id + '-' + e.checked); e.checked = false; console.log(e.id + '-' + e.checked); });

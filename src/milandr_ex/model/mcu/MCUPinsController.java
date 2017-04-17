@@ -1,8 +1,5 @@
 package milandr_ex.model.mcu;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +15,9 @@ import milandr_ex.data.*;
 import milandr_ex.model.BasicController;
 import milandr_ex.utils.ChangeCallbackChecker;
 import milandr_ex.utils.GuiUtils;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
+import milandr_ex.utils.guava.Sets;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.IndexedCheckModel;
 import org.slf4j.Logger;

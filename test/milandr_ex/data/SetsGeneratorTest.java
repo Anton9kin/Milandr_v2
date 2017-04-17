@@ -1,6 +1,6 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Sets;
+import milandr_ex.utils.guava.Sets;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
  * Some test for Pair's Sets generator

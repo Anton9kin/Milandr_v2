@@ -1,13 +1,13 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.layout.Pane;
 import milandr_ex.model.BasicController;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
+import milandr_ex.utils.guava.Sets;
 
 import java.util.List;
 import java.util.Map;

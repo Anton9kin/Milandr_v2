@@ -1,6 +1,5 @@
 package milandr_ex.model.mcu.inn;
 
-import com.google.common.collect.Lists;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
@@ -8,10 +7,12 @@ import javafx.scene.layout.Pane;
 import milandr_ex.data.AppScene;
 import milandr_ex.data.Device;
 import milandr_ex.model.BasicController;
+import milandr_ex.utils.guava.Lists;
 
 import java.util.List;
 
 /**
+ *
  * Created by lizard2k1 on 12.03.2017.
  */
 public class MCUCompController extends BasicController {

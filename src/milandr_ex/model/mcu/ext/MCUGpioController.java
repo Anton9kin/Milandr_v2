@@ -1,7 +1,5 @@
 package milandr_ex.model.mcu.ext;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
@@ -9,6 +7,8 @@ import milandr_ex.data.AppScene;
 import milandr_ex.data.Constants;
 import milandr_ex.data.Device;
 import milandr_ex.data.McuBlockProperty;
+import milandr_ex.utils.guava.Maps;
+import milandr_ex.utils.guava.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

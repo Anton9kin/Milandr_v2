@@ -1,8 +1,5 @@
 package milandr_ex.model;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -11,6 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import milandr_ex.data.*;
 import milandr_ex.utils.*;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
+import milandr_ex.utils.guava.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

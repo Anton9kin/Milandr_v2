@@ -1,6 +1,6 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Maps;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.Map;
 

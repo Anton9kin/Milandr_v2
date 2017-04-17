@@ -1,7 +1,5 @@
 package milandr_ex.data;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -15,7 +13,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import jfxtras.scene.control.ListView;
+//import jfxtras.scene.control.ListView;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -513,8 +513,8 @@ public class McuBlockProperty implements Cloneable {
 						makeListener(scene, node, ((TextField) node).textProperty()); break;
 			case INT: node = new TextField(intDefValue + "");
 						makeListener(scene, node, ((TextField) node).textProperty()); break;
-			case LST: node = new ListView<>(subItems);
-						makeListener(scene, node, ((ListView) node).selectedItemProperty()); break;
+//			case LST: node = new ListView<>(subItems);
+//						makeListener(scene, node, ((ListView) node).selectedItemProperty()); break;
 			case CMB: node = new ComboBox<>(subItems);
 						makeListener(scene, node, ((ComboBox) node).valueProperty()); break;
 		}

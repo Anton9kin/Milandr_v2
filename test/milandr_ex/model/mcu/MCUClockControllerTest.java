@@ -1,7 +1,7 @@
 package milandr_ex.model.mcu;
 
-import com.google.common.collect.Lists;
 import milandr_ex.model.BasicControllerTest;
+import milandr_ex.utils.guava.Lists;
 import org.junit.Before;
 import org.junit.Test;
 

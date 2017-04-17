@@ -1,7 +1,7 @@
 package milandr_ex.model;
 
-import com.google.common.collect.Maps;
 import milandr_ex.data.Device;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,13 +1,14 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Maps;
 import javafx.scene.control.Label;
 import milandr_ex.McuType;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
+ *
  * Created by lizard on 16.02.17 at 15:43.
  */
 public class PropsFactory {

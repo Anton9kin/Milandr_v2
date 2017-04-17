@@ -1,7 +1,7 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.HashMap;
 import java.util.List;

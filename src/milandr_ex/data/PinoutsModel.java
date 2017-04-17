@@ -1,9 +1,9 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import milandr_ex.McuType;
 import milandr_ex.model.ModelObserver;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 
 import java.io.File;
 import java.util.Collection;

@@ -1,7 +1,5 @@
 package milandr_ex.model;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +19,8 @@ import milandr_ex.model.mcu.ext.*;
 import milandr_ex.model.mcu.inn.*;
 import milandr_ex.utils.GuiUtils;
 import milandr_ex.utils.SyntaxHighlighter;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

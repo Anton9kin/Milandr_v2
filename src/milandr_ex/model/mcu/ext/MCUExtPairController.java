@@ -1,11 +1,11 @@
 package milandr_ex.model.mcu.ext;
 
-import com.google.common.collect.Maps;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import milandr_ex.model.BasicController;
+import milandr_ex.utils.guava.Maps;
 
 import java.util.Map;
 

@@ -1,11 +1,11 @@
 package milandr_ex.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import milandr_ex.MilandrEx;
+import milandr_ex.utils.guava.Lists;
+import milandr_ex.utils.guava.Maps;
 
 import java.io.*;
 import java.net.URL;

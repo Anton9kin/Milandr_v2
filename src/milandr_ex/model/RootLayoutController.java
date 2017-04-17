@@ -2,16 +2,13 @@ package milandr_ex.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.google.common.collect.Lists;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import milandr_ex.McuType;
 import javafx.fxml.FXML;
@@ -22,6 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import milandr_ex.data.*;
 import milandr_ex.utils.LoaderUtils;
+import milandr_ex.utils.guava.Lists;
 
 public class RootLayoutController extends BasicController {
 

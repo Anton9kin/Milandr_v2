@@ -1,13 +1,10 @@
 package milandr_ex;
 
-import com.google.common.collect.Maps;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import milandr_ex.data.Constants;
 import milandr_ex.data.PropsFactory;
+import milandr_ex.utils.guava.Maps;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 public class McuType {
