@@ -197,15 +197,21 @@ public class MainMCUController extends BasicController {
 			if (subKey.contains("-")) subKey = subKey.substring(0, subKey.indexOf("-"));
 			disableChildren(subKey, cfg_vbox_in.getChildren());
 			disableChildren(subKey, cfg_vbox_ex.getChildren());
+		} else if (comboKey.startsWith("cb")) {
+			disableChildren("cfg_gpio", cfg_vbox_ex.getChildren(),
+					!getPinList(Device.EPairNames.GPIO).isEmpty());
 		}
 	}
 
 	private void disableChildren(String subKey, List<Node> children) {
 		String cboxKey = subKey.substring(4).toUpperCase();
+		boolean oneChecked = checkOneChecked(cboxKey);
+		disableChildren(subKey, children, oneChecked);
+	}
+	private void disableChildren(String subKey, List<Node> children, boolean oneChecked) {
 		for (Node node : children) {
 			boolean isCurentTab = node.getId().equals(subKey);
 			if (isCurentTab && node instanceof TitledPane) {
-				boolean oneChecked = checkOneChecked(cboxKey);
 				((TitledPane) node).setExpanded(false);
 				node.setDisable(!oneChecked);
 			}
