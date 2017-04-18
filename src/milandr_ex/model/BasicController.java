@@ -918,8 +918,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 
 	protected boolean isExtPair() { return false; }
 	protected Set<String> getPinList() {
+		return getPinList(getDevicePair());
+	}
+	protected Set<String> getPinList(Device.EPairNames pair) {
 		if (checkPairForMethodSkip()) return Sets.newLinkedHashSet();
-	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(getDevicePair().name());
+	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(pair.name());
 	 	if (blockModel == null) return Sets.newLinkedHashSet();
 		return blockModel.getPinsList();
 	}
