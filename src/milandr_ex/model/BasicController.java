@@ -324,7 +324,11 @@ public abstract class BasicController implements ChangeCallbackOwner {
 	}
 
 	public boolean checkPairForMethodSkip() {
-		return checkPairForHide(getDevicePair().name());
+		return checkPairForMethodSkip(getDevicePair().name());
+	}
+
+	public boolean checkPairForMethodSkip(String pairName) {
+		return checkPairForHide(pairName);
 	}
 
 	private TitledPane makeTitledPane(String pin) {
@@ -921,7 +925,7 @@ public abstract class BasicController implements ChangeCallbackOwner {
 		return getPinList(getDevicePair());
 	}
 	protected Set<String> getPinList(Device.EPairNames pair) {
-		if (checkPairForMethodSkip()) return Sets.newLinkedHashSet();
+		if (checkPairForMethodSkip(pair.name())) return Sets.newLinkedHashSet();
 	 	McuBlockModel blockModel = getScene().getPinoutsModel().getBlockModel(pair.name());
 	 	if (blockModel == null) return Sets.newLinkedHashSet();
 		return blockModel.getPinsList();
